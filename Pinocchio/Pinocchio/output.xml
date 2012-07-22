@@ -1,0 +1,30 @@
+<animation3D>
+	<track name="first track">
+		<keyFrame name="first keyFrame" duration="101">
+			<bone name="first bone">
+			</bone>
+			<bone name="second bone">
+			</bone>
+			<bone name="third bone">
+			</bone>
+		</keyFrame>
+		<keyFrame name="second keyFrame" duration="212">
+			<bone name="first bone">
+			</bone>
+			<bone name="second bone">
+			</bone>
+			<bone name="third bone">
+			</bone>
+		</keyFrame>
+		<keyFrame name="third keyFrame" duration="323">
+			<bone name="first bone">
+			</bone>
+			<bone name="third bone">
+			</bone>
+		</keyFrame>
+	</track>
+	<track name="second track">
+	</track>
+	<track name="third track">
+	</track>
+</animation3D>
