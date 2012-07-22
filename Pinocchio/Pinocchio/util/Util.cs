@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Pinocchio.util
 {
-    struct Vector3
+    class Vector3
     {
-        float x, y, z;
+        public float x, y, z;
 
         public Vector3(float x = 0f, float y = 0f, float z = 0f)
         {
@@ -15,21 +15,34 @@ namespace Pinocchio.util
             this.y = y;
             this.z = z;
         }
+
+        public Vector3(Vector3 vec)
+        {
+            x = vec.x;
+            y = vec.y;
+            z = vec.z;
+        }
     }
 
-    struct GeoData
+    class GeoData
     {
-        Vector3 position;
-        Vector3 rotation;
-        Vector3 scale;
+        public Vector3 position;
+        public Vector3 rotation;
+        public Vector3 scale;
 
-        public GeoData(int v = 0)
+        public GeoData()
         {
             position = new Vector3();
             rotation = new Vector3();
             scale = new Vector3();
         }
 
+        public void nullify()
+        {
+            position = null;
+            rotation = null;
+            scale = null;
+        }
     }
 
     class Util

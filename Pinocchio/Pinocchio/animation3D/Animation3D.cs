@@ -51,7 +51,7 @@ namespace Pinocchio.animation3D
 
         protected override string getOpenTagString()
         {
-            return format(getTagName());
+            return format(getTagName(), false);
         }
 
         protected override string getTagName()

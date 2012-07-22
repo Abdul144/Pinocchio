@@ -33,9 +33,15 @@ namespace Pinocchio.animation3D
         }
 
 
+        public KeyFrame getKeyFrame(int index)
+        {
+            return (KeyFrame)keyFrames[index];
+        }
+
+
         // 접근
         public string Name { get { return name; } set { name = value; } }
-
+        public int KeyFrameCount { get { return keyFrames.Count; } }
 
 
         // test
@@ -51,7 +57,7 @@ namespace Pinocchio.animation3D
 
         protected override string getOpenTagString()
         {
-            return format(getTagName(), "name", name);
+            return format(getTagName(), false, "name", name);
         }
 
         protected override string getTagName()

@@ -2,24 +2,48 @@
 	<track name="first track">
 		<keyFrame name="first keyFrame" duration="101">
 			<bone name="first bone">
+				<position x="10.1" y="21.2" z="32.3"/>
+				<rotation x="10.21" y="21.32" z="32.43"/>
+				<scale x="10.212" y="21.323" z="32.434"/>
 			</bone>
 			<bone name="second bone">
+				<position x="210.1" y="221.2" z="232.3"/>
+				<rotation x="210.21" y="221.32" z="232.43"/>
+				<scale x="210.212" y="221.323" z="232.434"/>
 			</bone>
 			<bone name="third bone">
+				<position x="310.1" y="321.2" z="332.3"/>
+				<rotation x="310.21" y="321.32" z="332.43"/>
+				<scale x="310.212" y="321.323" z="332.434"/>
 			</bone>
 		</keyFrame>
 		<keyFrame name="second keyFrame" duration="212">
 			<bone name="first bone">
+				<position x="10.1" y="21.2" z="32.3"/>
+				<rotation x="10.21" y="21.32" z="32.43"/>
+				<scale x="10.212" y="21.323" z="32.434"/>
 			</bone>
 			<bone name="second bone">
+				<position x="210.1" y="221.2" z="232.3"/>
+				<rotation x="210.21" y="221.32" z="232.43"/>
+				<scale x="210.212" y="221.323" z="232.434"/>
 			</bone>
 			<bone name="third bone">
+				<position x="310.1" y="321.2" z="332.3"/>
+				<rotation x="310.21" y="321.32" z="332.43"/>
+				<scale x="310.212" y="321.323" z="332.434"/>
 			</bone>
 		</keyFrame>
 		<keyFrame name="third keyFrame" duration="323">
 			<bone name="first bone">
+				<position x="10.1" y="21.2" z="32.3"/>
+				<rotation x="10.21" y="21.32" z="32.43"/>
+				<scale x="10.212" y="21.323" z="32.434"/>
 			</bone>
 			<bone name="third bone">
+				<position x="310.1" y="321.2" z="332.3"/>
+				<rotation x="310.21" y="321.32" z="332.43"/>
+				<scale x="310.212" y="321.323" z="332.434"/>
 			</bone>
 		</keyFrame>
 	</track>

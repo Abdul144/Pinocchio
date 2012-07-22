@@ -27,7 +27,7 @@ namespace Pinocchio.animation3D
         /// 본정보 추가
         /// </summary>
         /// <returns></returns>
-        public BoneData addBoneGeoData()
+        public BoneData addBoneData()
         {
             BoneData boneData = new BoneData();
             boneDatas.Add(boneData);
@@ -41,11 +41,16 @@ namespace Pinocchio.animation3D
             boneDatas[index] = null;
         }
 
+        public BoneData getBoneData(int index)
+        {
+            return (BoneData)boneDatas[index];
+        }
+
         
         // 접근
         public string Name { get { return name; } set { name = value; } }
         public int Duration { get { return duration; } set { duration = value; } }
-
+        public int BoneDataCount { get { return boneDatas.Count; } }
 
 
         // test
@@ -62,7 +67,7 @@ namespace Pinocchio.animation3D
 
         protected override string getOpenTagString()
         {
-            return format(getTagName(), "name", name, "duration", duration);
+            return format(getTagName(), false, "name", name, "duration", duration);
         }
 
         protected override string getTagName()

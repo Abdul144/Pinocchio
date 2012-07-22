@@ -36,7 +36,7 @@ namespace Pinocchio.animation3D
             writer.Flush();
         }
 
-        private void writeDepthMark(StreamWriter writer, int depth, string mark = "\t")
+        protected void writeDepthMark(StreamWriter writer, int depth, string mark = "\t")
         {
             for (int i = 0; i < depth; ++i)
             {
@@ -44,7 +44,7 @@ namespace Pinocchio.animation3D
             }
         }
 
-        protected string format(string tagName, params object[] list)
+        protected string format(string tagName, bool hasNoChild, params object[] list)
         {
             string content;
 
@@ -54,7 +54,10 @@ namespace Pinocchio.animation3D
             {
                 content += " " + list[i].ToString() + "=\"" + list[i + 1].ToString() + "\"";
             }
-            content += ">";
+            if (hasNoChild == false)
+                content += ">";
+            else
+                content += "/>";
 
             return content;
         }
