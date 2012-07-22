@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace Pinocchio.animation3D
 {
-    class Track : TestCode
+    class Track
     {
         string name = "";                       // 트랙 이름
         ArrayList keyFrames = new ArrayList();  // 키 프레임 배열
@@ -43,26 +43,5 @@ namespace Pinocchio.animation3D
         public string Name { get { return name; } set { name = value; } }
         public int KeyFrameCount { get { return keyFrames.Count; } }
 
-
-        // test
-        protected override void printChildTags(System.IO.StreamWriter writer, int depth)
-        {
-            // 키프레임 출력
-            for (int i = 0; i < keyFrames.Count; ++i)
-            {
-                KeyFrame keyFrame = (KeyFrame)keyFrames[i];
-                keyFrame.print(writer, depth);
-            }
-        }
-
-        protected override string getOpenTagString()
-        {
-            return format(getTagName(), false, "name", name);
-        }
-
-        protected override string getTagName()
-        {
-            return "track";
-        }
     }
 }

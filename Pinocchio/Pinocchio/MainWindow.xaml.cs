@@ -30,7 +30,7 @@ namespace Pinocchio
             Animation3D animation;
             try
             {
-                animation = XMLLoader.Instance.load("../../test.xml");
+                animation = XmlImporter.Instance.import("../../test.xml");
             }
             catch (System.Exception e)
             {
@@ -38,7 +38,9 @@ namespace Pinocchio
                 return;
             }
 
-            animation.print("../../output.xml", 0);
+            //animation.print("../../output.xml", 0);
+            XmlExporter.Instance.export("../../output.xml", animation);
+
         }
     }
 }

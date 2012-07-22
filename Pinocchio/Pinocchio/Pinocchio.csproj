@@ -56,8 +56,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="animation3D\BoneData.cs" />
-    <Compile Include="animation3D\TestCode.cs" />
-    <Compile Include="animation3D\XMLLoader.cs" />
+    <Compile Include="animation3D\XmlExporter.cs" />
+    <Compile Include="animation3D\XmlImporter.cs" />
     <Compile Include="util\Singleton.cs" />
     <Compile Include="util\Util.cs" />
     <Page Include="MainWindow.xaml">

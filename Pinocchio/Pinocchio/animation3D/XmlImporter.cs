@@ -29,14 +29,14 @@ namespace Pinocchio.animation3D
         public Type GetExceptionType() { return type; }
     }
 
-    class XMLLoader : Singleton<XMLLoader>
+    class XmlImporter : Singleton<XmlImporter>
     {
         /// <summary>
         /// 애니메이션 로드
         /// </summary>
         /// <param name="path">xml파일 경로</param>
         /// <returns>읽어들인 animation</returns>
-        public Animation3D load(string path)
+        public Animation3D import(string path)
         {
             Animation3D animation = null;
 
@@ -47,7 +47,7 @@ namespace Pinocchio.animation3D
             doc.Load(path);
 
             // 로드
-            animation = loadTag_animation3D(doc);
+            animation = importTag_animation3D(doc);
 
             return animation;
         }
@@ -57,7 +57,7 @@ namespace Pinocchio.animation3D
         /// </summary>
         /// <param name="doc"></param>
         /// <returns></returns>
-        private Animation3D loadTag_animation3D(XmlDocument doc)
+        private Animation3D importTag_animation3D(XmlDocument doc)
         {
             Animation3D animation = null;
 
@@ -92,7 +92,7 @@ namespace Pinocchio.animation3D
                     continue;
 
                 // track 태그 로드
-                bool trackTagResult = loadTag_track(animation.addTrack(), childList[i]);
+                bool trackTagResult = importTag_track(animation.addTrack(), childList[i]);
                 if (trackTagResult == false)
                     return null;
             }
@@ -106,7 +106,7 @@ namespace Pinocchio.animation3D
         /// <param name="animation"></param>
         /// <param name="parentTag"></param>
         /// <returns></returns>
-        private bool loadTag_track(Track track, XmlNode trackTag)
+        private bool importTag_track(Track track, XmlNode trackTag)
         {
             /// attribute 로드
             XmlAttributeCollection attributes = trackTag.Attributes;
@@ -129,7 +129,7 @@ namespace Pinocchio.animation3D
                     continue;
 
                 // keyFrame 태그 로드
-                bool keyFrameTagResult = loadTag_keyFrame(track.addKeyFrame(), childList[i]);
+                bool keyFrameTagResult = importTag_keyFrame(track.addKeyFrame(), childList[i]);
                 if (keyFrameTagResult == false)
                     return false;
 
@@ -190,7 +190,7 @@ namespace Pinocchio.animation3D
         }
 
 
-        private bool loadTag_keyFrame(KeyFrame keyFrame, XmlNode keyFrameTag)
+        private bool importTag_keyFrame(KeyFrame keyFrame, XmlNode keyFrameTag)
         {
             /// attribute 로드
             XmlAttributeCollection attributes = keyFrameTag.Attributes;
@@ -221,7 +221,7 @@ namespace Pinocchio.animation3D
                 try
                 {
                     BoneData boneData = keyFrame.addBoneData();
-                    bool boneTagResult = loadTag_bone(boneData, childList[i]);
+                    bool boneTagResult = importTag_bone(boneData, childList[i]);
                     if (boneTagResult == false)
                         return false;
 
@@ -247,7 +247,7 @@ namespace Pinocchio.animation3D
             return true;
         }
 
-        private bool loadTag_bone(BoneData boneData, XmlNode boneTag)
+        private bool importTag_bone(BoneData boneData, XmlNode boneTag)
         {
             /// attribute 로드
             XmlAttributeCollection attributes = boneTag.Attributes;
@@ -273,19 +273,19 @@ namespace Pinocchio.animation3D
                 if (node.Name == "position")
                 {   // position 태그
                     Vector3 vector = new Vector3();
-                    loadTag_vector3Type(ref vector, node);
+                    importTag_vector3Type(ref vector, node);
                     boneData.GeoData.position = vector;
                 }
                 else if (node.Name == "rotation")
                 {   // rotation 태그
                     Vector3 vector = new Vector3();
-                    loadTag_vector3Type(ref vector, node);
+                    importTag_vector3Type(ref vector, node);
                     boneData.GeoData.rotation = vector;
                 }
                 else if (node.Name == "scale")
                 {   // scale 태그
                     Vector3 vector = new Vector3();
-                    loadTag_vector3Type(ref vector, node);
+                    importTag_vector3Type(ref vector, node);
                     boneData.GeoData.scale = vector;
                 }
                 else
@@ -303,7 +303,7 @@ namespace Pinocchio.animation3D
             return true;
         }
 
-        private bool loadTag_vector3Type(ref Vector3 vector, XmlNode tag)
+        private bool importTag_vector3Type(ref Vector3 vector, XmlNode tag)
         {
             /// attribute 로드
             XmlAttributeCollection attributes = tag.Attributes;

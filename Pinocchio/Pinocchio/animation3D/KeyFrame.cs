@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace Pinocchio.animation3D
 {
-    class KeyFrame : TestCode
+    class KeyFrame
     {
         string name = "";   // 이름
         int duration;       // 재생할 길이
@@ -52,27 +52,5 @@ namespace Pinocchio.animation3D
         public int Duration { get { return duration; } set { duration = value; } }
         public int BoneDataCount { get { return boneDatas.Count; } }
 
-
-        // test
-        protected override void printChildTags(System.IO.StreamWriter writer, int depth)
-        {
-            // 본 데이터 출력
-            for (int i = 0; i < boneDatas.Count; ++i)
-            {
-                BoneData boneData = (BoneData)boneDatas[i];
-                if (boneData != null)
-                    boneData.print(writer, depth);
-            }
-        }
-
-        protected override string getOpenTagString()
-        {
-            return format(getTagName(), false, "name", name, "duration", duration);
-        }
-
-        protected override string getTagName()
-        {
-            return "keyFrame";
-        }
     }
 }

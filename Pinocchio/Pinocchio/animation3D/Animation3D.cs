@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace Pinocchio.animation3D
 {
-    class Animation3D : TestCode
+    class Animation3D
     {
         string name = "";
         ArrayList tracks = new ArrayList();     // 트랙 배열
@@ -32,31 +32,15 @@ namespace Pinocchio.animation3D
             return track;
         }
 
+        public Track getTrack(int index)
+        {
+            return (Track)tracks[index];
+        }
+
 
         // 접근
         public string Name { get { return name; } set { name = value; } }
-
-
-
-        // test
-        protected override void printChildTags(System.IO.StreamWriter writer, int depth)
-        {
-            // 트랙 출력
-            for (int i = 0; i < tracks.Count; ++i)
-            {
-                Track track = (Track)tracks[i];
-                track.print(writer, depth);
-            }
-        }
-
-        protected override string getOpenTagString()
-        {
-            return format(getTagName(), false);
-        }
-
-        protected override string getTagName()
-        {
-            return "animation3D";
-        }
+        public int TrackCount { get { return tracks.Count; } }
+        public int BoneCount { get { return bones.Count; } }
     }
 }
