@@ -161,12 +161,12 @@ namespace Pinocchio.animation3D
                 BoneData preBoneData = getPreBoneData(track, keyFrameIndex, boneIndex);
 
                 // 빠진것 복사해서 채우기
-                if (boneData.Position.X == float.NaN)
-                    boneData.Position = new Vector3(preBoneData.Position.X, preBoneData.Position.Y, preBoneData.Position.Z);
-                if (boneData.Rotation.X == float.NaN)
-                    boneData.Rotation = new Quaternion(preBoneData.Rotation.X, preBoneData.Rotation.Y, preBoneData.Rotation.Z, preBoneData.Rotation.W);
-                if (boneData.Scale.X == float.NaN)
-                    boneData.Scale = new Vector3(preBoneData.Scale.X, preBoneData.Scale.Y, preBoneData.Scale.Z);
+                if (float.IsNaN(boneData.Position.X))
+                    boneData.Position = preBoneData.Position;
+                if (float.IsNaN(boneData.Rotation.X))
+                    boneData.Rotation = preBoneData.Rotation;
+                if (float.IsNaN(boneData.Scale.X))
+                    boneData.Scale = preBoneData.Scale;
             }
         }
 
@@ -273,19 +273,19 @@ namespace Pinocchio.animation3D
                 if (node.Name == "position")
                 {   // position 태그
                     Vector3 vector = new Vector3();
-                    importTag_vector3Type(vector, node);
+                    importTag_vector3Type(ref vector, node);
                     boneData.Position = vector;
                 }
                 else if (node.Name == "rotation")
                 {   // rotation 태그
                     Quaternion quaternion = new Quaternion();
-                    importTag_quaternionType(quaternion, node);
+                    importTag_quaternionType(ref quaternion, node);
                     boneData.Rotation = quaternion;
                 }
                 else if (node.Name == "scale")
                 {   // scale 태그
                     Vector3 vector = new Vector3();
-                    importTag_vector3Type(vector, node);
+                    importTag_vector3Type(ref vector, node);
                     boneData.Scale = vector;
                 }
                 else
@@ -304,7 +304,7 @@ namespace Pinocchio.animation3D
             return true;
         }
 
-        private bool importTag_vector3Type(Vector3 vector, XmlNode tag)
+        private bool importTag_vector3Type(ref Vector3 vector, XmlNode tag)
         {
             /// attribute 로드
             XmlAttributeCollection attributes = tag.Attributes;
@@ -328,7 +328,7 @@ namespace Pinocchio.animation3D
             return true;
         }
 
-        private bool importTag_quaternionType(Quaternion quaternion, XmlNode tag)
+        private bool importTag_quaternionType(ref Quaternion quaternion, XmlNode tag)
         {
             /// attribute 로드
             XmlAttributeCollection attributes = tag.Attributes;

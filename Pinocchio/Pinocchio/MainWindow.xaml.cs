@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Pinocchio.animation3D;
 
 namespace Pinocchio
 {
@@ -24,6 +25,11 @@ namespace Pinocchio
         public MainWindow()
         {
             InitializeComponent();
+
+            // TODO test
+            Animation3D animation = XmlImporter.Instance.import("../../test.xml");
+            XmlExporter.Instance.export("../../output.xml", animation);
+
 
             game = new Game1(XNA.Handle, gameScreen.Width, gameScreen.Height);
 
