@@ -10,6 +10,7 @@ namespace Pinocchio.animation3D
     class KeyFrame
     {
         string name = "";   // 이름
+        int startFrame = 0;
         int duration;       // 재생할 길이
 
         ArrayList boneDatas = new ArrayList(); // 각 본의 Data
@@ -51,6 +52,7 @@ namespace Pinocchio.animation3D
         public string Name { get { return name; } set { name = value; } }
         public int Duration { get { return duration; } set { duration = value; } }
         public int BoneDataCount { get { return boneDatas.Count; } }
+        public int StartFrame { get { return startFrame; } set { startFrame = value; } }
 
     }
 }

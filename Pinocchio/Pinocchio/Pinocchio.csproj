@@ -68,6 +68,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="animation3D\Animation3DInstance.cs" />
     <Compile Include="animation3D\BoneData.cs" />
     <Compile Include="animation3D\XmlExporter.cs" />
     <Compile Include="animation3D\XmlImporter.cs" />

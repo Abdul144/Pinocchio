@@ -11,6 +11,7 @@ namespace Pinocchio.animation3D
         string name = "";
         ArrayList tracks = new ArrayList();     // 트랙 배열
         ArrayList bones = new ArrayList();      // 본 참조 배열
+        int totalFrameCount = 0;
 
         /// <summary>
         ///  생성자
@@ -42,5 +43,6 @@ namespace Pinocchio.animation3D
         public string Name { get { return name; } set { name = value; } }
         public int TrackCount { get { return tracks.Count; } }
         public int BoneCount { get { return bones.Count; } }
+        public int TotalFrameCount { get { return totalFrameCount; } set { totalFrameCount = value; } }
     }
 }

@@ -85,6 +85,7 @@ namespace Pinocchio.animation3D
 
 
             /// 트랙 읽기
+            animation.TotalFrameCount = 0;
             XmlNodeList childList = animation3DTag.ChildNodes;
             for (int i = 0; i < childList.Count; ++i)
             {
@@ -93,9 +94,23 @@ namespace Pinocchio.animation3D
                     continue;
 
                 // track 태그 로드
-                bool trackTagResult = importTag_track(animation.addTrack(), childList[i]);
+                Track track = animation.addTrack();
+                bool trackTagResult = importTag_track(track, childList[i]);
                 if (trackTagResult == false)
                     return null;
+
+                // startFrame을 설정하고, totalCount 얻기
+                int totalCount = 0;
+                for (int i = 0; i < track.KeyFrameCount; ++i)
+                {
+                    KeyFrame keyFrame = track.getKeyFrame(i);
+                    keyFrame.StartFrame = totalCount;
+                    totalCount += keyFrame.Duration;
+                }
+
+                // 가장 큰 totalCount를 totalFrameCount로 설정
+                if (animation.TotalFrameCount < totalCount)
+                    animation.TotalFrameCount = totalCount;
             }
 
             return animation;
