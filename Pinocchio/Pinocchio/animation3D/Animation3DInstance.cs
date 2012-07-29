@@ -26,22 +26,39 @@ namespace Pinocchio.animation3D
             }
         }
 
-        public void update(int deltaFrame)
+        public void update(ArrayList boneList, int deltaFrame)
         {
-            curFrame = (curFrame + deltaFrame) % animation.TotalFrameCount;
+            curFrame += deltaFrame;
+            
+            // 트랙 업데이트
+            foreach (TrackInstance track in tracks)
+            {
+                track.update(boneList, curFrame);
+            }
+
+            if (curFrame >= animation.TotalFrameCount)
+            {   // 끝남
+
+                /// 반복시키기
+                int newFrame = curFrame % animation.TotalFrameCount;
+
+                // reset & update
+                reset();
+                update(boneList, newFrame);
+                return;
+            }
+        }
+
+        public void reset()
+        {
+            curFrame = 0;
+
+            // 모든 트랙 리셋
+            foreach (TrackInstance track in tracks)
+            {
+                track.reset();
+            }
         }
     }
 
-    class TrackInstance
-    {
-        Track track = null;
-
-        int curKeyFrameIndex = 0;
-
-
-        public TrackInstance(Track track)
-        {
-            this.track = track;
-        }
-    }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Primitives3D;
 using Microsoft.Xna.Framework.Graphics;
+using Pinocchio.animation3D;
 
 namespace Pinocchio.Model
 {
@@ -58,8 +59,30 @@ namespace Pinocchio.Model
             localTransform = new Matrix();
         }
 
-        public void update()
+
+        /// <summary>
+        /// 두 키프레임의 본 데이터를 alpha[0,1]의 비율로 블렌딩하여 변환행렬 업데이트
+        /// </summary>
+        /// <param name="curData"></param>
+        /// <param name="nextData"></param>
+        /// <param name="alpha"></param>
+        public void update(BoneData curData, BoneData nextData, float alpha)
         {
+            if (nextData != null)
+            {   // 다음 데이터가 있다.. 두 데이터를 보간
+                // 보간
+                Vector3 position = (curData.Position + nextData.Position) * 0.5f;
+                Quaternion rotation = Quaternion.Slerp(curData.Rotation, nextData.Rotation, alpha);
+                Vector3 scale = (curData.Scale + nextData.Scale) * 0.5f;
+
+                // 행렬 설정
+                transform = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(position);
+            }
+            else
+            {   // 다음 데이터가 없다.. 현재 데이터 적용
+                // 행렬 설정
+                transform = Matrix.CreateScale(curData.Scale) * Matrix.CreateFromQuaternion(curData.Rotation) * Matrix.CreateTranslation(curData.Position);
+            }
         }
 
         public void draw()
