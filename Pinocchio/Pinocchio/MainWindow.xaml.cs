@@ -12,8 +12,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using Pinocchio.animation3D;
-
 namespace Pinocchio
 {
     /// <summary>
@@ -21,26 +19,36 @@ namespace Pinocchio
     /// </summary>
     public partial class MainWindow : Window
     {
+        Game1 game;
+
         public MainWindow()
         {
             InitializeComponent();
 
+            game = new Game1(XNA.Handle, gameScreen.Width, gameScreen.Height);
 
-            // test code
-            Animation3D animation;
-            try
+            this.Closing += new System.ComponentModel.CancelEventHandler(MainWindow_Closing);
+            this.Show();
+
+            game.Run();
+        }
+
+        void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (game != null)
             {
-                animation = XmlImporter.Instance.import("../../test.xml");
+                game.Exit();
             }
-            catch (System.Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                return;
-            }
+        }
 
-            //animation.print("../../output.xml", 0);
-            XmlExporter.Instance.export("../../output.xml", animation);
+        private void bt_ok_Click(object sender, RoutedEventArgs e)
+        {
+            game.deltaAngle += 0.01f;
+        }
 
+        private void bt_cancel_Click(object sender, RoutedEventArgs e)
+        {
+            game.deltaAngle = 0.0f;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Pinocchio.util;
 using System.Xml;
+using Microsoft.Xna.Framework;
 
 namespace Pinocchio.animation3D
 {
@@ -96,9 +97,9 @@ namespace Pinocchio.animation3D
             writer.WriteAttributeString("name", boneData.Name);
 
             // 자식 태그 쓰기
-            exportTag_vector3Type(writer, "position", boneData.GeoData.position);
-            exportTag_vector3Type(writer, "rotation", boneData.GeoData.rotation);
-            exportTag_vector3Type(writer, "scale", boneData.GeoData.scale);
+            exportTag_vector3Type(writer, "position", boneData.Position);
+            exportTag_quarternionType(writer, "rotation", boneData.Rotation);
+            exportTag_vector3Type(writer, "scale", boneData.Scale);
 
             // 닫기
             writer.WriteEndElement();
@@ -110,9 +111,24 @@ namespace Pinocchio.animation3D
             writer.WriteStartElement(tagName);
 
             // 애트리뷰트 쓰기
-            writer.WriteAttributeString("x", vector.x.ToString());
-            writer.WriteAttributeString("y", vector.y.ToString());
-            writer.WriteAttributeString("z", vector.z.ToString());
+            writer.WriteAttributeString("x", vector.X.ToString());
+            writer.WriteAttributeString("y", vector.Y.ToString());
+            writer.WriteAttributeString("z", vector.Z.ToString());
+
+            // 닫기
+            writer.WriteEndElement();
+        }
+
+        public void exportTag_quarternionType(XmlTextWriter writer, string tagName, Quaternion quaternion)
+        {
+            // 열기
+            writer.WriteStartElement(tagName);
+
+            // 애트리뷰트 쓰기
+            writer.WriteAttributeString("x", quaternion.X.ToString());
+            writer.WriteAttributeString("y", quaternion.Y.ToString());
+            writer.WriteAttributeString("z", quaternion.Z.ToString());
+            writer.WriteAttributeString("w", quaternion.W.ToString());
 
             // 닫기
             writer.WriteEndElement();

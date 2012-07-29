@@ -1,8 +1,23 @@
 ﻿<Window x:Class="Pinocchio.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Pinocchio" Height="350" Width="525">
+        xmlns:wfc="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        Title="MainWindow" Height="718" Width="841">
     <Grid>
-        
+        <Grid.RowDefinitions >
+            <RowDefinition Height="100*" />
+            <RowDefinition Height="761*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="600*" />
+            <ColumnDefinition Width="178*" />
+        </Grid.ColumnDefinitions>
+        <WindowsFormsHost Grid.Row="1" Height="500" HorizontalAlignment="Left" Name="gameScreen" VerticalAlignment="Top" Width="600" >
+            <wfc:UserControl x:Name="XNA" BackColor="Black" />
+        </WindowsFormsHost>
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <Button Name="bt_ok" Content="확인" Click="bt_ok_Click" />
+            <Button Name="bt_cancle" Content="취소" Click="bt_cancel_Click" />
+        </StackPanel>
     </Grid>
 </Window>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Pinocchio.util;
+using Microsoft.Xna.Framework;
 
 namespace Pinocchio.animation3D
 {
@@ -157,15 +158,15 @@ namespace Pinocchio.animation3D
                 if (boneData == null)
                     continue;
 
-                GeoData preGeoData = getPreGeoData(track, keyFrameIndex, boneIndex);
+                BoneData preBoneData = getPreBoneData(track, keyFrameIndex, boneIndex);
 
                 // 빠진것 복사해서 채우기
-                if (boneData.GeoData.position == null)
-                    boneData.GeoData.position = new Vector3(preGeoData.position);
-                if (boneData.GeoData.rotation == null)
-                    boneData.GeoData.rotation = new Vector3(preGeoData.rotation);
-                if (boneData.GeoData.scale == null)
-                    boneData.GeoData.scale = new Vector3(preGeoData.scale);
+                if (boneData.Position.X == float.NaN)
+                    boneData.Position = new Vector3(preBoneData.Position.X, preBoneData.Position.Y, preBoneData.Position.Z);
+                if (boneData.Rotation.X == float.NaN)
+                    boneData.Rotation = new Quaternion(preBoneData.Rotation.X, preBoneData.Rotation.Y, preBoneData.Rotation.Z, preBoneData.Rotation.W);
+                if (boneData.Scale.X == float.NaN)
+                    boneData.Scale = new Vector3(preBoneData.Scale.X, preBoneData.Scale.Y, preBoneData.Scale.Z);
             }
         }
 
@@ -176,17 +177,16 @@ namespace Pinocchio.animation3D
         /// <param name="keyFrameIndex"></param>
         /// <param name="boneIndex"></param>
         /// <returns></returns>
-        private GeoData getPreGeoData(Track track, int keyFrameIndex, int boneIndex)
+        private BoneData getPreBoneData(Track track, int keyFrameIndex, int boneIndex)
         {
-            GeoData geoData = new GeoData();
             for (int preKeyIndex = keyFrameIndex - 1; preKeyIndex >= 0; --preKeyIndex)
             {
                 BoneData boneData = track.getKeyFrame(preKeyIndex).getBoneData(boneIndex);
                 if (boneData != null)
-                    return boneData.GeoData;
+                    return boneData;
             }
 
-            return geoData;
+            return new BoneData();
         }
 
 
@@ -264,7 +264,7 @@ namespace Pinocchio.animation3D
             /// 자식 태그 로드
             XmlNodeList childList = boneTag.ChildNodes;
             int readChildCount = 0;                     // 읽혀진 자식 태그 개수
-            boneData.GeoData.nullify();
+            boneData.nullify();
             for (int i = 0; i < childList.Count; ++i, ++readChildCount)
             {
                 XmlNode node = childList[i];
@@ -273,20 +273,20 @@ namespace Pinocchio.animation3D
                 if (node.Name == "position")
                 {   // position 태그
                     Vector3 vector = new Vector3();
-                    importTag_vector3Type(ref vector, node);
-                    boneData.GeoData.position = vector;
+                    importTag_vector3Type(vector, node);
+                    boneData.Position = vector;
                 }
                 else if (node.Name == "rotation")
                 {   // rotation 태그
-                    Vector3 vector = new Vector3();
-                    importTag_vector3Type(ref vector, node);
-                    boneData.GeoData.rotation = vector;
+                    Quaternion quaternion = new Quaternion();
+                    importTag_quaternionType(quaternion, node);
+                    boneData.Rotation = quaternion;
                 }
                 else if (node.Name == "scale")
                 {   // scale 태그
                     Vector3 vector = new Vector3();
-                    importTag_vector3Type(ref vector, node);
-                    boneData.GeoData.scale = vector;
+                    importTag_vector3Type(vector, node);
+                    boneData.Scale = vector;
                 }
                 else
                 {   // 알수 없는 태그
@@ -295,6 +295,7 @@ namespace Pinocchio.animation3D
                 }
 
             }
+
             if (readChildCount == 0)
             {   // 올바른 자식 태그가 없다
                 throw new XMLLoaderException(XMLLoaderException.Type.Has_No_Child);
@@ -303,7 +304,7 @@ namespace Pinocchio.animation3D
             return true;
         }
 
-        private bool importTag_vector3Type(ref Vector3 vector, XmlNode tag)
+        private bool importTag_vector3Type(Vector3 vector, XmlNode tag)
         {
             /// attribute 로드
             XmlAttributeCollection attributes = tag.Attributes;
@@ -312,11 +313,37 @@ namespace Pinocchio.animation3D
                 XmlAttribute att = attributes[i];
 
                 if (att.Name == "x")
-                    vector.x = float.Parse(att.Value);
+                    vector.X = float.Parse(att.Value);
                 else if (att.Name == "y")
-                    vector.y = float.Parse(att.Value);
+                    vector.Y = float.Parse(att.Value);
                 else if (att.Name == "z")
-                    vector.z = float.Parse(att.Value);
+                    vector.Z = float.Parse(att.Value);
+                else
+                {   // 알수 없는 attribute
+                    throw new XMLLoaderException(XMLLoaderException.Type.Invalid_Attribute,
+                                                att.Name + @" - invalid attribute");
+                }
+            }
+
+            return true;
+        }
+
+        private bool importTag_quaternionType(Quaternion quaternion, XmlNode tag)
+        {
+            /// attribute 로드
+            XmlAttributeCollection attributes = tag.Attributes;
+            for (int i = 0; i < attributes.Count; ++i)
+            {
+                XmlAttribute att = attributes[i];
+
+                if (att.Name == "x")
+                    quaternion.X = float.Parse(att.Value);
+                else if (att.Name == "y")
+                    quaternion.Y = float.Parse(att.Value);
+                else if (att.Name == "z")
+                    quaternion.Z = float.Parse(att.Value);
+                else if (att.Name == "w")
+                    quaternion.W = float.Parse(att.Value);
                 else
                 {   // 알수 없는 attribute
                     throw new XMLLoaderException(XMLLoaderException.Type.Invalid_Attribute,
