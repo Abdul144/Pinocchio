@@ -345,6 +345,8 @@ namespace Pinocchio.animation3D
 
         private bool importTag_quaternionType(ref Quaternion quaternion, XmlNode tag)
         {
+            float x = 1, y = 0, z = 0, angle = 0;
+
             /// attribute 로드
             XmlAttributeCollection attributes = tag.Attributes;
             for (int i = 0; i < attributes.Count; ++i)
@@ -352,19 +354,29 @@ namespace Pinocchio.animation3D
                 XmlAttribute att = attributes[i];
 
                 if (att.Name == "x")
-                    quaternion.X = float.Parse(att.Value);
+                    x = float.Parse(att.Value);
                 else if (att.Name == "y")
-                    quaternion.Y = float.Parse(att.Value);
+                    y = float.Parse(att.Value);
                 else if (att.Name == "z")
-                    quaternion.Z = float.Parse(att.Value);
-                else if (att.Name == "w")
-                    quaternion.W = float.Parse(att.Value);
+                    z = float.Parse(att.Value);
+                else if (att.Name == "angle")
+                    angle = float.Parse(att.Value);
                 else
                 {   // 알수 없는 attribute
                     throw new XMLLoaderException(XMLLoaderException.Type.Invalid_Attribute,
                                                 att.Name + @" - invalid attribute");
                 }
             }
+
+            // 축을 정규화
+            Vector3 axis = new Vector3(x, y, z);
+            axis.Normalize();
+
+            // 각도를 라디안으로 변경
+            float theta = angle * (float)Math.PI / 360f;
+
+            // 쿼터니언 구성
+            quaternion = Quaternion.CreateFromAxisAngle(axis, theta);
 
             return true;
         }

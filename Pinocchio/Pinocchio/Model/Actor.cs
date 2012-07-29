@@ -102,11 +102,11 @@ namespace Pinocchio.Model
             curAnimation.update(boneList, deltaFrame);
         }
 
-        public void draw()
+        public void draw(Matrix view, Matrix projection, Color color)
         {
             // 각 본들을 그린다.
             foreach (Bone bone in boneList)
-                bone.draw();
+                bone.draw(view, projection, color);
         }
 
         public void setCurAnimation(Animation3D animation)

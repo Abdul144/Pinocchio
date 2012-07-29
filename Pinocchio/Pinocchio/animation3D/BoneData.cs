@@ -11,7 +11,7 @@ namespace Pinocchio.animation3D
     {
         string name;
         Vector3 position = new Vector3();
-        Quaternion rotation = new Quaternion();
+        Quaternion rotation = new Quaternion(0, 0, 0, 1);
         Vector3 scale = new Vector3(1, 1, 1);
 
         public void nullify()

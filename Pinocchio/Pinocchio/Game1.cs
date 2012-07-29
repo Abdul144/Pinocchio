@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using System.Windows.Forms;
 using Primitives3D;
 using Pinocchio.Model;
+using Pinocchio.animation3D;
 
 namespace Pinocchio
 {
@@ -83,7 +84,12 @@ namespace Pinocchio
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            //model = Content.Load<Model>("JustBall");
+            // TODO test
+            Animation3D animation = XmlImporter.Instance.import("../../test.xml");
+            XmlExporter.Instance.export("../../output.xml", animation);
+
+            model = new Actor(GraphicsDevice);
+
             cube = new CubePrimitive(GraphicsDevice, new Vector3(10, 20, 30), new Vector3(0.0f, 0.0f, 1.0f));
         }
 
@@ -108,6 +114,7 @@ namespace Pinocchio
                 this.Exit();
 
             // TODO: Add your update logic here
+            model.update(1);
 
             base.Update(gameTime);
         }
@@ -129,7 +136,10 @@ namespace Pinocchio
             Matrix world = Matrix.CreateRotationY(angle) * Matrix.CreateTranslation(Vector3.Zero);
             Matrix projection = cameraProjectionMatrix;
             Matrix view = cameraViewMatrix;
-            cube.Draw(world, view, projection, new Color(255, 0, 0, 255));
+            //cube.Draw(world, view, projection, new Color(255, 0, 0, 255));
+
+
+            model.draw(view, projection, new Color(255, 0, 0, 255));
 
             GraphicsDevice.Present(null, null, m_WindowHandle);
 

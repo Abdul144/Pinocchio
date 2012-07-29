@@ -121,14 +121,36 @@ namespace Pinocchio.animation3D
 
         public void exportTag_quarternionType(XmlTextWriter writer, string tagName, Quaternion quaternion)
         {
+            quaternion.Normalize();
+
             // 열기
             writer.WriteStartElement(tagName);
 
+            // 각도 얻기
+            float theta = (float)Math.Acos(quaternion.W) * 2f;
+            float angle = theta * 360f / (float)Math.PI;
+            while (angle >= 360f)
+                angle -= 360f;
+
+            // 축 얻기
+            Vector3 axis = new Vector3();
+            float sinHalfTheta = (float)Math.Sin(theta / 2);
+            if (sinHalfTheta != 0f)
+            {
+                axis.X = quaternion.X / sinHalfTheta;
+                axis.Y = quaternion.Y / sinHalfTheta;
+                axis.Z = quaternion.Z / sinHalfTheta;
+            }
+            else
+            {
+                axis = new Vector3(1f, 0f, 0f);
+            }
+
             // 애트리뷰트 쓰기
-            writer.WriteAttributeString("x", quaternion.X.ToString());
-            writer.WriteAttributeString("y", quaternion.Y.ToString());
-            writer.WriteAttributeString("z", quaternion.Z.ToString());
-            writer.WriteAttributeString("w", quaternion.W.ToString());
+            writer.WriteAttributeString("x", axis.X.ToString());
+            writer.WriteAttributeString("y", axis.Y.ToString());
+            writer.WriteAttributeString("z", axis.Z.ToString());
+            writer.WriteAttributeString("angle", angle.ToString());
 
             // 닫기
             writer.WriteEndElement();

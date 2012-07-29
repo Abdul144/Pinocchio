@@ -85,9 +85,9 @@ namespace Pinocchio.Model
             }
         }
 
-        public void draw()
+        public void draw(Matrix view, Matrix projection, Color color)
         {
-            cube.Draw(transform);
+            cube.Draw(transform, view, projection, color);
         }
 
 

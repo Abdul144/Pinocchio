@@ -26,11 +26,6 @@ namespace Pinocchio
         {
             InitializeComponent();
 
-            // TODO test
-            Animation3D animation = XmlImporter.Instance.import("../../test.xml");
-            XmlExporter.Instance.export("../../output.xml", animation);
-
-
             game = new Game1(XNA.Handle, gameScreen.Width, gameScreen.Height);
 
             this.Closing += new System.ComponentModel.CancelEventHandler(MainWindow_Closing);
