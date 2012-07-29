@@ -27,7 +27,7 @@ namespace Pinocchio
         double screenHeight;
 
         Actor model;
-        Vector3 cameraPosition = new Vector3(0, 100, 200);
+        Vector3 cameraPosition = new Vector3(0, 200, 400);
         Vector3 cameraLookAt = new Vector3(0, -1, -1);
 
         Matrix cameraProjectionMatrix;
@@ -89,6 +89,7 @@ namespace Pinocchio
             XmlExporter.Instance.export("../../output.xml", animation);
 
             model = new Actor(GraphicsDevice);
+            model.setCurAnimation(animation);
 
             cube = new CubePrimitive(GraphicsDevice, new Vector3(10, 20, 30), new Vector3(0.0f, 0.0f, 1.0f));
         }

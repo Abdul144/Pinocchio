@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <animation3D>
 	<track name="first track">
-		<keyFrame name="first keyFrame" duration="101">
+		<keyFrame name="first keyFrame" duration="100">
 			<bone name="first bone">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
@@ -18,37 +18,54 @@
 				<scale x="1" y="1" z="1" />
 			</bone>
 		</keyFrame>
-		<keyFrame name="second keyFrame" duration="212">
+		<keyFrame name="second keyFrame" duration="200">
 			<bone name="first bone">
-				<position x="0" y="0" z="0" />
-				<rotation x="0" y="0" z="1.000003" angle="19.99994" />
+				<position x="-10" y="0" z="0" />
+				<rotation x="0" y="0" z="0.9999994" angle="40.00003" />
 				<scale x="1" y="1" z="1" />
 			</bone>
 			<bone name="second bone">
-				<position x="0" y="0" z="0" />
-				<rotation x="0" y="0" z="1.000003" angle="19.99994" />
-				<scale x="1" y="1" z="1" />
+				<position x="0" y="10" z="0" />
+				<rotation x="0" y="0" z="0.9999994" angle="40.00003" />
+				<scale x="1.5" y="1.5" z="1.5" />
 			</bone>
 			<bone name="third bone">
-				<position x="0" y="0" z="0" />
-				<rotation x="0" y="0" z="1.000003" angle="19.99994" />
-				<scale x="1" y="1" z="1" />
+				<position x="0" y="20" z="20" />
+				<rotation x="0" y="0" z="0.9999994" angle="40.00003" />
+				<scale x="0.66" y="0.66" z="0.66" />
 			</bone>
 		</keyFrame>
-		<keyFrame name="third keyFrame" duration="323">
+		<keyFrame name="third keyFrame" duration="100">
+			<bone name="first bone">
+				<position x="10" y="0" z="0" />
+				<rotation x="0" y="0" z="-0.9999994" angle="40.00003" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="second bone">
+				<position x="0" y="10" z="0" />
+				<rotation x="0" y="0" z="-0.9999994" angle="40.00003" />
+				<scale x="1.5" y="1.5" z="1.5" />
+			</bone>
+			<bone name="third bone">
+				<position x="0" y="20" z="20" />
+				<rotation x="0" y="0" z="-0.9999994" angle="40.00003" />
+				<scale x="0.66" y="0.66" z="0.66" />
+			</bone>
+		</keyFrame>
+		<keyFrame name="first keyFrame" duration="1">
 			<bone name="first bone">
 				<position x="0" y="0" z="0" />
-				<rotation x="0" y="0" z="-1.000003" angle="19.99994" />
+				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
 			<bone name="second bone">
 				<position x="0" y="0" z="0" />
-				<rotation x="0" y="0" z="-1.000003" angle="19.99994" />
+				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
 			<bone name="third bone">
 				<position x="0" y="0" z="0" />
-				<rotation x="0" y="0" z="-1.000003" angle="19.99994" />
+				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
 		</keyFrame>

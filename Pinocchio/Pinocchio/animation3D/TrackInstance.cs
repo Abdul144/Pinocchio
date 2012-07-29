@@ -21,11 +21,23 @@ namespace Pinocchio.animation3D
 
         public void update(ArrayList boneList, int curFrame)
         {
-            // 현재 키프레임 얻어옴
-            KeyFrame keyFrame;
+            // 현재 키프레임 인덱스 갱신
+            refreshCurKeyFrameIndex(curFrame);
+
+            // 본 리스트 업데이트
+            updateBones(boneList, curFrame);
+        }
+
+
+        /// <summary>
+        /// 현재 키프레임 인덱스 갱신
+        /// </summary>
+        /// <param name="curFrame"></param>
+        public void refreshCurKeyFrameIndex(int curFrame)
+        {
             while (true)
             {
-                keyFrame = track.getKeyFrame(curKeyFrameIndex);
+                KeyFrame keyFrame = track.getKeyFrame(curKeyFrameIndex);
 
                 if (curFrame >= keyFrame.StartFrame + keyFrame.Duration)
                 {   // 넘어감
@@ -39,9 +51,6 @@ namespace Pinocchio.animation3D
 
                 break;
             }
-
-            // 본 리스트 업데이트
-            updateBones(keyFrame, boneList, curFrame);
         }
 
         public void reset()
@@ -50,22 +59,29 @@ namespace Pinocchio.animation3D
         }
 
         // 본 리스트 업데이트
-        public void updateBones(KeyFrame keyFrame, ArrayList boneList, int curFrame)
+        public void updateBones(ArrayList boneList, int curFrame)
         {
+            KeyFrame curKeyFrame = track.getKeyFrame(curKeyFrameIndex);
+            KeyFrame nextKeyFrame = null;
+            if (curKeyFrameIndex + 1 < track.KeyFrameCount)
+            {   // 다음 키프레임이 있으면
+                nextKeyFrame = track.getKeyFrame(curKeyFrameIndex + 1);
+            }
+
             // 본을 순행하며
-            for (int i = 0; i < keyFrame.BoneDataCount; ++i)
+            for (int i = 0; i < curKeyFrame.BoneDataCount; ++i)
             {
-                Bone bone = (Bone)boneList[i];                             // 본
-                BoneData curBoneData = (BoneData)keyFrame.getBoneData(i);  // 현재 키프레임 본 데이터
-                BoneData nextBoneData = null;                              // 다음 키프레임 본 데이터
-                if (i+1 < boneList.Count)
-                {   // 다음 키프레임이 있으면
-                    nextBoneData = (BoneData)keyFrame.getBoneData(i);
+                Bone bone = (Bone)boneList[i];                                  // 본
+                BoneData curBoneData = (BoneData)curKeyFrame.getBoneData(i);    // 현재 키프레임 본 데이터
+                BoneData nextBoneData = null;                                   // 다음 키프레임 본 데이터
+                if (nextKeyFrame != null)
+                {   // 다음 키프레임이 있다
+                    nextBoneData = nextKeyFrame.getBoneData(i);
                 }
 
                 // 본 업데이트
-                if (keyFrame.Duration > 1)
-                    bone.update(curBoneData, nextBoneData, (float)(curFrame - keyFrame.StartFrame) / (float)(keyFrame.Duration - 1));
+                if (curKeyFrame.Duration > 1)
+                    bone.update(curBoneData, nextBoneData, (float)(curFrame - curKeyFrame.StartFrame) / (float)(curKeyFrame.Duration - 1));
                 else
                     bone.update(curBoneData, nextBoneData, 1.0f);
             }

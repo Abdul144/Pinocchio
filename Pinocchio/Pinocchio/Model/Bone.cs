@@ -55,8 +55,8 @@ namespace Pinocchio.Model
             this.name = name;
             this.type = type;
             cube = new CubePrimitive(graphicsDevice, size, center);
-            transform = new Matrix();
-            localTransform = new Matrix();
+            transform = Matrix.CreateScale(new Vector3(1f)) * Matrix.CreateFromQuaternion(Quaternion.Identity) * Matrix.CreateTranslation(Vector3.Zero);
+            localTransform = transform;
         }
 
 
@@ -68,21 +68,28 @@ namespace Pinocchio.Model
         /// <param name="alpha"></param>
         public void update(BoneData curData, BoneData nextData, float alpha)
         {
+            Matrix objectTransform;
             if (nextData != null)
             {   // 다음 데이터가 있다.. 두 데이터를 보간
                 // 보간
-                Vector3 position = (curData.Position + nextData.Position) * 0.5f;
+                Vector3 position = curData.Position * (1f - alpha) + nextData.Position * alpha;
                 Quaternion rotation = Quaternion.Slerp(curData.Rotation, nextData.Rotation, alpha);
-                Vector3 scale = (curData.Scale + nextData.Scale) * 0.5f;
+                Vector3 scale = curData.Scale * (1f - alpha) + nextData.Scale * alpha;
 
                 // 행렬 설정
-                transform = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(position);
+                objectTransform = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(position);
             }
             else
             {   // 다음 데이터가 없다.. 현재 데이터 적용
                 // 행렬 설정
-                transform = Matrix.CreateScale(curData.Scale) * Matrix.CreateFromQuaternion(curData.Rotation) * Matrix.CreateTranslation(curData.Position);
+                objectTransform = Matrix.CreateScale(curData.Scale) * Matrix.CreateFromQuaternion(curData.Rotation) * Matrix.CreateTranslation(curData.Position);
             }
+
+            // 변환행렬 설정
+            if (parent != null)
+                transform = objectTransform * localTransform * parent.Transform;
+            else
+                transform = objectTransform * localTransform;
         }
 
         public void draw(Matrix view, Matrix projection, Color color)

@@ -9,16 +9,20 @@ namespace Pinocchio.animation3D
     class Animation3DInstance
     {
         Animation3D animation = null;
-        ArrayList tracks = new ArrayList();
+        ArrayList tracks;
 
         int curFrame = 0;
 
 
         public Animation3DInstance(Animation3D animation)
         {
+            if (animation == null)
+                return;
+
             this.animation = animation;
 
             // 트랙개수 만큼 인스턴스 생성
+            tracks = new ArrayList();
             for (int i = 0; i < animation.TrackCount; ++i)
             {
                 // 트랙 인스턴스 생성
