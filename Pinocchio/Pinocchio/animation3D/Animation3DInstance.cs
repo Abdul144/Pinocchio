@@ -28,6 +28,9 @@ namespace Pinocchio.animation3D
 
         public void update(ArrayList boneList, int deltaFrame)
         {
+            if (animation == null)
+                return;
+
             curFrame += deltaFrame;
             
             // 트랙 업데이트

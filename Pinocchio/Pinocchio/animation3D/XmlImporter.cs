@@ -101,9 +101,9 @@ namespace Pinocchio.animation3D
 
                 // startFrame을 설정하고, totalCount 얻기
                 int totalCount = 0;
-                for (int i = 0; i < track.KeyFrameCount; ++i)
+                for (int keyFrameIndex = 0; keyFrameIndex < track.KeyFrameCount; ++keyFrameIndex)
                 {
-                    KeyFrame keyFrame = track.getKeyFrame(i);
+                    KeyFrame keyFrame = track.getKeyFrame(keyFrameIndex);
                     keyFrame.StartFrame = totalCount;
                     totalCount += keyFrame.Duration;
                 }

@@ -53,7 +53,7 @@ namespace Pinocchio.animation3D
         public void updateBones(KeyFrame keyFrame, ArrayList boneList, int curFrame)
         {
             // 본을 순행하며
-            for (int i = 0; i < boneList.Count; ++i)
+            for (int i = 0; i < keyFrame.BoneDataCount; ++i)
             {
                 Bone bone = (Bone)boneList[i];                             // 본
                 BoneData curBoneData = (BoneData)keyFrame.getBoneData(i);  // 현재 키프레임 본 데이터

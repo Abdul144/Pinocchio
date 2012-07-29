@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Pinocchio.animation3D;
 
 namespace Pinocchio.Model
 {
@@ -15,6 +16,7 @@ namespace Pinocchio.Model
         Vector3 position = new Vector3();
         Vector3 rotation = new Vector3();
         Vector3 scale = new Vector3(1.0f);
+        Animation3DInstance curAnimation = new Animation3DInstance(null);
 
         public Actor(GraphicsDevice graphicsDevice)
         {
@@ -31,11 +33,11 @@ namespace Pinocchio.Model
             boneMap = new Dictionary<Bone.BoneType,Bone>();
 
             /// 본 추가
-            addBone(graphicsDevice, Bone.BoneType.None, new Vector3(), new Quaternion(), new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.None, new Vector3(0f,0f,0f), new Quaternion(), new Vector3(1.0f),
                 "Hip_Center", Bone.BoneType.Hip_Center, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(), new Quaternion(), new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(0f, 10f, 0f), new Quaternion(), new Vector3(1.0f),
                 "Spine", Bone.BoneType.Spine, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Spine, new Vector3(), new Quaternion(), new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Spine, new Vector3(0f, 40f, 0f), new Quaternion(), new Vector3(1.0f),
                 "Shoulder_Center", Bone.BoneType.Shoulder_Center, new Vector3(baseSize), Vector3.Zero);
 
             addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(), new Quaternion(), new Vector3(1.0f),
@@ -94,12 +96,10 @@ namespace Pinocchio.Model
             boneMap[bone.Type] = bone;
         }
 
-        public void update(float deltaTime)
+        public void update(int deltaFrame)
         {
-            // 각 본들을 업데이트
-            foreach (Bone bone in boneList)
-            {
-            }
+            // 애니메이션 업데이트
+            curAnimation.update(boneList, deltaFrame);
         }
 
         public void draw()
@@ -107,6 +107,11 @@ namespace Pinocchio.Model
             // 각 본들을 그린다.
             foreach (Bone bone in boneList)
                 bone.draw();
+        }
+
+        public void setCurAnimation(Animation3D animation)
+        {
+            curAnimation = new Animation3DInstance(animation);
         }
 
 
