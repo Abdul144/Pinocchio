@@ -25,7 +25,7 @@ namespace Pinocchio
         IntPtr m_WindowHandle;
         double screenWidth;
         double screenHeight;
-
+            
         Actor model;
         Vector3 cameraPosition = new Vector3(0, 200, 400);
         Vector3 cameraLookAt = new Vector3(0, -1, -1);

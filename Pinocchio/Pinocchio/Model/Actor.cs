@@ -35,48 +35,48 @@ namespace Pinocchio.Model
             /// 본 추가
             addBone(graphicsDevice, Bone.BoneType.None, new Vector3(0f,0f,0f), Quaternion.Identity, new Vector3(1.0f),
                 "Hip_Center", Bone.BoneType.Hip_Center, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(0f, 10f, 0f), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(0f, 20f, 0f), Quaternion.Identity, new Vector3(1.0f),
                 "Spine", Bone.BoneType.Spine, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Spine, new Vector3(0f, 40f, 0f), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Spine, new Vector3(0f, 50f, 0f), Quaternion.Identity, new Vector3(1.0f),
                 "Shoulder_Center", Bone.BoneType.Shoulder_Center, new Vector3(baseSize), Vector3.Zero);
 
-            addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(0, 25, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Head", Bone.BoneType.Head, new Vector3(baseSize), Vector3.Zero);
 
-            addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(-30, -10, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Shoulder_Right", Bone.BoneType.Shoulder_Right, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Shoulder_Right, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Shoulder_Right, new Vector3(-50, 0, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Elbow_Right", Bone.BoneType.Elbow_Right, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Elbow_Right, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Elbow_Right, new Vector3(-40, 0, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Wrist_Right", Bone.BoneType.Wrist_Right, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Wrist_Right, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Wrist_Right, new Vector3(-20, 0, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Hand_Right", Bone.BoneType.Hand_Right, new Vector3(baseSize), Vector3.Zero);
 
-            addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(30, -10, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Shoulder_Left", Bone.BoneType.Shoulder_Left, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Shoulder_Left, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Shoulder_Left, new Vector3(50, 0, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Elbow_Left", Bone.BoneType.Elbow_Left, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Elbow_Left, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Elbow_Left, new Vector3(40 , 0, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Wrist_Left", Bone.BoneType.Wrist_Left, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Wrist_Left, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Wrist_Left, new Vector3(20, 0, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Hand_Left", Bone.BoneType.Hand_Left, new Vector3(baseSize), Vector3.Zero);
 
-            addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(-20, -10, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Hip_Right", Bone.BoneType.Hip_Right, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Hip_Right, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Hip_Right, new Vector3(0, -90, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Knee_Right", Bone.BoneType.Knee_Right, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Knee_Right, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Knee_Right, new Vector3(0, -70, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Ankle_Right", Bone.BoneType.Ankle_Right, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Ankle_Right, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Ankle_Right, new Vector3(0, -20, -30), Quaternion.Identity, new Vector3(1.0f),
                 "Foot_Right", Bone.BoneType.Foot_Right, new Vector3(baseSize), Vector3.Zero);
 
-            addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(20, -10, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Hip_Left", Bone.BoneType.Hip_Left, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Hip_Left, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Hip_Left, new Vector3(0, -90, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Knee_Left", Bone.BoneType.Knee_Left, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Knee_Left, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Knee_Left, new Vector3(0, -70, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Ankle_Left", Bone.BoneType.Ankle_Left, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Ankle_Left, new Vector3(), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Ankle_Left, new Vector3(0, -20, -30), Quaternion.Identity, new Vector3(1.0f),
                 "Foot_Left", Bone.BoneType.Foot_Left, new Vector3(baseSize), Vector3.Zero);
 
         }
@@ -107,13 +107,17 @@ namespace Pinocchio.Model
 
         public void draw(Matrix view, Matrix projection, Color color)
         {
+            //*
             // 각 본들을 그린다.
-            //foreach (Bone bone in boneList)
-            //    bone.draw(view, projection, color);
+            foreach (Bone bone in boneList)
+                bone.draw(view, projection, color);
+            //*/
+            /*
             for (int i = 0; i < 3; ++i)
             {
                 ((Bone)boneList[i]).draw(view, projection, color);
             }
+            //*/
         }
 
         public void setCurAnimation(Animation3D animation)

@@ -42,9 +42,19 @@ namespace Pinocchio.animation3D
             boneDatas[index] = null;
         }
 
+        public void initializeBoneData(int index)
+        {
+            boneDatas[index] = new BoneData();
+        }
+
         public BoneData getBoneData(int index)
         {
             return (BoneData)boneDatas[index];
+        }
+
+        public void setBoneData(int index, BoneData data)
+        {
+            boneDatas[index] = data;
         }
 
         

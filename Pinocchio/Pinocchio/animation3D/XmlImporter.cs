@@ -171,7 +171,17 @@ namespace Pinocchio.animation3D
             {
                 BoneData boneData = keyFrame.getBoneData(boneIndex);
                 if (boneData == null)
+                {
+                    if (keyFrameIndex > 0)
+                    {   // 이전 본데이터를 넣는다.
+                        keyFrame.setBoneData(boneIndex, track.getKeyFrame(keyFrameIndex - 1).getBoneData(boneIndex));
+                    }
+                    else
+                    {   // 첫번째 키 프레임의 본이 null인 경우 기본 값으로 채워넣는다.
+                        keyFrame.initializeBoneData(boneIndex);
+                    }
                     continue;
+                }
 
                 BoneData preBoneData = getPreBoneData(track, keyFrameIndex, boneIndex);
 
@@ -183,6 +193,7 @@ namespace Pinocchio.animation3D
                 if (float.IsNaN(boneData.Scale.X))
                     boneData.Scale = preBoneData.Scale;
             }
+
         }
 
         /// <summary>
