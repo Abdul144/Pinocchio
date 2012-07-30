@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Primitives3D;
 using Pinocchio.Model;
 using Pinocchio.animation3D;
+using Pinocchio.Camera;
 
 namespace Pinocchio
 {
@@ -25,13 +26,16 @@ namespace Pinocchio
         IntPtr m_WindowHandle;
         double screenWidth;
         double screenHeight;
+
+        int remainderTime = 0;      // deltaFrame계산에 적용되지 못하고 남은 시간 (ms)
+        const int fps = 60;
             
         Actor model;
-        Vector3 cameraPosition = new Vector3(0, 200, 400);
-        Vector3 cameraLookAt = new Vector3(0, -1, -1);
+        ViewerCamera camera = new ViewerCamera();
+        float cameraSpeed = 200f;
+        float cameraAngularSpeed = (float)Math.PI * 0.5f;
 
-        Matrix cameraProjectionMatrix;
-        Matrix cameraViewMatrix;
+        Matrix projectionMatrix;
 
         CubePrimitive cube;
 
@@ -54,9 +58,7 @@ namespace Pinocchio
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            cameraViewMatrix = Matrix.CreateLookAt(cameraPosition, cameraLookAt, Vector3.Up);
-
-            cameraProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
+            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.ToRadians(45.0f),
                 //graphics.GraphicsDevice.Viewport.AspectRatio,
                 (float)(screenWidth / screenHeight),
@@ -115,9 +117,19 @@ namespace Pinocchio
                 this.Exit();
 
             // TODO: Add your update logic here
-            model.update(1);
+            // 동기화
+            int deltaTime = gameTime.ElapsedGameTime.Milliseconds;
+            int deltaFrame = (remainderTime + deltaTime) * fps / 1000;
+            remainderTime = (remainderTime + deltaTime) - deltaFrame * 1000 / fps;
 
-            base.Update(gameTime);
+            inputProcess((float)deltaTime / 1000f);
+
+            if (deltaFrame > 0)
+            {
+                model.update(1);
+
+                base.Update(gameTime);
+            }
         }
 
         float angle = 0.0f;
@@ -135,9 +147,10 @@ namespace Pinocchio
             angle += deltaAngle;
 
             Matrix world = Matrix.CreateRotationY(angle) * Matrix.CreateTranslation(Vector3.Zero);
-            Matrix projection = cameraProjectionMatrix;
-            Matrix view = cameraViewMatrix;
+            Matrix projection = projectionMatrix;
+            Matrix view = camera.ViewMatrix;//cameraViewMatrix;
             //cube.Draw(world, view, projection, new Color(255, 0, 0, 255));
+            model.Rotation = new Vector3(0, angle, 0);
 
 
             model.draw(view, projection, new Color(255, 0, 0, 255));
@@ -146,5 +159,48 @@ namespace Pinocchio
 
             base.Draw(gameTime);
         }
+
+        private void inputProcess(float deltaTime)
+        {
+            keyboardProcess(deltaTime);
+            mouseProcess(deltaTime);
+        }
+
+        private void keyboardProcess(float deltaTime)
+        {
+            // 카메라 각도
+            if (Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.W))
+            {
+                camera.ViewerAngle = new Vector3(camera.ViewerAngle.X + cameraAngularSpeed*deltaTime, camera.ViewerAngle.Y, camera.ViewerAngle.Z);
+            }
+            if (Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.S))
+            {
+                camera.ViewerAngle = new Vector3(camera.ViewerAngle.X - cameraAngularSpeed * deltaTime, camera.ViewerAngle.Y, camera.ViewerAngle.Z);
+            }
+            if (Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.A))
+            {
+                camera.ViewerAngle = new Vector3(camera.ViewerAngle.X, camera.ViewerAngle.Y - cameraAngularSpeed * deltaTime, camera.ViewerAngle.Z);
+            }
+            if (Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.D))
+            {
+                camera.ViewerAngle = new Vector3(camera.ViewerAngle.X, camera.ViewerAngle.Y + cameraAngularSpeed * deltaTime, camera.ViewerAngle.Z);
+            }
+
+            // 카메라 거리
+            if (Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.R))
+            {
+                camera.Distance -= cameraSpeed * deltaTime;
+            }
+            if (Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.F))
+            {
+                camera.Distance += cameraSpeed * deltaTime;
+            }
+        }
+
+        private void mouseProcess(float deltaTime)
+        {
+        }
+
+
     }
 }

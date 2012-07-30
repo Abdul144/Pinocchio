@@ -92,9 +92,9 @@ namespace Pinocchio.Model
                 transform = objectTransform * localTransform;
         }
 
-        public void draw(Matrix view, Matrix projection, Color color)
+        public void draw(Matrix model, Matrix view, Matrix projection, Color color)
         {
-            cube.Draw(transform, view, projection, color);
+            cube.Draw(transform * model, view, projection, color);
         }
 
 

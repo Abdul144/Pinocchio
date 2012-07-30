@@ -73,6 +73,7 @@
     <Compile Include="animation3D\TrackInstance.cs" />
     <Compile Include="animation3D\XmlExporter.cs" />
     <Compile Include="animation3D\XmlImporter.cs" />
+    <Compile Include="Camera\ViewerCamera.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="model\Actor.cs" />
     <Compile Include="model\Bone.cs" />

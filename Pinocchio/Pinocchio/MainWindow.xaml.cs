@@ -51,5 +51,10 @@ namespace Pinocchio
         {
             game.deltaAngle = 0.0f;
         }
+
+        private void gameScreen_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("asdf");
+        }
     }
 }

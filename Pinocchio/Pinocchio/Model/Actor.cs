@@ -67,7 +67,7 @@ namespace Pinocchio.Model
                 "Knee_Right", Bone.BoneType.Knee_Right, new Vector3(baseSize), Vector3.Zero);
             addBone(graphicsDevice, Bone.BoneType.Knee_Right, new Vector3(0, -70, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Ankle_Right", Bone.BoneType.Ankle_Right, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Ankle_Right, new Vector3(0, -20, -30), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Ankle_Right, new Vector3(0, -10, -20), Quaternion.Identity, new Vector3(1.0f),
                 "Foot_Right", Bone.BoneType.Foot_Right, new Vector3(baseSize), Vector3.Zero);
 
             addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(20, -10, 0), Quaternion.Identity, new Vector3(1.0f),
@@ -76,7 +76,7 @@ namespace Pinocchio.Model
                 "Knee_Left", Bone.BoneType.Knee_Left, new Vector3(baseSize), Vector3.Zero);
             addBone(graphicsDevice, Bone.BoneType.Knee_Left, new Vector3(0, -70, 0), Quaternion.Identity, new Vector3(1.0f),
                 "Ankle_Left", Bone.BoneType.Ankle_Left, new Vector3(baseSize), Vector3.Zero);
-            addBone(graphicsDevice, Bone.BoneType.Ankle_Left, new Vector3(0, -20, -30), Quaternion.Identity, new Vector3(1.0f),
+            addBone(graphicsDevice, Bone.BoneType.Ankle_Left, new Vector3(0, -10, -20), Quaternion.Identity, new Vector3(1.0f),
                 "Foot_Left", Bone.BoneType.Foot_Left, new Vector3(baseSize), Vector3.Zero);
 
         }
@@ -107,10 +107,12 @@ namespace Pinocchio.Model
 
         public void draw(Matrix view, Matrix projection, Color color)
         {
+            Matrix transform = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z) * Matrix.CreateTranslation(position);
+
             //*
             // 각 본들을 그린다.
             foreach (Bone bone in boneList)
-                bone.draw(view, projection, color);
+                bone.draw(transform, view, projection, color);
             //*/
             /*
             for (int i = 0; i < 3; ++i)

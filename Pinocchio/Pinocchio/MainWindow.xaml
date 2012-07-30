@@ -12,7 +12,7 @@
             <ColumnDefinition Width="600*" />
             <ColumnDefinition Width="178*" />
         </Grid.ColumnDefinitions>
-        <WindowsFormsHost Grid.Row="1" Height="500" HorizontalAlignment="Left" Name="gameScreen" VerticalAlignment="Top" Width="600" >
+        <WindowsFormsHost Grid.Row="1" Height="500" HorizontalAlignment="Left" Name="gameScreen" VerticalAlignment="Top" Width="600" MouseLeftButtonDown="gameScreen_MouseLeftButtonDown">
             <wfc:UserControl x:Name="XNA" BackColor="Black" />
         </WindowsFormsHost>
         <StackPanel Grid.Row="1" Grid.Column="1">

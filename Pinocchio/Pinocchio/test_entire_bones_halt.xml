@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation3D>
+	<track name="first track">
+		<keyFrame name="first keyFrame" duration="100">
+            <bone name="Hip_Center" />
+            <bone name="Spine" />
+            <bone name="Shoulder_Center" />
+            <bone name="Head" />
+            <bone name="Shoulder_Right" />
+            <bone name="Elbow_Right" />
+            <bone name="Wrist_Right" />
+            <bone name="Hand_Right" />
+            <bone name="Shoulder_Left" />
+            <bone name="Elbow_Left" />
+            <bone name="Wrist_Left" />
+            <bone name="Hand_Left" />
+            <bone name="Hip_Right" />
+            <bone name="Knee_Right" />
+            <bone name="Ankle_Right" />
+            <bone name="Foot_Right" />
+            <bone name="Hip_Left" />
+            <bone name="Knee_Left" />
+            <bone name="Ankle_Left" />
+            <bone name="Foot_Left" />
+		</keyFrame>
+		<keyFrame name="second keyFrame" duration="100">
+            <bone name="Hip_Center" />
+            <bone name="Spine" />
+            <bone name="Shoulder_Center" />
+            <bone name="Head" />
+            <bone name="Shoulder_Right" />
+            <bone name="Elbow_Right" />
+            <bone name="Wrist_Right" />
+            <bone name="Hand_Right" />
+            <bone name="Shoulder_Left" />
+            <bone name="Elbow_Left" />
+            <bone name="Wrist_Left" />
+            <bone name="Hand_Left" />
+            <bone name="Hip_Right" />
+            <bone name="Knee_Right" />
+            <bone name="Ankle_Right" />
+            <bone name="Foot_Right" />
+            <bone name="Hip_Left" />
+            <bone name="Knee_Left" />
+            <bone name="Ankle_Left" />
+            <bone name="Foot_Left" />
+		</keyFrame>
+	</track>
+</animation3D>
