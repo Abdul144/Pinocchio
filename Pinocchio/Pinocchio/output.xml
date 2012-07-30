@@ -103,103 +103,307 @@
 				<scale x="1" y="1" z="1" />
 			</bone>
 		</keyFrame>
-		<keyFrame name="second keyFrame" duration="100">
-			<bone name="">
+		<keyFrame name="second keyFrame" duration="200">
+			<bone name="Hip_Center">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Spine">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Shoulder_Center">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Head">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Shoulder_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Elbow_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Wrist_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Hand_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Shoulder_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Elbow_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Wrist_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Hand_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Hip_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Knee_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Ankle_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Foot_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Hip_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Knee_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Ankle_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Foot_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+		</keyFrame>
+		<keyFrame name="third keyFrame" duration="100">
+			<bone name="Hip_Center">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Spine">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Shoulder_Center">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Head">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Shoulder_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Elbow_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Wrist_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Hand_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Shoulder_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Elbow_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Wrist_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Hand_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Hip_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Knee_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Ankle_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Foot_Right">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Hip_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Knee_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Ankle_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+			<bone name="Foot_Left">
+				<position x="0" y="0" z="0" />
+				<rotation x="0" y="0" z="-1.000006" angle="9.99994" />
+				<scale x="1" y="1" z="1" />
+			</bone>
+		</keyFrame>
+		<keyFrame name="fourth keyFrame" duration="1">
+			<bone name="Hip_Center">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Spine">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Shoulder_Center">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Head">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Shoulder_Right">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Elbow_Right">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Wrist_Right">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Hand_Right">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Shoulder_Left">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Elbow_Left">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Wrist_Left">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Hand_Left">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Hip_Right">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Knee_Right">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Ankle_Right">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Foot_Right">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Hip_Left">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Knee_Left">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Ankle_Left">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />
 			</bone>
-			<bone name="">
+			<bone name="Foot_Left">
 				<position x="0" y="0" z="0" />
 				<rotation x="1" y="0" z="0" angle="0" />
 				<scale x="1" y="1" z="1" />

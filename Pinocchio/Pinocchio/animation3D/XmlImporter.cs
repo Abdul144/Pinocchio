@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using Pinocchio.util;
 using Microsoft.Xna.Framework;
+using System.Windows;
 
 namespace Pinocchio.animation3D
 {
@@ -45,7 +46,14 @@ namespace Pinocchio.animation3D
 
             // 파싱
             doc.PreserveWhitespace = false;
-            doc.Load(path);
+            try
+            {
+                doc.Load(path);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
 
             // 로드
             animation = importTag_animation3D(doc);
