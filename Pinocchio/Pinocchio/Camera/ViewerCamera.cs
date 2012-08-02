@@ -13,7 +13,7 @@ namespace Pinocchio.Camera
         float distance = 500f;                  // 중앙 위치로부터 떨어진 거리
 
         Matrix viewMatrix;              // 뷰 행렬
-        private bool invalid = true;   // 변경되면 true
+        private bool invalid = true;    // 변경되면 true
 
 
         public void invalidate()
