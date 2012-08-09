@@ -80,6 +80,7 @@
     <Compile Include="model\Bone.cs" />
     <Compile Include="Primitives\CubePrimitive.cs" />
     <Compile Include="Primitives\GeometricPrimitive.cs" />
+    <Compile Include="Primitives\PlanePrimitive.cs" />
     <Compile Include="Primitives\VertexPositionNormal.cs" />
     <Compile Include="util\Singleton.cs" />
     <Page Include="MainWindow.xaml">
