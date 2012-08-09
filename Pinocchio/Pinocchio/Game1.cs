@@ -15,6 +15,7 @@ using Pinocchio.animation3D;
 using Pinocchio.Camera;
 using Microsoft.Kinect;
 using System.Collections;
+using System.IO;
 
 namespace Pinocchio
 {
@@ -109,6 +110,16 @@ namespace Pinocchio
 
                     // 리스너 등록
                     sensor.DepthFrameReady += onDepthFrameReady;
+
+                    // 키넥트 시작
+                    try
+                    {
+                        sensor.Start();
+                    }
+                    catch (IOException e)
+                    {
+                        sensor = null;
+                    }
                 }
             }
 
