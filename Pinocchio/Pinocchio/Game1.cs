@@ -13,6 +13,8 @@ using Primitives3D;
 using Pinocchio.Model;
 using Pinocchio.animation3D;
 using Pinocchio.Camera;
+using Microsoft.Kinect;
+using System.Collections;
 
 namespace Pinocchio
 {
@@ -26,6 +28,10 @@ namespace Pinocchio
         IntPtr m_WindowHandle;
         double screenWidth;
         double screenHeight;
+
+        private ArrayList kinects;
+        private KinectSensor sensor;    // TODO 현재는 하나의 키넥트만 활용
+        private short[] depthPixels;
 
         int remainderTime = 0;      // deltaFrame계산에 적용되지 못하고 남은 시간 (ms)
         const int fps = 60;
@@ -69,6 +75,44 @@ namespace Pinocchio
 
             Form gameWindowForm = (Form)Form.FromHandle(this.Window.Handle);
             gameWindowForm.Shown += new EventHandler(gameWindowForm_Shown);
+
+            // 키넥트 초기화
+            initializeKinects();
+        }
+
+        private void initializeKinects()
+        {
+            // 초기화
+            kinects.Clear();
+
+            // 연결된 키넥트를 추가한다.
+            foreach (var potentialSensor in KinectSensor.KinectSensors)
+            {
+                if (potentialSensor.Status == KinectStatus.Connected)
+                {
+                    kinects.Add(potentialSensor);
+                    break;
+                }
+            }
+
+            // TODO 일단 하나의 키넥트만. 추후 여러개 사용하게 함.
+            sensor = (KinectSensor)kinects[kinects.Count - 1];
+            if (sensor != null)
+            {
+                // depth frame을 받을 수 있게 함
+                sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+
+                // depth pixel 정보를 넣을 공간을 할당
+                depthPixels = new short[sensor.DepthStream.FramePixelDataLength];
+
+                // 리스너 등록
+                sensor.DepthFrameReady += onDepthFrameReady;
+            }
+
+        }
+
+        private void onDepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
+        {
         }
 
         void gameWindowForm_Shown(object sender, EventArgs e)
