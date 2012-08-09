@@ -11,23 +11,9 @@ namespace Primitives3D
     {
         
         /// <summary>
-        /// Constructs a new cube primitive, using default settings.
-        /// </summary>
-        public PlanePrimitive(GraphicsDevice graphicsDevice)
-            : this(graphicsDevice, new Vector3(1.0f), Vector3.Zero)
-        {
-        }
-
-
-        public PlanePrimitive(GraphicsDevice graphicsDevice, Vector3 size)
-            : this(graphicsDevice, size, Vector3.Zero)
-        {
-        }
-
-        /// <summary>
         /// Constructs a new cube primitive, with the specified size.
         /// </summary>
-        public PlanePrimitive(GraphicsDevice graphicsDevice, Vector3 size, Vector3 center)
+        public PlanePrimitive(GraphicsDevice graphicsDevice)
         {
             // A cube has six faces, each one pointing in a different direction.
             Vector3 normal = new Vector3(0, 0, 1);
