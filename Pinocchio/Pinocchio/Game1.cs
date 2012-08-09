@@ -83,7 +83,7 @@ namespace Pinocchio
         private void initializeKinects()
         {
             // 초기화
-            kinects.Clear();
+            kinects = new ArrayList();
 
             // 연결된 키넥트를 추가한다.
             foreach (var potentialSensor in KinectSensor.KinectSensors)
@@ -96,17 +96,20 @@ namespace Pinocchio
             }
 
             // TODO 일단 하나의 키넥트만. 추후 여러개 사용하게 함.
-            sensor = (KinectSensor)kinects[kinects.Count - 1];
-            if (sensor != null)
+            if (kinects.Count > 0)
             {
-                // depth frame을 받을 수 있게 함
-                sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+                sensor = (KinectSensor)kinects[kinects.Count - 1];
+                if (sensor != null)
+                {
+                    // depth frame을 받을 수 있게 함
+                    sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
 
-                // depth pixel 정보를 넣을 공간을 할당
-                depthPixels = new short[sensor.DepthStream.FramePixelDataLength];
+                    // depth pixel 정보를 넣을 공간을 할당
+                    depthPixels = new short[sensor.DepthStream.FramePixelDataLength];
 
-                // 리스너 등록
-                sensor.DepthFrameReady += onDepthFrameReady;
+                    // 리스너 등록
+                    sensor.DepthFrameReady += onDepthFrameReady;
+                }
             }
 
         }
