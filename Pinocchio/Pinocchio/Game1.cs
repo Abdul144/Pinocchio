@@ -127,6 +127,13 @@ namespace Pinocchio
 
         private void onDepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
         {
+            using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
+            {
+                // 버퍼에 복사
+                depthFrame.CopyPixelDataTo(depthPixels);
+
+
+            }
         }
 
         void gameWindowForm_Shown(object sender, EventArgs e)
