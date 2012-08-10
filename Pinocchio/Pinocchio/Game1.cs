@@ -33,6 +33,7 @@ namespace Pinocchio
         private ArrayList kinects;
         private KinectSensor sensor;    // TODO 현재는 하나의 키넥트만 활용
         private short[] depthPixels;
+        private short[] copyOfDepthPixels;
 
         int remainderTime = 0;      // deltaFrame계산에 적용되지 못하고 남은 시간 (ms)
         const int fps = 60;
@@ -45,6 +46,11 @@ namespace Pinocchio
         Matrix projectionMatrix;
 
         CubePrimitive cube;
+
+        // TODO test
+        PlanePrimitive plane;
+        bool senseState = false;
+
 
         public Game1(IntPtr handle, double screenWidth, double screenHeight)
         {
@@ -96,6 +102,7 @@ namespace Pinocchio
                 }
             }
 
+            // copyOfDepthPixels = new short[1070];
             // TODO 일단 하나의 키넥트만. 추후 여러개 사용하게 함.
             if (kinects.Count > 0)
             {
@@ -107,6 +114,7 @@ namespace Pinocchio
 
                     // depth pixel 정보를 넣을 공간을 할당
                     depthPixels = new short[sensor.DepthStream.FramePixelDataLength];
+                    copyOfDepthPixels = new short[depthPixels.Length];
 
                     // 리스너 등록
                     sensor.DepthFrameReady += onDepthFrameReady;
@@ -127,13 +135,18 @@ namespace Pinocchio
 
         private void onDepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
         {
+            senseState = true;
+
             using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
             {
-                // 버퍼에 복사
-                depthFrame.CopyPixelDataTo(depthPixels);
-
-
+                if (depthFrame != null)
+                {
+                    // 버퍼에 복사
+                    depthFrame.CopyPixelDataTo(depthPixels);
+                }
             }
+
+            senseState = false;
         }
 
         void gameWindowForm_Shown(object sender, EventArgs e)
@@ -158,7 +171,11 @@ namespace Pinocchio
             model = new Actor(GraphicsDevice);
             model.setCurAnimation(animation);
 
-            cube = new CubePrimitive(GraphicsDevice, new Vector3(10, 20, 30), new Vector3(0.0f, 0.0f, 1.0f));
+            cube = new CubePrimitive(GraphicsDevice, new Vector3(1, 1, 1), new Vector3(0.0f, 0.0f, 0.0f));
+            plane = new PlanePrimitive(GraphicsDevice);
+
+            camera.Center = new Vector3(0, 0, 0);
+            camera.Distance = 500;
         }
 
         /// <summary>
@@ -191,7 +208,7 @@ namespace Pinocchio
 
             if (deltaFrame > 0)
             {
-                model.update(1);
+                //model.update(1);
 
                 base.Update(gameTime);
             }
@@ -218,7 +235,45 @@ namespace Pinocchio
             model.Rotation = new Vector3(0, angle, 0);
 
 
-            model.draw(view, projection, new Color(255, 0, 0, 255));
+            //model.draw(view, projection, new Color(255, 0, 0, 255));
+
+            // depth 정보 그리기
+            if (senseState == false)
+            {
+                for (int i = 0; i < copyOfDepthPixels.Length; ++i)
+                {
+                    copyOfDepthPixels[i] = depthPixels[i];
+                }
+            }
+            //for (int i = 0; i < copyOfDepthPixels.Length; ++i)
+            for (int i = 0; i < copyOfDepthPixels.Length; ++i)
+            {
+                //*
+                plane.Draw(
+                        Matrix.CreateTranslation(
+                            i % sensor.DepthStream.FrameWidth - sensor.DepthStream.FrameWidth/2,
+                            i / sensor.DepthStream.FrameWidth - sensor.DepthStream.FrameHeight/2,
+                            (copyOfDepthPixels[i] >> DepthImageFrame.PlayerIndexBitmaskWidth + 1) & 255
+                        ),
+                        view,
+                        projection,
+                        Color.Green
+                    );
+                //*/
+                /*
+                plane.Draw(
+                        Matrix.CreateTranslation(
+                            i % 50 - 25,
+                            i / 50 - 25,
+                            (copyOfDepthPixels[i] >> DepthImageFrame.PlayerIndexBitmaskWidth + 1) & 255
+                        ),
+                        view,
+                        projection,
+                        Color.Green
+                    );
+                //*/
+            }
+
 
             GraphicsDevice.Present(null, null, m_WindowHandle);
 

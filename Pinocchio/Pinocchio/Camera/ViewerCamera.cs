@@ -29,7 +29,7 @@ namespace Pinocchio.Camera
             {
                 if (invalid)
                 {   // 다시 계산해야 함
-                    Vector3 position = new Vector3(0, 0, -1);
+                    Vector3 position = new Vector3(0, 0, 1);
                     Vector3 upVector = new Vector3(0, 1, 0);
 
                     Matrix rotationMatrix = Matrix.CreateFromYawPitchRoll(viewerAngle.Y, viewerAngle.X, viewerAngle.Z);

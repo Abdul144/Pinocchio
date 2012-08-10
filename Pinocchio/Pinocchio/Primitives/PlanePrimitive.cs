@@ -26,12 +26,21 @@ namespace Primitives3D
             };
             
             // Six indices (two triangles) per face.
+            /*
             AddIndex(0);
             AddIndex(1);
             AddIndex(2);
             AddIndex(0);
             AddIndex(2);
             AddIndex(3);
+            */
+
+            AddIndex(0);
+            AddIndex(2);
+            AddIndex(1);
+            AddIndex(0);
+            AddIndex(3);
+            AddIndex(2);
 
             // Create each face in turn.
             foreach (Vector3 vertex in vertices)
