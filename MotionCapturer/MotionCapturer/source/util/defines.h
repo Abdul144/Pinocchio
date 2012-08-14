@@ -34,6 +34,11 @@ typedef unsigned char byte;
 		GETTER_REF(varType, funcName, varName)	SETTER_CONST_REF(varType, funcName, varName)
 
 
+// °¢µµ.. degree¿Í radian
+#define deg2rad(x)		((x)*0.0174532f)
+#define rad2deg(x)		((x)*57.295791f)
+
+
 #endif
 
 

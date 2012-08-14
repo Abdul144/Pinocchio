@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "main.h"
 
+#include <GL/glew.h>
+#include <GL/wglew.h>
+
 #include "source/kinect/KinectManager.h"
 #include "source/Engine.h"
 
@@ -16,9 +19,11 @@ TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
-BOOL				InitInstance(HINSTANCE, int);
+BOOL				InitInstance(HINSTANCE, int, HWND&);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+bool EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
+void DisableOpenGL(HWND, HDC, HGLRC);
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -30,6 +35,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
  	// TODO: Place code here.
 	HACCEL hAccelTable;
+    HWND hwnd;
+    HDC hDC;
+    HGLRC hRC;
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -37,7 +45,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	MyRegisterClass(hInstance);
 
 	// Perform application initialization:
-	if (!InitInstance (hInstance, nCmdShow))
+	if (!InitInstance (hInstance, nCmdShow, hwnd))
 	{
 		return FALSE;
 	}
@@ -45,8 +53,19 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MOTIONCAPTURER));
 
 
-	// 초기화
+	/// 초기화
+	// Open GL 초기화
+    if (EnableOpenGL(hwnd, &hDC, &hRC) == false)
+    	goto END;
+
+	// 엔진 초기화
+
+	// 리사이즈
+	ENGINE.resize(480, 800);
+
+	// 키넥트 연결
 	int connectedCount = KINECT_MANAGER.connectKinects(10);
+
 
     // Main message loop
     MSG msg = {0};
@@ -60,8 +79,20 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         else
         {
 			ENGINE.run();
+
+			// 스왑
+            SwapBuffers(hDC);
         }
     }
+	
+
+	/// 종료
+END:
+	// shutdown OpenGL
+	DisableOpenGL(hwnd, hDC, hRC);
+
+    /* destroy the window explicitly */
+    DestroyWindow(hwnd);
 
 	return (int) msg.wParam;
 }
@@ -112,10 +143,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        In this function, we save the instance handle in a global variable and
 //        create and display the main program window.
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND &hWnd)
 {
-   HWND hWnd;
-
    hInst = hInstance; // Store instance handle in our global variable
 
    hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
@@ -174,6 +203,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		ENGINE.setRunningState(false);
 		break;
+
+	case WM_SIZE:
+		ENGINE.resize(LOWORD(lParam), HIWORD(lParam));
+		break;
+		
+    case WM_KEYDOWN:
+    {
+        int nKey = static_cast<int>(wParam);
+
+		if (nKey == 'A')
+        {
+			//ENGINE.getCamera().getPosition().setX(ENGINE.getCamera().getPosition().getX() -10.f);
+			ENGINE.getCamera().getRotation().setY(ENGINE.getCamera().getRotation().getY() -1.f);
+        }
+        if (nKey == 'D')
+        {
+			//ENGINE.getCamera().getPosition().setX(ENGINE.getCamera().getPosition().getX() +10.f);
+			ENGINE.getCamera().getRotation().setY(ENGINE.getCamera().getRotation().getY() +1.f);
+        }
+
+        break;
+    }
+
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
@@ -198,4 +250,75 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return (INT_PTR)FALSE;
+}
+
+
+bool EnableOpenGL(HWND hwnd, HDC* hDC, HGLRC* hRC)
+{
+    PIXELFORMATDESCRIPTOR pfd;
+
+    int iFormat;
+
+    /* get the device context (DC) */
+    *hDC = GetDC(hwnd);
+
+    /* set the pixel format for the DC */
+    ZeroMemory(&pfd, sizeof(PIXELFORMATDESCRIPTOR));
+
+    pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+    pfd.nVersion = 1;
+    pfd.dwFlags = PFD_DRAW_TO_WINDOW |
+                  PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+    pfd.iPixelType = PFD_TYPE_RGBA;
+    pfd.cColorBits = 32;
+    pfd.cDepthBits = 16;
+    pfd.cStencilBits = 8;
+    pfd.iLayerType = PFD_MAIN_PLANE;
+
+    iFormat = ChoosePixelFormat(*hDC, &pfd);
+
+    SetPixelFormat(*hDC, iFormat, &pfd);
+
+    /* create and enable the render context (RC) */
+    *hRC = wglCreateContext(*hDC);
+
+    wglMakeCurrent(*hDC, *hRC);
+
+
+    /// glew
+    GLenum err = glewInit();
+    if (err != GLEW_OK)
+    	return false;
+
+    if (!WGLEW_ARB_pixel_format)
+    {	// 옛날 그래픽 카드라서 지원안하는 경우
+    	// 그냥 예전 버전의 RC 사용
+    	return true;
+    }
+
+    const int attribList[] =
+    {
+    	WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+    	WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+    	WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+    	WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+    	WGL_COLOR_BITS_ARB, 32,
+    	WGL_DEPTH_BITS_ARB, 16,
+    	WGL_STENCIL_BITS_ARB, 8,
+    	0		// end
+    };
+    uint numFormats;
+    wglChoosePixelFormatARB(*hDC, attribList, null, 1, &iFormat, &numFormats);
+    SetPixelFormat(*hDC, iFormat, null);
+
+	wglMakeCurrent(*hDC, *hRC);
+
+    return true;
+}
+
+void DisableOpenGL (HWND hwnd, HDC hDC, HGLRC hRC)
+{
+    wglMakeCurrent(NULL, NULL);
+    wglDeleteContext(hRC);
+    ReleaseDC(hwnd, hDC);
 }

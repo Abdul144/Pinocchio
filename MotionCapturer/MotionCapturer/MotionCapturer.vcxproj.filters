@@ -22,6 +22,9 @@
     <Filter Include="source\util">
       <UniqueIdentifier>{3e957fd4-df1b-4b90-9b48-2b71ae08ab6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\camera">
+      <UniqueIdentifier>{1e0892ef-f922-4ca9-9568-26bf32db518d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -60,6 +63,12 @@
     <ClInclude Include="source\Engine.h">
       <Filter>source</Filter>
     </ClInclude>
+    <ClInclude Include="source\util\Vector3.h">
+      <Filter>source\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\camera\Camera.h">
+      <Filter>source\camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -76,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="source\Engine.cpp">
       <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\camera\Camera.cpp">
+      <Filter>source\camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

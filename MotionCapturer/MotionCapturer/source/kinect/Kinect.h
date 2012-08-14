@@ -22,6 +22,7 @@ private:
 	
 	ushort *depthBuffer;		///< 깊이 버퍼.. free
 	byte *colorBuffer;			///< 컬러 버퍼.. free
+	byte *mappedColorBuffer;	///< .. free
 	long *colorCoordinates;		///< .. free
 
 
@@ -39,6 +40,9 @@ public:
 	/// 컬러 버퍼 갱신
 	int refreshColorBuffer();
 
+	/// 매핑
+	int mapColorToDepth();
+
 
 	// 접근
 public:
@@ -48,5 +52,6 @@ public:
 	GETTER_SETTER(long, ColorHeight, colorHeight)
 	GETTER(ushort*, DepthBuffer, depthBuffer)
 	GETTER(byte*, ColorBuffer, colorBuffer)
+	GETTER(byte*, MappedColorBuffer, mappedColorBuffer)
 };
 

@@ -55,9 +55,11 @@ Kinect::Kinect(INuiSensor *sensor) : sensor(sensor)
 	depthBuffer = new ushort[depthWidth * depthHeight];
 	memset(depthBuffer, 0, sizeof(ushort) * depthWidth * depthHeight);
 	colorBuffer = new byte[colorWidth * colorHeight * 4];
-	memset(depthBuffer, 0, sizeof(byte) * colorWidth * colorHeight * 4);
+	memset(colorBuffer, 0, sizeof(byte) * colorWidth * colorHeight * 4);
+	mappedColorBuffer = new byte[colorWidth * colorHeight * 4];
+	memset(mappedColorBuffer, 0, sizeof(byte) * colorWidth * colorHeight * 4);
 	colorCoordinates = new long[depthWidth * depthHeight * 2];
-	memset(depthBuffer, 0, sizeof(long) * depthWidth * depthHeight * 2);
+	memset(colorCoordinates, 0, sizeof(long) * depthWidth * depthHeight * 2);
 }
 
 
@@ -67,6 +69,7 @@ Kinect::~Kinect()
 
 	DELETE_ARRAY(depthBuffer)
 	DELETE_ARRAY(colorBuffer)
+	DELETE_ARRAY(mappedColorBuffer)
 	DELETE_ARRAY(colorCoordinates)
 }
 
@@ -137,6 +140,50 @@ int Kinect::refreshColorBuffer()
 	hr = sensor->NuiImageStreamReleaseFrame(colorStreamHandle, &imageFrame);
 	if (FAILED(hr))
 		return hr;
+
+	return 0;
+}
+
+/// ╦егн
+int Kinect::mapColorToDepth()
+{
+	HRESULT hr;
+	sensor->NuiImageGetColorPixelCoordinateFrameFromDepthPixelFrameAtResolution(
+		NUI_IMAGE_RESOLUTION_640x480,
+		NUI_IMAGE_RESOLUTION_640x480,
+		depthWidth * depthHeight,
+		depthBuffer,
+		depthWidth * depthHeight * 2,
+		colorCoordinates
+		);
+	
+    long colorToDepthDivisor = colorWidth/depthWidth;
+
+	for (long y=0; y<colorHeight; ++y)
+	{
+		uint *dest = (uint*)mappedColorBuffer + y * colorWidth;
+		for (long x=0; x<colorWidth; ++x)
+		{
+			int depthIndex = x/colorToDepthDivisor + y/colorToDepthDivisor * depthWidth;
+
+			long colorInDepthX = colorCoordinates[depthIndex * 2];
+			long colorInDepthY = colorCoordinates[depthIndex * 2  + 1];
+
+			if (colorInDepthX >= 0 && colorInDepthX < colorWidth && colorInDepthY >= 0 && colorInDepthY < colorHeight)
+			{
+				long colorIndex = colorInDepthX + colorInDepthY * colorWidth;
+
+				uint *src = (uint*)colorBuffer + colorIndex;
+				*dest = *src;
+			}
+			else
+			{
+				*dest = 0;
+			}
+
+			dest++;
+		}
+	}
 
 	return 0;
 }
