@@ -57,11 +57,14 @@ float Engine::syncronize()
 
 void Engine::update(float deltaTime)
 {
-	// depth 버퍼 갱신
-	refreshDepthBuffer();
-
-	// color 버퍼 갱신
-	refreshColorBuffer();
+	// 키넥트에서 센서값 받아와서 갱신하기
+	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
+	{
+		bool depthIsRefreshed = KINECT_MANAGER.getKinect(i)->refreshDepthBuffer() >= 0;
+		bool colorIsRefreshed = KINECT_MANAGER.getKinect(i)->refreshColorBuffer() >= 0;
+		if (depthIsRefreshed && colorIsRefreshed)
+			KINECT_MANAGER.getKinect(i)->mapColorToDepth();
+	}
 }
 
 void Engine::draw()
@@ -134,25 +137,6 @@ void Engine::draw()
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glPopMatrix();
-}
-
-/// depth 버퍼 갱신
-void Engine::refreshDepthBuffer()
-{
-	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
-	{
-		KINECT_MANAGER.getKinect(i)->refreshDepthBuffer();
-	}
-}
-
-/// color 버퍼 갱신
-void Engine::refreshColorBuffer()
-{
-	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
-	{
-		KINECT_MANAGER.getKinect(i)->refreshColorBuffer();
-		KINECT_MANAGER.getKinect(i)->mapColorToDepth();
-	}
 }
 
 void myGLPerspectivef(float fovy, float aspect, float nearValue, float farValue)

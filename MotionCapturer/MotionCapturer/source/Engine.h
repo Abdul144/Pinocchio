@@ -34,12 +34,6 @@ private:
 
 	void draw();
 
-	/// depth 버퍼 갱신
-	void refreshDepthBuffer();
-
-	/// color 버퍼 갱신
-	void refreshColorBuffer();
-
 public:
 	/// 메인 루프
 	void run();
