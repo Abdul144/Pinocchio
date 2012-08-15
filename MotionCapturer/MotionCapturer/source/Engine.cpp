@@ -71,23 +71,24 @@ void Engine::draw()
 	glClearStencil(0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	
-
+	
+    static const float xyScale = tanf(deg2rad(58.5f) * 0.5f) / (640.f * 0.5f);
 
 	glPushMatrix();
 
 	camera.applyViewMatrix();
 
-	glTranslatef(0, 0, -1000);
+	glTranslatef(0, 0, -2);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glColor4f(0.f, 1.f, 0.f, 1.f);
 
 	static float r = 0.f;
-	glRotatef(camera.getRotation().getY(), 0, 1, 0);
-	//r += 2.f;
+	glRotatef(camera.getRotation().getY() + r, 0, 1, 0);
+	r += 2.f;
 	
-	glTranslatef(-640/2, -480/2, 100);
+	glTranslatef(0, 0, 2);
 
 	glPointSize(1.f);
 	
@@ -113,7 +114,10 @@ void Engine::draw()
 				
 				glColor4ub(p[2], p[1], p[0], 255);
 				if (depth >= 300 && depth <= 4000)
-					glVertex3f(x, 480-y, -(float)depth / 10.f);
+				{
+					float realDepth = depth / 1000.f;
+					glVertex3f((x - 320) * realDepth * xyScale, (480 - y - 240) * realDepth * xyScale, -realDepth);
+				}
 
 				/*
 				if (depth <= 4000)
