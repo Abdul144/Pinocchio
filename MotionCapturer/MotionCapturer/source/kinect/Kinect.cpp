@@ -2,7 +2,10 @@
 #include "stdafx.h"
 #include "Kinect.h"
 
+#include <math.h>
 #include <NuiApi.h>
+
+#include "../util/Vector3.h"
 
 
 Kinect::Kinect(INuiSensor *sensor) : sensor(sensor)
@@ -60,6 +63,7 @@ Kinect::Kinect(INuiSensor *sensor) : sensor(sensor)
 	memset(mappedColorBuffer, 0, sizeof(byte) * colorWidth * colorHeight * 4);
 	colorCoordinates = new long[depthWidth * depthHeight * 2];
 	memset(colorCoordinates, 0, sizeof(long) * depthWidth * depthHeight * 2);
+	pointCloud = new Vector3[depthWidth * depthHeight];
 }
 
 
@@ -71,6 +75,7 @@ Kinect::~Kinect()
 	DELETE_ARRAY(colorBuffer)
 	DELETE_ARRAY(mappedColorBuffer)
 	DELETE_ARRAY(colorCoordinates)
+	DELETE_ARRAY(pointCloud)
 }
 
 /// 키넥트 센서 해제
@@ -148,6 +153,8 @@ int Kinect::refreshColorBuffer()
 int Kinect::mapColorToDepth()
 {
 	HRESULT hr;
+    static const float xyScale = tanf(deg2rad(58.5f) * 0.5f) / (640.f * 0.5f);
+
 	sensor->NuiImageGetColorPixelCoordinateFrameFromDepthPixelFrameAtResolution(
 		NUI_IMAGE_RESOLUTION_640x480,
 		NUI_IMAGE_RESOLUTION_640x480,
@@ -179,6 +186,17 @@ int Kinect::mapColorToDepth()
 			else
 			{
 				*dest = 0;
+			}
+
+			// 포인트 클라우드 구성
+			ushort depth = depthBuffer[depthIndex] >> 3;
+			float realDepth = (float)depth / 1000.f;
+			if (depth >= 300 && depth <= 4000)
+			{
+				pointCloud[depthIndex].set((x - 320) * realDepth * xyScale, (480 - y - 240) * realDepth * xyScale, -realDepth);
+			}else
+			{
+				pointCloud[depthIndex].set((x - 320) * realDepth * xyScale, (480 - y - 240) * realDepth * xyScale, 10000);
 			}
 
 			dest++;

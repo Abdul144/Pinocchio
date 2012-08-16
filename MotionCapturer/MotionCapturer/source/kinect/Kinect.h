@@ -4,6 +4,7 @@
 
 
 class INuiSensor;
+class Vector3;
 
 class Kinect
 {
@@ -24,6 +25,7 @@ private:
 	byte *colorBuffer;			///< 컬러 버퍼.. free
 	byte *mappedColorBuffer;	///< .. free
 	long *colorCoordinates;		///< .. free
+	Vector3 *pointCloud;		///< 포인트 클라우드.. free
 
 
 	// 멤버 함수
@@ -53,5 +55,6 @@ public:
 	GETTER(ushort*, DepthBuffer, depthBuffer)
 	GETTER(byte*, ColorBuffer, colorBuffer)
 	GETTER(byte*, MappedColorBuffer, mappedColorBuffer)
+	GETTER(Vector3*, PointCloud, pointCloud)
 };
 

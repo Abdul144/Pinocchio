@@ -7,6 +7,7 @@
 #include <GL/glew.h>
 #include <GL/wglew.h>
 
+#include "source/kinect/Kinect.h"
 #include "source/kinect/KinectManager.h"
 #include "source/Engine.h"
 
@@ -225,6 +226,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         break;
     }
+
+	case WM_LBUTTONDOWN:
+		{
+			bool depthIsRefreshed = KINECT_MANAGER.getKinect(0)->refreshDepthBuffer() >= 0;
+			bool colorIsRefreshed = KINECT_MANAGER.getKinect(0)->refreshColorBuffer() >= 0;
+			if (depthIsRefreshed && colorIsRefreshed)
+				KINECT_MANAGER.getKinect(0)->mapColorToDepth();
+		}
+		break;
 
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

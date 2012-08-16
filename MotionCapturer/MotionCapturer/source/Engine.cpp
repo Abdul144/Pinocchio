@@ -57,6 +57,7 @@ float Engine::syncronize()
 
 void Engine::update(float deltaTime)
 {
+	/*
 	// 키넥트에서 센서값 받아와서 갱신하기
 	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
 	{
@@ -65,6 +66,7 @@ void Engine::update(float deltaTime)
 		if (depthIsRefreshed && colorIsRefreshed)
 			KINECT_MANAGER.getKinect(i)->mapColorToDepth();
 	}
+	//*/
 }
 
 void Engine::draw()
@@ -101,33 +103,23 @@ void Engine::draw()
 	//glBegin(GL_LINE_STRIP);
 	glBegin(GL_POINTS);
 	{
-		/*
-		for (int i=0; i<=360; ++i)
-		{
-			glVertex3f(radius * cosf(i), radius * sinf(i), -11.f);
-		}
-		*/
-
 		for (int y=0; y<480; ++y)
 		{
 			for (int x=0; x<640; ++x)
 			{
 				byte *p = &kinect->getMappedColorBuffer()[(x + y*kinect->getColorWidth())*4];
-				ushort depth = kinect->getDepthBuffer()[(x + y*kinect->getColorWidth())] >> 3;
 				
 				glColor4ub(p[2], p[1], p[0], 255);
+				/*
+				ushort depth = kinect->getDepthBuffer()[(x + y*kinect->getColorWidth())] >> 3;
 				if (depth >= 300 && depth <= 4000)
 				{
 					float realDepth = depth / 1000.f;
 					glVertex3f((x - 320) * realDepth * xyScale, (480 - y - 240) * realDepth * xyScale, -realDepth);
 				}
-
-				/*
-				if (depth <= 4000)
-				{
-					glVertex3f(x, 480-y, (float)(1.0 / ((double)(depth) * -0.0030711016 + 3.3309495161)));
-				}
-				*/
+				//*/
+				const Vector3 &vec = kinect->getPointCloud()[x + y*kinect->getColorWidth()];
+				glVertex3f(vec.getX(), vec.getY(), vec.getZ());
 			}
 		}
 	}
