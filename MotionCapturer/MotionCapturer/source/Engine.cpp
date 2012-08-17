@@ -83,7 +83,7 @@ void Engine::draw()
 
 	camera.applyViewMatrix();
 
-	glTranslatef(0, 0, -2);
+	glTranslatef(0, 0, -2 - 1.f);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -91,7 +91,7 @@ void Engine::draw()
 
 	static float r = 0.f;
 	glRotatef(camera.getRotation().getY() + r, 0, 1, 0);
-	r += 2.f;
+	//r += 2.f;
 	
 	glTranslatef(0, 0, 2);
 
@@ -100,7 +100,6 @@ void Engine::draw()
 	float radius = 1.f;
 	Kinect *kinect = KINECT_MANAGER.getKinect(0);
 
-	//glBegin(GL_LINE_STRIP);
 	glBegin(GL_POINTS);
 	{
 		for (int y=0; y<480; ++y)
@@ -110,14 +109,6 @@ void Engine::draw()
 				byte *p = &kinect->getMappedColorBuffer()[(x + y*kinect->getColorWidth())*4];
 				
 				glColor4ub(p[2], p[1], p[0], 255);
-				/*
-				ushort depth = kinect->getDepthBuffer()[(x + y*kinect->getColorWidth())] >> 3;
-				if (depth >= 300 && depth <= 4000)
-				{
-					float realDepth = depth / 1000.f;
-					glVertex3f((x - 320) * realDepth * xyScale, (480 - y - 240) * realDepth * xyScale, -realDepth);
-				}
-				//*/
 				const Vector3 &vec = kinect->getPointCloud()[x + y*kinect->getColorWidth()];
 				glVertex3f(vec.getX(), vec.getY(), vec.getZ());
 			}

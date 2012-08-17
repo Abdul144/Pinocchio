@@ -18,7 +18,7 @@ MarkerRecognizer::~MarkerRecognizer()
 }
 
 /// 마커의 위치를 얻는다.
-void MarkerRecognizer::getMarkerTransform(int width, int height, byte *buffer)
+void MarkerRecognizer::recognizeMarker(int width, int height, byte *buffer)
 {
 	const int bytePerPixel = 4;
 	CvSize imageSize;
@@ -30,8 +30,8 @@ void MarkerRecognizer::getMarkerTransform(int width, int height, byte *buffer)
 	// 이미지 생성
 	imageSize.width = width;
 	imageSize.height = height;
-	image = cvCreateImage(imageSize, IPL_DEPTH_32F, 1);
-	memcpy(image->imageData, buffer, sizeof(byte) * width * height * bytePerPixel);
+	image = cvCreateImageHeader(cvSize(640, 480), IPL_DEPTH_8U, 4);
+	cvSetData(image, buffer, image->widthStep);
 
 	// gray 변환
 	IplImage *grayImage = cvCreateImage(cvGetSize(image), IPL_DEPTH_8U, 1);
@@ -58,6 +58,12 @@ void MarkerRecognizer::getMarkerTransform(int width, int height, byte *buffer)
 	// 마커 찾기
 	findMarker(approxContours, storage, 0);
 	getMarkerCode(grayImage, image);
+	
+	// release
+	cvReleaseMemStorage(&storage);
+	cvReleaseImageHeader(&image);
+	cvReleaseImage(&grayImage);
+	cvReleaseImage(&binaryImage);
 }
 
 void getInverseMatrix(float src[][2], float dst[][2])

@@ -6,9 +6,11 @@
 #include "../util/Singleton.h"
 #include "CamCalib.h"
 
+#define MARKER_RECOGNIZER		MarkerRecognizer::getInstance()
+
 using namespace std;
 
-class MarkerRecognizer : Singleton<MarkerRecognizer>
+class MarkerRecognizer : public Singleton<MarkerRecognizer>
 {
 	USE_SINGLETON(MarkerRecognizer)
 public:	
@@ -53,7 +55,19 @@ private:
 
 public:
 	/// 마커의 위치를 얻는다.
-	void getMarkerTransform(int width, int height, byte *buffer);
+	void recognizeMarker(int width, int height, byte *buffer);
 
+	inline uint getMarkerCount()
+	{
+		return markers.size();
+	}
 
+	inline sMarkerInfo&  getMarker(int index)
+	{
+		return markers[index];
+	}
+
+	
+	// 접근
+public:
 };

@@ -76,11 +76,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="Distortion.xml" />
+    <None Include="Intrinsics.xml" />
     <None Include="MotionCapturer.ico" />
     <None Include="ReadMe.txt" />
     <None Include="small.ico" />
-    <None Include="source\marker\Distortion.xml" />
-    <None Include="source\marker\Intrinsics.xml" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />

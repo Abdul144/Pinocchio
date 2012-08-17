@@ -37,12 +37,8 @@
     <None Include="MotionCapturer.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="source\marker\Distortion.xml">
-      <Filter>source\marker</Filter>
-    </None>
-    <None Include="source\marker\Intrinsics.xml">
-      <Filter>source\marker</Filter>
-    </None>
+    <None Include="Distortion.xml" />
+    <None Include="Intrinsics.xml" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

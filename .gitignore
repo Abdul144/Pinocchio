@@ -2,6 +2,8 @@
 bin
 obj
 Debug
+MotionCapturer/MotionCapturer.opensdf
+MotionCapturer/MotionCapturer/test.bmp
 
 # mstest test results
 TestResults

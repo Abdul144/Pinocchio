@@ -9,6 +9,7 @@
 
 #include "source/kinect/Kinect.h"
 #include "source/kinect/KinectManager.h"
+#include "source/marker/MarkerRecognizer.h"
 #include "source/util/BmpExporter.h"
 #include "source/Engine.h"
 
@@ -224,6 +225,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//ENGINE.getCamera().getPosition().setX(ENGINE.getCamera().getPosition().getX() +10.f);
 			ENGINE.getCamera().getRotation().setY(ENGINE.getCamera().getRotation().getY() +1.f);
         }
+		
+		if (nKey == 'W')
+        {
+			ENGINE.getCamera().getPosition().setZ(ENGINE.getCamera().getPosition().getZ() -0.05f);
+        }
+        if (nKey == 'S')
+        {
+			ENGINE.getCamera().getPosition().setZ(ENGINE.getCamera().getPosition().getZ() +0.05f);
+        }
 
         break;
     }
@@ -239,13 +249,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_RBUTTONDOWN:
 		{
-
-
-			/*
-			// bmp로 저장
 			Kinect *kinect = KINECT_MANAGER.getKinect(0);
+
+			// bmp로 저장
 			BMP_EXPORTER.export("test.bmp", kinect->getColorWidth(), kinect->getColorHeight(), kinect->getColorBuffer());
-			*/
+
+			// 마커 인식
+			MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getColorBuffer());
+
+			int count = MARKER_RECOGNIZER.getMarkerCount();
+			if (count > 0)
+			{
+				MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
+				
+				ENGINE.getCamera().getPosition().set(-marker.translation[0], -marker.translation[1], -marker.translation[2]);
+				ENGINE.getCamera().getRotation().set(marker.rotation[0], -marker.rotation[1], marker.rotation[2]);
+			}
+
 		}
 		break;
 
