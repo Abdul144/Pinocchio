@@ -25,6 +25,9 @@
     <Filter Include="source\camera">
       <UniqueIdentifier>{1e0892ef-f922-4ca9-9568-26bf32db518d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\marker">
+      <UniqueIdentifier>{c6ad0efb-daba-44d4-a787-8a89259d2a04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -33,6 +36,12 @@
     </None>
     <None Include="MotionCapturer.ico">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="source\marker\Distortion.xml">
+      <Filter>source\marker</Filter>
+    </None>
+    <None Include="source\marker\Intrinsics.xml">
+      <Filter>source\marker</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +78,15 @@
     <ClInclude Include="source\camera\Camera.h">
       <Filter>source\camera</Filter>
     </ClInclude>
+    <ClInclude Include="source\marker\CamCalib.h">
+      <Filter>source\marker</Filter>
+    </ClInclude>
+    <ClInclude Include="source\marker\MarkerRecognizer.h">
+      <Filter>source\marker</Filter>
+    </ClInclude>
+    <ClInclude Include="source\util\BmpExporter.h">
+      <Filter>source\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -88,6 +106,15 @@
     </ClCompile>
     <ClCompile Include="source\camera\Camera.cpp">
       <Filter>source\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="source\marker\CamCalib.cpp">
+      <Filter>source\marker</Filter>
+    </ClCompile>
+    <ClCompile Include="source\marker\MarkerRecognizer.cpp">
+      <Filter>source\marker</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util\BmpExporter .cpp">
+      <Filter>source\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

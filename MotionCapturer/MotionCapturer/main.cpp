@@ -9,6 +9,7 @@
 
 #include "source/kinect/Kinect.h"
 #include "source/kinect/KinectManager.h"
+#include "source/util/BmpExporter.h"
 #include "source/Engine.h"
 
 #define MAX_LOADSTRING 100
@@ -233,6 +234,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			bool colorIsRefreshed = KINECT_MANAGER.getKinect(0)->refreshColorBuffer() >= 0;
 			if (depthIsRefreshed && colorIsRefreshed)
 				KINECT_MANAGER.getKinect(0)->mapColorToDepth();
+		}
+		break;
+
+	case WM_RBUTTONDOWN:
+		{
+
+
+			/*
+			// bmp·Î ÀúÀå
+			Kinect *kinect = KINECT_MANAGER.getKinect(0);
+			BMP_EXPORTER.export("test.bmp", kinect->getColorWidth(), kinect->getColorHeight(), kinect->getColorBuffer());
+			*/
 		}
 		break;
 
