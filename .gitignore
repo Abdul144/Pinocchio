@@ -2,8 +2,11 @@
 bin
 obj
 Debug
-MotionCapturer/MotionCapturer.opensdf
 MotionCapturer/MotionCapturer/test.bmp
+MotionCapturer/MotionCapturer.opensdf
+MotionCapturer/MotionCapturer.sdf
+MotionCapturer/MotionCapturer.suo
+MotionCapturer/ipch
 
 # mstest test results
 TestResults
