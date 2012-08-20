@@ -240,32 +240,50 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 		{
-			bool depthIsRefreshed = KINECT_MANAGER.getKinect(0)->refreshDepthBuffer() >= 0;
-			bool colorIsRefreshed = KINECT_MANAGER.getKinect(0)->refreshColorBuffer() >= 0;
-			if (depthIsRefreshed && colorIsRefreshed)
-				KINECT_MANAGER.getKinect(0)->mapColorToDepth();
+			/// 키넥트 센서로부터 정보를 받아와서 가공
+			for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
+			{
+				Kinect *kinect = KINECT_MANAGER.getKinect(i);
+
+				// depth와 color 버퍼를 갱신하고 매핑한다.
+				bool depthIsRefreshed = kinect->refreshDepthBuffer() >= 0;
+				bool colorIsRefreshed = kinect->refreshColorBuffer() >= 0;
+				if (depthIsRefreshed && colorIsRefreshed)
+					kinect->mapColorToDepth();
+				
+
+				/// 마커 인식
+				MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getColorBuffer());
+
+				int count = MARKER_RECOGNIZER.getMarkerCount();
+				if (count > 0)
+				{
+					MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
+					
+					//ENGINE.getCamera().getPosition().set(-marker.translation[0], -marker.translation[1], -marker.translation[2]);
+					//ENGINE.getCamera().getRotation().set(marker.rotation[0], -marker.rotation[1], marker.rotation[2]);
+
+					// 마커 위치를 기준으로 pointCloud를 보정
+					Vector3 *cloud = new Vector3[640*480];
+					for (int i=0; i<640*480; ++i)
+					{
+						cloud[i] = kinect->getPointCloud()[i];
+					}
+
+					// 포인트 클라우드 큐에 넣어놓기
+					ENGINE.getPointCloudQueue().push_back(cloud);
+
+				}
+
+			}
+
 		}
 		break;
 
 	case WM_RBUTTONDOWN:
 		{
-			Kinect *kinect = KINECT_MANAGER.getKinect(0);
-
-			// bmp로 저장
-			BMP_EXPORTER.export("test.bmp", kinect->getColorWidth(), kinect->getColorHeight(), kinect->getColorBuffer());
-
-			// 마커 인식
-			MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getColorBuffer());
-
-			int count = MARKER_RECOGNIZER.getMarkerCount();
-			if (count > 0)
-			{
-				MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
-				
-				ENGINE.getCamera().getPosition().set(-marker.translation[0], -marker.translation[1], -marker.translation[2]);
-				ENGINE.getCamera().getRotation().set(marker.rotation[0], -marker.rotation[1], marker.rotation[2]);
-			}
-
+			// 포인트 클라우드 큐 비우기
+			ENGINE.clearPointCloudQueue();
 		}
 		break;
 

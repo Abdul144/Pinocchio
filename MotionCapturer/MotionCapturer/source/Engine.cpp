@@ -6,10 +6,24 @@
 
 #include "kinect/Kinect.h"
 #include "kinect/KinectManager.h"
+#include "util/Vector3.h"
 
 
 Engine::Engine() : runningState(true)
 {
+}
+
+Engine::~Engine()
+{
+}
+
+void Engine::clearPointCloudQueue()
+{
+	for (int i=0; i<pointCloudQueue.size(); ++i)
+	{
+		DELETE_ARRAY(pointCloudQueue[i]);
+	}
+	pointCloudQueue.clear();
 }
 
 /// 메인 루프
@@ -87,7 +101,6 @@ void Engine::draw()
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glColor4f(0.f, 1.f, 0.f, 1.f);
 
 	static float r = 0.f;
 	glRotatef(camera.getRotation().getY() + r, 0, 1, 0);
@@ -100,17 +113,24 @@ void Engine::draw()
 	float radius = 1.f;
 	Kinect *kinect = KINECT_MANAGER.getKinect(0);
 
+	glColor4ub(255, 255, 255, 255);
+
 	glBegin(GL_POINTS);
 	{
-		for (int y=0; y<480; ++y)
+		for (int i=0; i<pointCloudQueue.size(); ++i)
 		{
-			for (int x=0; x<640; ++x)
+			Vector3 *cloud = pointCloudQueue[i];
+
+			for (int y=0; y<480; ++y)
 			{
-				byte *p = &kinect->getMappedColorBuffer()[(x + y*kinect->getColorWidth())*4];
-				
-				glColor4ub(p[2], p[1], p[0], 255);
-				const Vector3 &vec = kinect->getPointCloud()[x + y*kinect->getColorWidth()];
-				glVertex3f(vec.getX(), vec.getY(), vec.getZ());
+				for (int x=0; x<640; ++x)
+				{
+					//byte *p = &kinect->getMappedColorBuffer()[(x + y*kinect->getColorWidth())*4];
+					
+					//glColor4ub(p[2], p[1], p[0], 255);
+					const Vector3 &vec = cloud[x + y*640];
+					glVertex3f(vec.getX(), vec.getY(), vec.getZ());
+				}
 			}
 		}
 	}
