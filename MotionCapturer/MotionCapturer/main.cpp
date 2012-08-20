@@ -11,6 +11,7 @@
 #include "source/kinect/KinectManager.h"
 #include "source/marker/MarkerRecognizer.h"
 #include "source/util/BmpExporter.h"
+#include "source/util/Matrix.h"
 #include "source/Engine.h"
 
 #define MAX_LOADSTRING 100
@@ -19,6 +20,13 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+
+
+/// TODO test
+float delta = 0.05f;
+bool flag = true;
+/// end test
+
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -218,21 +226,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (nKey == 'A')
         {
 			//ENGINE.getCamera().getPosition().setX(ENGINE.getCamera().getPosition().getX() -10.f);
-			ENGINE.getCamera().getRotation().setY(ENGINE.getCamera().getRotation().getY() -1.f);
+			//ENGINE.getCamera().getRotation().setY(ENGINE.getCamera().getRotation().getY() -0.1f);
+			--Kinect::magicX;
         }
         if (nKey == 'D')
         {
 			//ENGINE.getCamera().getPosition().setX(ENGINE.getCamera().getPosition().getX() +10.f);
-			ENGINE.getCamera().getRotation().setY(ENGINE.getCamera().getRotation().getY() +1.f);
+			//ENGINE.getCamera().getRotation().setY(ENGINE.getCamera().getRotation().getY() +0.1f);
+			++Kinect::magicX;
         }
 		
 		if (nKey == 'W')
         {
-			ENGINE.getCamera().getPosition().setZ(ENGINE.getCamera().getPosition().getZ() -0.05f);
+			//ENGINE.getCamera().getPosition().setZ(ENGINE.getCamera().getPosition().getZ() -0.05f);
+			++Kinect::magicY;
         }
         if (nKey == 'S')
         {
-			ENGINE.getCamera().getPosition().setZ(ENGINE.getCamera().getPosition().getZ() +0.05f);
+			//ENGINE.getCamera().getPosition().setZ(ENGINE.getCamera().getPosition().getZ() +0.05f);
+			--Kinect::magicY;
         }
 
         break;
@@ -240,6 +252,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 		{
+			Matrix transform, temp;
+
 			/// 키넥트 센서로부터 정보를 받아와서 가공
 			for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
 			{
@@ -253,21 +267,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				
 
 				/// 마커 인식
-				MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getColorBuffer());
+				MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getMappedColorBuffer());
 
 				int count = MARKER_RECOGNIZER.getMarkerCount();
 				if (count > 0)
 				{
 					MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
 					
-					//ENGINE.getCamera().getPosition().set(-marker.translation[0], -marker.translation[1], -marker.translation[2]);
-					//ENGINE.getCamera().getRotation().set(marker.rotation[0], -marker.rotation[1], marker.rotation[2]);
+					/*
+					// 카메라 위치 옮기기
+					transform.setIdentity();
+					temp.setRotateYByRadian(marker.rotation[1]);
+					transform.multiply(temp);
+					temp.setRotateXByRadian(-marker.rotation[0]);
+					transform.multiply(temp);
+					temp.setRotateZByRadian(-marker.rotation[2]);
+					transform.multiply(temp);
+					
+					transform.multiply(ENGINE.getCamera().getDirection(), Vector3(0, 0, -1));
+					transform.multiply(ENGINE.getCamera().getUp(), Vector3(0, 1, 0));
+					*/
+					
 
-					// 마커 위치를 기준으로 pointCloud를 보정
-					Vector3 *cloud = new Vector3[640*480];
+
+					// 변환행렬 만들기
+					transform.setIdentity();
+					/*
+					temp.setRotateZByRadian(marker.rotation[2]);
+					transform.multiply(temp);
+					
+					temp.setRotateXByRadian(marker.rotation[0]);
+					transform.multiply(temp);
+					*/
+					temp.setRotateYByRadian(marker.rotation[1]);
+					transform.multiply(temp);
+					//*/
+					//*
+					static float testZ = 1.f;
+					//testZ -= 0.05f;
+					printf("%f", testZ);
+					temp.setTranslate(-marker.translation[0], marker.translation[1], marker.translation[2] * testZ);
+					transform.multiply(temp);
+					//*/
+
+					// 마커 위치를 기준으로 pointCloud를 변환
+					Engine::CloudElement *cloud = new Engine::CloudElement[640*480];
 					for (int i=0; i<640*480; ++i)
 					{
-						cloud[i] = kinect->getPointCloud()[i];
+						Engine::CloudElement &element = cloud[i];
+						transform.multiply(element.position, kinect->getPointCloud()[i]);
+						
+						element.color[0] = kinect->getMappedColorBuffer()[i*4 + 2];
+						element.color[1] = kinect->getMappedColorBuffer()[i*4 + 1];
+						element.color[2] = kinect->getMappedColorBuffer()[i*4 + 0];
+
+						//cloud[i] =  kinect->getPointCloud()[i];
 					}
 
 					// 포인트 클라우드 큐에 넣어놓기

@@ -9,7 +9,8 @@ class Camera
 	// ¸â¹ö º¯¼ö
 private:
 	Vector3 position;
-	Vector3 rotation;
+	Vector3 direction;
+	Vector3 up;
 	
 
 	// ¸â¹ö ÇÔ¼ö
@@ -23,6 +24,7 @@ public:
 	// Á¢±Ù
 public:
 	GETTER_REF(Vector3, Position, position)
-	GETTER_REF(Vector3, Rotation, rotation)
+	GETTER_REF(Vector3, Direction, direction)
+	GETTER_REF(Vector3, Up, up)
 };
 

@@ -7,6 +7,10 @@
 
 #include "../util/Vector3.h"
 
+const float Kinect::xyScale = tanf(deg2rad(58.5f) * 0.5f) / (640.f * 0.5f);
+int Kinect::magicX = -47;
+int Kinect::magicY = -47;
+
 
 Kinect::Kinect(INuiSensor *sensor) : sensor(sensor)
 {
@@ -193,7 +197,7 @@ int Kinect::mapColorToDepth()
 			float realDepth = (float)depth / 1000.f;
 			if (depth >= 300 && depth <= 4000)
 			{
-				pointCloud[depthIndex].set((x - 320) * realDepth * xyScale, (480 - y - 240) * realDepth * xyScale, -realDepth);
+				pointCloud[depthIndex].set((x - 320 + magicX) * realDepth * xyScale, (480 - y - 240 + magicY) * realDepth * xyScale, -realDepth);
 			}else
 			{
 				pointCloud[depthIndex].set((x - 320) * realDepth * xyScale, (480 - y - 240) * realDepth * xyScale, 10000);

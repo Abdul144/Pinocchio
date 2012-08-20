@@ -9,8 +9,9 @@
 #include "util/Vector3.h"
 
 
-Engine::Engine() : runningState(true)
+Engine::Engine() : runningState(true), testX(0), testY(0)
 {
+	camera.getPosition().set(0, 0, 3);
 }
 
 Engine::~Engine()
@@ -96,30 +97,30 @@ void Engine::draw()
 	glPushMatrix();
 
 	camera.applyViewMatrix();
-
-	glTranslatef(0, 0, -2 - 1.f);
+	
+	//glTranslatef(0, 0, -2 - 1.f);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	static float r = 0.f;
-	glRotatef(camera.getRotation().getY() + r, 0, 1, 0);
+	//glRotatef(camera.getRotation().getY() + r, 0, 1, 0);
 	//r += 2.f;
 	
-	glTranslatef(0, 0, 2);
+	//glTranslatef(0, 0, 2);
 
 	glPointSize(1.f);
 	
 	float radius = 1.f;
 	Kinect *kinect = KINECT_MANAGER.getKinect(0);
 
-	glColor4ub(255, 255, 255, 255);
+	//glColor4ub(255, 255, 255, 255);
 
 	glBegin(GL_POINTS);
 	{
 		for (int i=0; i<pointCloudQueue.size(); ++i)
 		{
-			Vector3 *cloud = pointCloudQueue[i];
+			CloudElement *cloud = pointCloudQueue[i];
 
 			for (int y=0; y<480; ++y)
 			{
@@ -127,12 +128,24 @@ void Engine::draw()
 				{
 					//byte *p = &kinect->getMappedColorBuffer()[(x + y*kinect->getColorWidth())*4];
 					
-					//glColor4ub(p[2], p[1], p[0], 255);
-					const Vector3 &vec = cloud[x + y*640];
-					glVertex3f(vec.getX(), vec.getY(), vec.getZ());
+					CloudElement &element = cloud[x + y*640];
+
+					glColor4ub(element.color[0], element.color[1], element.color[2], 255);
+					glVertex3f(element.position.getX(), element.position.getY(), element.position.getZ());
 				}
 			}
 		}
+	}
+	glEnd();
+
+
+	// z축 그리기
+	glPointSize(2.f);
+	glColor4ub(255, 0, 0, 255);
+	glBegin(GL_POINTS);
+	{
+		for (int i=-1000; i<=1000; ++i)
+			glVertex3f(0, 0, i);
 	}
 	glEnd();
 
@@ -176,7 +189,7 @@ void Engine::resize(int width, int height)
 	//gluPerspective(45, (float)width / (float)height, 1000, -1000);
 	//glFrustum(-width / 2, width / 2, -height / 2, height / 2, 0, 100);
 	//glFrustum(-1, 1, -1, 1, 0, 10);
-	myGLPerspectivef(45, (float)width / (float)height, 1, 10000);
+	myGLPerspectivef(58.5f, (float)width / (float)height, 1, 10000);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

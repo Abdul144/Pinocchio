@@ -18,13 +18,23 @@ class Engine : public Singleton<Engine>
 {
 	USE_SINGLETON(Engine)
 
+public:
+	struct CloudElement
+	{
+		Vector3 position;
+		byte color[3];
+	};
+
 	// 멤버 변수
 private:
 	bool runningState;
 	int width, height;
 	Camera camera;
 
-	vector<Vector3*> pointCloudQueue;		///< 포인트 클라우드를 넣어놓는 용도.. free
+	vector<CloudElement*> pointCloudQueue;		///< 포인트 클라우드를 넣어놓는 용도.. free
+
+public:
+	int testX, testY;
 	
 
 	// 멤버 함수
@@ -54,6 +64,6 @@ public:
 public:
 	GETTER_SETTER(bool, RunningState, runningState)
 	GETTER_REF(Camera, Camera, camera)
-	GETTER_REF(vector<Vector3*>, PointCloudQueue, pointCloudQueue)
+	GETTER_REF(vector<CloudElement*>, PointCloudQueue, pointCloudQueue)
 };
 

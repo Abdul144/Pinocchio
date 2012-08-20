@@ -27,6 +27,10 @@ private:
 	long *colorCoordinates;		///< .. free
 	Vector3 *pointCloud;		///< 포인트 클라우드.. free
 
+public:
+    static const float xyScale;
+	static int magicX, magicY;
+
 
 	// 멤버 함수
 public:
