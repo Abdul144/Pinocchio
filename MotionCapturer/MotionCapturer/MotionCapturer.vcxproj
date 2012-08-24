@@ -39,7 +39,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\VS Projects\Libraries\opencv\include;C:\VS Projects\Libraries\opencv\include\opencv;C:\VS Projects\Libraries\opencv\include\opencv2;C:\VS Projects\Libraries\opencv\build\include;$(MSBuildProjectDirectory)/../../glew-1.9.0/include;$(DXSDK_DIR)Include;$(KINECTSDK10_DIR)\inc;$(IncludePath)</IncludePath>
+    <IncludePath>C:\VS Projects\Libraries\opencv\include;C:\VS Projects\Libraries\opencv\include\opencv;C:\VS Projects\Libraries\opencv\include\opencv2;C:\VS Projects\Libraries\opencv\build\include;$(MSBuildProjectDirectory)/../../glew-1.9.0/include;$(KINECTSDK10_DIR)\inc;$(IncludePath)</IncludePath>
     <LibraryPath>C:\VS Projects\Libraries\opencv\build\x86\vc10\lib;$(MSBuildProjectDirectory)/../../glew-1.9.0/lib;$(DXSDK_DIR)Lib\x86;$(KINECTSDK10_DIR)\lib\x86;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(DXSDK_DIR)Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
@@ -56,7 +56,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32.lib;glew32mx.lib;opengl32.lib;Kinect10.lib;d3d11.lib;d3dcompiler.lib;d3dx11d.lib;d3dx9d.lib;dxerr.lib;dxguid.lib;winmm.lib;opencv_calib3d242d.lib;opencv_contrib242d.lib;opencv_core242d.lib;opencv_features2d242d.lib;opencv_flann242d.lib;opencv_gpu242d.lib;opencv_haartraining_engined.lib;opencv_highgui242d.lib;opencv_imgproc242d.lib;opencv_legacy242d.lib;opencv_ml242d.lib;opencv_objdetect242d.lib;opencv_ts242d.lib;opencv_video242d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glew32mx.lib;opengl32.lib;Kinect10.lib;winmm.lib;opencv_calib3d242d.lib;opencv_contrib242d.lib;opencv_core242d.lib;opencv_features2d242d.lib;opencv_flann242d.lib;opencv_gpu242d.lib;opencv_haartraining_engined.lib;opencv_highgui242d.lib;opencv_imgproc242d.lib;opencv_legacy242d.lib;opencv_ml242d.lib;opencv_objdetect242d.lib;opencv_ts242d.lib;opencv_video242d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -93,6 +93,7 @@
     <ClInclude Include="source\marker\MarkerRecognizer.h" />
     <ClInclude Include="source\util\BmpExporter.h" />
     <ClInclude Include="source\util\defines.h" />
+    <ClInclude Include="source\util\Matrix.h" />
     <ClInclude Include="source\util\Singleton.h" />
     <ClInclude Include="source\util\Vector3.h" />
     <ClInclude Include="stdafx.h" />
@@ -107,6 +108,8 @@
     <ClCompile Include="source\marker\CamCalib.cpp" />
     <ClCompile Include="source\marker\MarkerRecognizer.cpp" />
     <ClCompile Include="source\util\BmpExporter .cpp" />
+    <ClCompile Include="source\util\Matrix.cpp" />
+    <ClCompile Include="source\util\Vector3.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

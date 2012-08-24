@@ -83,6 +83,9 @@
     <ClInclude Include="source\util\BmpExporter.h">
       <Filter>source\util</Filter>
     </ClInclude>
+    <ClInclude Include="source\util\Matrix.h">
+      <Filter>source\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -110,6 +113,12 @@
       <Filter>source\marker</Filter>
     </ClCompile>
     <ClCompile Include="source\util\BmpExporter .cpp">
+      <Filter>source\util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util\Matrix.cpp">
+      <Filter>source\util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util\Vector3.cpp">
       <Filter>source\util</Filter>
     </ClCompile>
   </ItemGroup>
