@@ -290,25 +290,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					
 
 
+					Vector3 &v = kinect->getPointCloud()[(int)marker.corner[0].x + (int)marker.corner[0].y * 640];
+					
+
+
 					// 변환행렬 만들기
 					transform.setIdentity();
-					/*
+					
 					temp.setRotateZByRadian(marker.rotation[2]);
 					transform.multiply(temp);
-					
-					temp.setRotateXByRadian(marker.rotation[0]);
+					temp.setRotateXByRadian(-marker.rotation[0]);
 					transform.multiply(temp);
-					*/
 					temp.setRotateYByRadian(marker.rotation[1]);
 					transform.multiply(temp);
-					//*/
-					//*
-					static float testZ = 1.f;
-					//testZ -= 0.05f;
-					printf("%f", testZ);
-					temp.setTranslate(-marker.translation[0], marker.translation[1], marker.translation[2] * testZ);
+
+					//temp.setTranslate(-marker.translation[0], marker.translation[1], marker.translation[2]);
+					temp.setTranslate(-v.getX(), -v.getY(), -v.getZ());
 					transform.multiply(temp);
-					//*/
 
 					// 마커 위치를 기준으로 pointCloud를 변환
 					Engine::CloudElement *cloud = new Engine::CloudElement[640*480];
@@ -320,8 +318,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						element.color[0] = kinect->getMappedColorBuffer()[i*4 + 2];
 						element.color[1] = kinect->getMappedColorBuffer()[i*4 + 1];
 						element.color[2] = kinect->getMappedColorBuffer()[i*4 + 0];
-
-						//cloud[i] =  kinect->getPointCloud()[i];
 					}
 
 					// 포인트 클라우드 큐에 넣어놓기
