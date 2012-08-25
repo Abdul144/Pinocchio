@@ -73,16 +73,6 @@ float Engine::syncronize()
 
 void Engine::update(float deltaTime)
 {
-	/*
-	// 키넥트에서 센서값 받아와서 갱신하기
-	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
-	{
-		bool depthIsRefreshed = KINECT_MANAGER.getKinect(i)->refreshDepthBuffer() >= 0;
-		bool colorIsRefreshed = KINECT_MANAGER.getKinect(i)->refreshColorBuffer() >= 0;
-		if (depthIsRefreshed && colorIsRefreshed)
-			KINECT_MANAGER.getKinect(i)->mapColorToDepth();
-	}
-	//*/
 }
 
 void Engine::draw()
@@ -99,8 +89,6 @@ void Engine::draw()
 
 	camera.applyViewMatrix();
 	
-	//glTranslatef(0, 0, -2 - 1.f);
-
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	/*
@@ -109,15 +97,11 @@ void Engine::draw()
 	r += 2.f;
 	//*/
 	
-	//glTranslatef(0, 0, 2);
-
 	glPointSize(1.f);
 	
 	float radius = 1.f;
 	Kinect *kinect = KINECT_MANAGER.getKinect(0);
 
-	//glColor4ub(255, 255, 255, 255);
-	//*
 	glBegin(GL_POINTS);
 	{
 		for (int i=0; i<pointCloudQueue.size(); ++i)
@@ -128,8 +112,6 @@ void Engine::draw()
 			{
 				for (int x=0; x<640; ++x)
 				{
-					//byte *p = &kinect->getMappedColorBuffer()[(x + y*kinect->getColorWidth())*4];
-					
 					CloudElement &element = cloud[x + y*640];
 
 					glColor4ub(element.color[0], element.color[1], element.color[2], 255);
@@ -139,37 +121,8 @@ void Engine::draw()
 		}
 	}
 	glEnd();
-	//*/
 
-
-	// z축 그리기
-	glPointSize(2.f);
-	glColor4ub(255, 0, 0, 255);
-	/*
-	glBegin(GL_POINTS);
-	{
-		for (int i=-1000; i<=1000; ++i)
-			glVertex3f(0, 0, i*0.01f);
-	}
-	glEnd();
-	//*/
-	/*
-	if (MARKER_RECOGNIZER.getMarkerCount() > 0)
-	{
-		glBegin(GL_POINTS);
-		{
-			MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
-			for (int i=0; i<4; ++i)
-			{
-				Vector3 &v = kinect->getPointCloud()[(int)marker.corner[i].x + (int)marker.corner[i].y * 640];
-				glVertex3f(v.getX(), v.getY(), v.getZ());
-			}
-		}
-		glEnd();
-	}
-	//*/
-
-    glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glPopMatrix();
@@ -206,9 +159,6 @@ void Engine::resize(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	//gluPerspective(45, (float)width / (float)height, 1000, -1000);
-	//glFrustum(-width / 2, width / 2, -height / 2, height / 2, 0, 100);
-	//glFrustum(-1, 1, -1, 1, 0, 10);
 	myGLPerspectivef(58.5f, (float)width / (float)height, 1, 10000);
 
 	glMatrixMode(GL_MODELVIEW);

@@ -225,13 +225,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (nKey == 'A')
         {
-			//ENGINE.getCamera().getPosition().setX(ENGINE.getCamera().getPosition().getX() -10.f);
-			//ENGINE.getCamera().getRotation().setY(ENGINE.getCamera().getRotation().getY() -0.1f);
         }
         if (nKey == 'D')
         {
-			//ENGINE.getCamera().getPosition().setX(ENGINE.getCamera().getPosition().getX() +10.f);
-			//ENGINE.getCamera().getRotation().setY(ENGINE.getCamera().getRotation().getY() +0.1f);
         }
 		
 		if (nKey == 'W')
@@ -269,69 +265,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if (count > 0)
 				{
 					MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
-					
-					/*
-					// 카메라 위치 옮기기
-					transform.setIdentity();
-					temp.setRotateYByRadian(marker.rotation[1]);
-					transform.multiply(temp);
-					temp.setRotateXByRadian(-marker.rotation[0]);
-					transform.multiply(temp);
-					temp.setRotateZByRadian(-marker.rotation[2]);
-					transform.multiply(temp);
-					
-					transform.multiply(ENGINE.getCamera().getDirection(), Vector3(0, 0, -1));
-					transform.multiply(ENGINE.getCamera().getUp(), Vector3(0, 1, 0));
-					*/
-					
 
-					
 					Vector3 &v0 = kinect->getPointCloud()[(int)marker.corner[0].x + (int)marker.corner[0].y * 640];
 					Vector3 &v1 = kinect->getPointCloud()[(int)marker.corner[1].x + (int)marker.corner[1].y * 640];
 					Vector3 &v2 = kinect->getPointCloud()[(int)marker.corner[2].x + (int)marker.corner[2].y * 640];
 					Vector3 &v3 = kinect->getPointCloud()[(int)marker.corner[3].x + (int)marker.corner[3].y * 640];
-
-					/*
-						T * R * V = V`
-						V = inv(R) * inv(T) * V`
-						V * inv(V`) = inv(R) * inv(T)		// 우항이 구해야할 마커의 역 변환행렬
-							T : 마커의 이동변환
-							R : 마커의 회전변환
-							V : 기준 위치. 마커의 네 끝점벡터로 만든 행렬
-							V`: 현재 위치. 마커의 네 끝점벡터로 만든 행렬
-
-						15cm = 0.15m
-						s = 0.15 * 0.5 = 0.075
-						V =	| -s -s  s  s |			   V` =	| x0 x1 x2 x3 |
-							|  s -s -s  s |					| y0 y1 y2 y3 |
-							|  0  0  0  0 |					| z0 z1 z2 z3 |
-							|  1  1  1  1 |					|  1  1  1  1 |
-					*/
-					/*
-					// V행렬 구성
-					const float markerHalfSize = marker.width * 0.5f;
-					Matrix V;
-					V.set(0, Vector3(-markerHalfSize, markerHalfSize, 0), 1.f);
-					V.set(1, Vector3(-markerHalfSize, -markerHalfSize, 0), 1.f);
-					V.set(2, Vector3(markerHalfSize, -markerHalfSize, 0), 1.f);
-					V.set(3, Vector3(markerHalfSize, markerHalfSize, 0), 1.f);
-
-					// V`행렬 구성.. V`표기를 할 수 없으므로 W로 대체
-					Matrix W, T;
-					T.set(0, v0, 1.f);
-					T.set(1, v1, 1.f);
-					T.set(2, v2, 1.f);
-					T.set(3, v3, 1.f);
-					if (T.get(2, 0) > 9000.f || T.get(2, 1) > 9000.f || T.get(2, 2) > 9000.f || T.get(2, 3) > 9000.f)
-						continue;					
-
-					if (T.getInverse(W) == false)
-						continue;
-
-					// 변환행렬 만들기
-					transform.multiply(V, W);
-					*/
-
 
 					Vector3 right, up, direction;
 					up = v0 - v1;
@@ -342,30 +280,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					Vector3 vc;
 					vc = (v0 + v1 + v2 + v3) / 4.f;
 					transform.setViewMatrix(vc, direction, up);
-
-
-
-					/*
-					transform.setIdentity();
-					
-					temp.setRotateZByRadian(marker.rotation[2]);
-					transform.multiply(temp);
-					temp.setRotateXByRadian(-marker.rotation[0]);
-					transform.multiply(temp);
-					temp.setRotateYByRadian(marker.rotation[1]);
-					transform.multiply(temp);
-
-					temp.setTranslate(-v.getX(), -v.getY(), -v.getZ());
-					transform.multiply(temp);
-					*/
-
+										
 					// 마커 위치를 기준으로 pointCloud를 변환
 					Engine::CloudElement *cloud = new Engine::CloudElement[640*480];
 					for (int i=0; i<640*480; ++i)
 					{
 						Engine::CloudElement &element = cloud[i];
 						transform.multiply(element.position, kinect->getPointCloud()[i]);
-						//element.position = kinect->getPointCloud()[i];
 						
 						element.color[0] = kinect->getMappedColorBuffer()[i*4 + 2];
 						element.color[1] = kinect->getMappedColorBuffer()[i*4 + 1];
