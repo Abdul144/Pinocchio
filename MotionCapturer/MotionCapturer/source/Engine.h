@@ -3,14 +3,16 @@
 #include <vector>
 #include <Windows.h>
 
+#include "camera/Camera.h"
+#include "marker/MarkerRecognizer.h"
 #include "util/defines.h"
 #include "util/Singleton.h"
-#include "camera/Camera.h"
 
 
 #define ENGINE		Engine::getInstance()
 
 class Vector3;
+
 using namespace std;
 
 
@@ -59,11 +61,14 @@ public:
 	/// 포인트 클라우드 초기화
 	void clearPointCloudQueue();
 
+	void addPointCloud(CloudElement *cloud);
+
+	// 포인트 클라우드를 마커에 맞추어 역변환
+	void inverseTransformPointCloud(CloudElement *result, MarkerRecognizer::sMarkerInfo &marker, const Vector3 *point, const byte *colorBuffer, int width, int height);
 
 	// 접근
 public:
 	GETTER_SETTER(bool, RunningState, runningState)
 	GETTER_REF(Camera, Camera, camera)
-	GETTER_REF(vector<CloudElement*>, PointCloudQueue, pointCloudQueue)
 };
 

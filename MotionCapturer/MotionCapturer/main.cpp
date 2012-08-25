@@ -263,39 +263,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				int count = MARKER_RECOGNIZER.getMarkerCount();
 				if (count > 0)
-				{
+				{	// 마커가 있다
 					MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
-
-					Vector3 &v0 = kinect->getPointCloud()[(int)marker.corner[0].x + (int)marker.corner[0].y * 640];
-					Vector3 &v1 = kinect->getPointCloud()[(int)marker.corner[1].x + (int)marker.corner[1].y * 640];
-					Vector3 &v2 = kinect->getPointCloud()[(int)marker.corner[2].x + (int)marker.corner[2].y * 640];
-					Vector3 &v3 = kinect->getPointCloud()[(int)marker.corner[3].x + (int)marker.corner[3].y * 640];
-
-					Vector3 right, up, direction;
-					up = v0 - v1;
-					right = v2 - v1;
-					direction.cross(up, right);
-					up.normalize();
-					direction.normalize();
-					Vector3 vc;
-					vc = (v0 + v1 + v2 + v3) / 4.f;
-					transform.setViewMatrix(vc, direction, up);
-										
+					
 					// 마커 위치를 기준으로 pointCloud를 변환
 					Engine::CloudElement *cloud = new Engine::CloudElement[640*480];
-					for (int i=0; i<640*480; ++i)
-					{
-						Engine::CloudElement &element = cloud[i];
-						transform.multiply(element.position, kinect->getPointCloud()[i]);
-						
-						element.color[0] = kinect->getMappedColorBuffer()[i*4 + 2];
-						element.color[1] = kinect->getMappedColorBuffer()[i*4 + 1];
-						element.color[2] = kinect->getMappedColorBuffer()[i*4 + 0];
-					}
+					ENGINE.inverseTransformPointCloud(cloud, marker, kinect->getPointCloud(), kinect->getMappedColorBuffer(), 640, 480);
 					
 					// 포인트 클라우드 큐에 넣어놓기
-					ENGINE.getPointCloudQueue().push_back(cloud);
-					
+					ENGINE.addPointCloud(cloud);
 				}
 
 			}
