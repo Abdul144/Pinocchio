@@ -94,6 +94,7 @@
     <ClInclude Include="source\util\BmpExporter.h" />
     <ClInclude Include="source\util\defines.h" />
     <ClInclude Include="source\util\Matrix.h" />
+    <ClInclude Include="source\util\Quaternion.h" />
     <ClInclude Include="source\util\Singleton.h" />
     <ClInclude Include="source\util\Vector3.h" />
     <ClInclude Include="stdafx.h" />
@@ -109,6 +110,7 @@
     <ClCompile Include="source\marker\MarkerRecognizer.cpp" />
     <ClCompile Include="source\util\BmpExporter .cpp" />
     <ClCompile Include="source\util\Matrix.cpp" />
+    <ClCompile Include="source\util\Quaternion.cpp" />
     <ClCompile Include="source\util\Vector3.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

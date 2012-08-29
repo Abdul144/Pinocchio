@@ -39,6 +39,11 @@ void Vector3::cross(const Vector3 &a, const Vector3 &b)
 	z = a.x*b.y - a.y*b.x;
 }
 
+const Vector3 Vector3::operator-() const
+{
+    return Vector3(-x, -y, -z);
+}
+
 const Vector3 Vector3::operator + (const Vector3 &v) const
 {
 	Vector3 result;
@@ -81,4 +86,27 @@ const Vector3 Vector3::operator / (const float &value) const
 	result.z = z / value;
 
 	return result;
+}
+
+const Vector3 Vector3::operator += (const Vector3 &v)
+{
+	x += v.x;
+	y += v.y;
+	z += v.z;
+
+	return *this;
+}
+
+const Vector3 Vector3::operator -= (const Vector3 &v)
+{
+	x -= v.x;
+	y -= v.y;
+	z -= v.z;
+
+	return *this;
+}
+
+bool Vector3::operator==(const Vector3& v) const
+{
+    return x == v.x && y == v.y && z == v.z;
 }

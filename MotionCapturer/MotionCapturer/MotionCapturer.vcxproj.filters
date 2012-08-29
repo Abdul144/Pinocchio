@@ -71,9 +71,6 @@
     <ClInclude Include="source\util\Vector3.h">
       <Filter>source\util</Filter>
     </ClInclude>
-    <ClInclude Include="source\camera\Camera.h">
-      <Filter>source\camera</Filter>
-    </ClInclude>
     <ClInclude Include="source\marker\CamCalib.h">
       <Filter>source\marker</Filter>
     </ClInclude>
@@ -84,6 +81,12 @@
       <Filter>source\util</Filter>
     </ClInclude>
     <ClInclude Include="source\util\Matrix.h">
+      <Filter>source\util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\camera\Camera.h">
+      <Filter>source\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="source\util\Quaternion.h">
       <Filter>source\util</Filter>
     </ClInclude>
   </ItemGroup>
@@ -103,9 +106,6 @@
     <ClCompile Include="source\Engine.cpp">
       <Filter>source</Filter>
     </ClCompile>
-    <ClCompile Include="source\camera\Camera.cpp">
-      <Filter>source\camera</Filter>
-    </ClCompile>
     <ClCompile Include="source\marker\CamCalib.cpp">
       <Filter>source\marker</Filter>
     </ClCompile>
@@ -119,6 +119,12 @@
       <Filter>source\util</Filter>
     </ClCompile>
     <ClCompile Include="source\util\Vector3.cpp">
+      <Filter>source\util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\camera\Camera.cpp">
+      <Filter>source\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="source\util\Quaternion.cpp">
       <Filter>source\util</Filter>
     </ClCompile>
   </ItemGroup>

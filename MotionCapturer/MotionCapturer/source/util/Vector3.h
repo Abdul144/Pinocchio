@@ -31,10 +31,17 @@ public:
 		return sqrt(x*x + y*y + z*z);
 	}
 	
+    const Vector3 operator-() const;
+
 	const Vector3 operator + (const Vector3 &v) const;
 	const Vector3 operator - (const Vector3 &v) const;
 	const Vector3 operator * (const float &value) const;
 	const Vector3 operator / (const float &value) const;
+
+	const Vector3 operator += (const Vector3 &v);
+	const Vector3 operator -= (const Vector3 &v);
+
+    bool operator==(const Vector3& v) const;
 
 
 

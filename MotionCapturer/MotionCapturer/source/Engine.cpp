@@ -12,7 +12,7 @@
 
 Engine::Engine() : runningState(true), testX(0), testY(0)
 {
-	camera.getPosition().set(0, 0, 2);
+	camera.setPosition(Vector3(0, 0, 2));
 }
 
 Engine::~Engine()

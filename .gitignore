@@ -5,6 +5,8 @@ Debug
 MotionCapturer/MotionCapturer/test.bmp
 *.sln
 *.csproj
+*.vcxproj
+*.vcxproj.filters
 *.opensdf
 *.sdf
 *.suo

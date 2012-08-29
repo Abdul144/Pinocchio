@@ -220,27 +220,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 		
     case WM_KEYDOWN:
-    {
-        int nKey = static_cast<int>(wParam);
+	{
+		int nKey = static_cast<int>(wParam);
 
 		if (nKey == 'A')
-        {
-        }
-        if (nKey == 'D')
-        {
-        }
+		{
+			ENGINE.getCamera().yaw(deg2rad(2));
+		}
+		if (nKey == 'D')
+		{
+			ENGINE.getCamera().yaw(-deg2rad(2));
+		}
 		
 		if (nKey == 'W')
-        {
-			ENGINE.getCamera().getPosition().setZ(ENGINE.getCamera().getPosition().getZ() -0.05f);
-        }
-        if (nKey == 'S')
-        {
-			ENGINE.getCamera().getPosition().setZ(ENGINE.getCamera().getPosition().getZ() +0.05f);
-        }
+		{
+			ENGINE.getCamera().pitch(deg2rad(2));
+		}
+		if (nKey == 'S')
+		{
+			ENGINE.getCamera().pitch(-deg2rad(2));
+		}
+		
+		break;
+	}
 
-        break;
-    }
+	case WM_MOUSEWHEEL:
+	{
+		float wheelValue = (float)(short)HIWORD(wParam);
+		ENGINE.getCamera().moveForward(wheelValue * 0.001f);
+
+		break;
+	}
 
 	case WM_LBUTTONDOWN:
 		{
