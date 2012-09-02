@@ -77,7 +77,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	// 키넥트 연결
 	int connectedCount = KINECT_MANAGER.connectKinects(10);
 
-
     // Main message loop
     MSG msg = {0};
     while (ENGINE.getRunningState())
@@ -172,6 +171,66 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND &hWnd)
    return TRUE;
 }
 
+bool initializeKinect()
+{
+	Matrix transform, temp;
+
+	KINECT_MANAGER.deconnectKinects();
+
+	/// 키넥트 센서로부터 정보를 받아와서 가공
+	KINECT_MANAGER.connectKinects(1);
+	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
+	{
+		Kinect *kinect = KINECT_MANAGER.getKinect(i);
+
+				
+		/// depth와 color 버퍼를 갱신하고 매핑한다.
+		bool depthIsRefreshed, colorIsRefreshed;
+		do
+			depthIsRefreshed = kinect->refreshDepthBuffer() >= 0;
+		while(depthIsRefreshed == false);
+		do
+			colorIsRefreshed = kinect->refreshColorBuffer() >= 0;
+		while (colorIsRefreshed == false);
+
+		if (depthIsRefreshed && colorIsRefreshed)
+			kinect->mapColorToDepth();
+		else
+		{
+			KINECT_MANAGER.connectKinects(1);
+			continue;
+		}
+				
+
+		/// 마커 인식
+		MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getMappedColorBuffer());
+
+		int count = MARKER_RECOGNIZER.getMarkerCount();
+		if (count > 0)
+		{	// 마커가 있다
+			MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
+			
+			// 마커 위치를 기준으로 pointCloud를 변환
+			Engine::CloudElement *cloud = new Engine::CloudElement[640*480];
+			bool transformed = ENGINE.inverseTransformPointCloud(cloud, marker, kinect->getPointCloud(), kinect->getMappedColorBuffer(), 640, 480);
+			
+			if (transformed)
+			{
+				// 포인트 클라우드 큐에 넣어놓기
+				ENGINE.addPointCloud(cloud);
+			}
+		}else
+		{
+			KINECT_MANAGER.deconnectKinects();
+			return false;
+		}
+		
+		KINECT_MANAGER.connectKinects(1);
+	}
+
+	return true;
+}
+
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -253,40 +312,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	case WM_LBUTTONDOWN:
-		{
-			Matrix transform, temp;
-
-			/// 키넥트 센서로부터 정보를 받아와서 가공
-			for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
-			{
-				Kinect *kinect = KINECT_MANAGER.getKinect(i);
-
-				// depth와 color 버퍼를 갱신하고 매핑한다.
-				bool depthIsRefreshed = kinect->refreshDepthBuffer() >= 0;
-				bool colorIsRefreshed = kinect->refreshColorBuffer() >= 0;
-				if (depthIsRefreshed && colorIsRefreshed)
-					kinect->mapColorToDepth();
-				
-
-				/// 마커 인식
-				MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getMappedColorBuffer());
-
-				int count = MARKER_RECOGNIZER.getMarkerCount();
-				if (count > 0)
-				{	// 마커가 있다
-					MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
-					
-					// 마커 위치를 기준으로 pointCloud를 변환
-					Engine::CloudElement *cloud = new Engine::CloudElement[640*480];
-					ENGINE.inverseTransformPointCloud(cloud, marker, kinect->getPointCloud(), kinect->getMappedColorBuffer(), 640, 480);
-					
-					// 포인트 클라우드 큐에 넣어놓기
-					ENGINE.addPointCloud(cloud);
-				}
-
-			}
-
-		}
+		initializeKinect();
 		break;
 
 	case WM_RBUTTONDOWN:

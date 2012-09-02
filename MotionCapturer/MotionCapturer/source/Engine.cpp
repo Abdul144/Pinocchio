@@ -118,6 +118,7 @@ void Engine::draw()
 					glVertex3f(element.position.getX(), element.position.getY(), element.position.getZ());
 				}
 			}
+
 		}
 	}
 	glEnd();
@@ -186,13 +187,21 @@ void Engine::addPointCloud(CloudElement *cloud)
 }
 
 // 포인트 클라우드를 마커에 맞추어 역변환
-void Engine::inverseTransformPointCloud(CloudElement *result, MarkerRecognizer::sMarkerInfo &marker, const Vector3 *point, const byte *colorBuffer, int width, int height)
+bool Engine::inverseTransformPointCloud(CloudElement *result, MarkerRecognizer::sMarkerInfo &marker, const Vector3 *point, const byte *colorBuffer, int width, int height)
 {
 	// 코너를 얻어옴
 	const Vector3 &v0 = point[(int)marker.corner[0].x + (int)marker.corner[0].y * width];
 	const Vector3 &v1 = point[(int)marker.corner[1].x + (int)marker.corner[1].y * width];
 	const Vector3 &v2 = point[(int)marker.corner[2].x + (int)marker.corner[2].y * width];
 	const Vector3 &v3 = point[(int)marker.corner[3].x + (int)marker.corner[3].y * width];
+
+	if (v0.getZ() > 4000 ||
+		v1.getZ() > 4000 ||
+		v2.getZ() > 4000 ||
+		v3.getZ() > 4000)
+	{
+		return false;
+	}
 
 	// 변환행렬 구성위해 up, direction 벡터를 얻는다.
 	Vector3 right, up, direction;
@@ -218,4 +227,6 @@ void Engine::inverseTransformPointCloud(CloudElement *result, MarkerRecognizer::
 		element.color[1] = colorBuffer[i*4 + 1];
 		element.color[2] = colorBuffer[i*4 + 0];
 	}
+
+	return true;
 }

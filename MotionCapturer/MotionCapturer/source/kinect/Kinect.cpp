@@ -17,7 +17,7 @@ Kinect::Kinect(INuiSensor *sensor) : sensor(sensor)
 	HRESULT hr;
 
 	// 키넥트 초기화
-	hr = sensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH_AND_PLAYER_INDEX);
+	hr = sensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH);
 	if (FAILED(hr))
 	{
 		releaseSensor();
@@ -28,7 +28,7 @@ Kinect::Kinect(INuiSensor *sensor) : sensor(sensor)
 	nextDepthFrameEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	// depth image stream을 생성
-	hr = sensor->NuiImageStreamOpen(NUI_IMAGE_TYPE_DEPTH_AND_PLAYER_INDEX, NUI_IMAGE_RESOLUTION_640x480, 0, 2, nextDepthFrameEvent, &depthStreamHandle);
+	hr = sensor->NuiImageStreamOpen(NUI_IMAGE_TYPE_DEPTH, NUI_IMAGE_RESOLUTION_640x480, 0, 2, nextDepthFrameEvent, &depthStreamHandle);
 	if (FAILED(hr))
 	{
 		releaseSensor();
@@ -87,6 +87,7 @@ void Kinect::releaseSensor()
 {
 	if (sensor)
 	{
+		sensor->NuiShutdown();
 		sensor->Release();
 	}
 }

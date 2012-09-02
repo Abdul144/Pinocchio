@@ -8,9 +8,13 @@
 #include "Kinect.h"
 
 
+void CALLBACK kinectDeviceStatusCallBack( HRESULT hrStatus, const OLECHAR* instanceName, const OLECHAR* uniqueDeviceName, void* pUserData )
+{
+}
+
 KinectManager::KinectManager()
 {
-
+	NuiSetDeviceStatusCallback(kinectDeviceStatusCallBack, null);
 }
 
 KinectManager::~KinectManager()
@@ -25,9 +29,6 @@ int KinectManager::connectKinects(int count)
 	HRESULT hr;
 	INuiSensor *sensor = null;
 	int addedCount = 0;
-
-	// 연결 모두 해제
-	deconnectKinects();
 	
 	// 연결된 개수 얻기
 	int sensorCount = 0;
@@ -36,7 +37,7 @@ int KinectManager::connectKinects(int count)
 		return hr;
 
 	// 연결된 키넥트 순회
-	for (int i=0; i<sensorCount; ++i)
+	for (int i=getKinectCount(); i<sensorCount; ++i)
 	{
 		if (addedCount == count)
 			break;
