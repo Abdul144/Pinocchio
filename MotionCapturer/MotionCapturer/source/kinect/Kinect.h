@@ -1,7 +1,10 @@
 #pragma once
 
+#include <vector>
 #include "../util/defines.h"
 
+
+using namespace std;
 
 class INuiSensor;
 class Vector3;
@@ -28,6 +31,7 @@ private:
 	byte *mappedColorBuffer;	///< .. free
 	long *colorCoordinates;		///< .. free
 	Vector3 *pointCloud;		///< 포인트 클라우드.. free
+	vector<Vector3> skeleton;
 
 public:
     static const float xyScale;

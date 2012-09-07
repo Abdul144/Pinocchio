@@ -43,6 +43,8 @@ Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) :
 	{
 		skeletonTrakingFlags = NUI_SKELETON_TRACKING_FLAG_ENABLE_IN_NEAR_RANGE;
 		hr = sensor->NuiSkeletonTrackingEnable(nextSkeletonFrameEvent, skeletonTrakingFlags);
+
+		skeleton.resize(NUI_SKELETON_POSITION_COUNT);
 	}
 
 	// depth event 생성
@@ -111,6 +113,8 @@ void Kinect::releaseSensor()
 {
 	if (sensor)
 	{
+		skeleton.clear();
+
 		sensor->NuiShutdown();
 
 		if (nextSkeletonFrameEvent && nextSkeletonFrameEvent != INVALID_HANDLE_VALUE)
@@ -226,13 +230,18 @@ int Kinect::refreshSkeleton()
         return 0;
 
     // smooth out the skeleton data
-    HRESULT hr = sensor->NuiTransformSmooth(&skeletonFrame,NULL);
+    hr = sensor->NuiTransformSmooth(&skeletonFrame,NULL);
     if ( FAILED(hr) )
         return -1;
 	
 	// 스켈레톤 정보 받아 놓기
     for (int i = 0; i < NUI_SKELETON_POSITION_COUNT; i++)
     {
+		if (skeletonFrame.SkeletonData[0].eSkeletonPositionTrackingState[i] == NUI_SKELETON_POSITION_TRACKED)
+		{
+			Vector4 &pos = skeletonFrame.SkeletonData[0].SkeletonPositions[i];
+			skeleton[i].set(pos.x, pos.y, pos.z);
+		}
 	}
 
 	return 0;
