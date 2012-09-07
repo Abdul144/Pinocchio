@@ -12,23 +12,44 @@ int Kinect::magicX = -47;
 int Kinect::magicY = -47;
 
 
-Kinect::Kinect(INuiSensor *sensor) : sensor(sensor)
+Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) : sensor(sensor)
 {
 	HRESULT hr;
+	DWORD flag;
+
+	if (useSkeleton)
+		flag = NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH_AND_PLAYER_INDEX | NUI_INITIALIZE_FLAG_USES_SKELETON;
+	else
+		flag = NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH;
+
 
 	// 키넥트 초기화
-	hr = sensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH);
+	hr = sensor->NuiInitialize(flag);
 	if (FAILED(hr))
 	{
 		releaseSensor();
 		return;
 	}
 
+	// 스켈레톤 설정
+	if (useSkeleton)
+	{
+		skeletonTrakingFlags = NUI_SKELETON_TRACKING_FLAG_ENABLE_IN_NEAR_RANGE;
+		hr = sensor->NuiSkeletonTrackingEnable(nextSkeletonFrameEvent, skeletonTrakingFlags);
+	}else
+	{
+		skeletonTrakingFlags = 0;
+		nextSkeletonFrameEvent = 0;
+	}
+
 	// depth event 생성
 	nextDepthFrameEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	// depth image stream을 생성
-	hr = sensor->NuiImageStreamOpen(NUI_IMAGE_TYPE_DEPTH, NUI_IMAGE_RESOLUTION_640x480, 0, 2, nextDepthFrameEvent, &depthStreamHandle);
+	if (useSkeleton)
+		hr = sensor->NuiImageStreamOpen(NUI_IMAGE_TYPE_DEPTH_AND_PLAYER_INDEX, NUI_IMAGE_RESOLUTION_640x480, 0, 2, nextDepthFrameEvent, &depthStreamHandle);
+	else
+		hr = sensor->NuiImageStreamOpen(NUI_IMAGE_TYPE_DEPTH, NUI_IMAGE_RESOLUTION_640x480, 0, 2, nextDepthFrameEvent, &depthStreamHandle);
 	if (FAILED(hr))
 	{
 		releaseSensor();

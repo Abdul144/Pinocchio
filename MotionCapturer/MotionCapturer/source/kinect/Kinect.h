@@ -15,6 +15,8 @@ private:
 	HANDLE depthStreamHandle;
 	HANDLE nextColorFrameEvent;
 	HANDLE colorStreamHandle;
+	HANDLE nextSkeletonFrameEvent;
+	DWORD skeletonTrakingFlags;
 	
 	long depthWidth;
 	long depthHeight;
@@ -34,7 +36,7 @@ public:
 
 	// 멤버 함수
 public:
-	Kinect(INuiSensor *sensor);
+	Kinect(INuiSensor *sensor, bool useSkeleton);
 	~Kinect();
 
 	/// 키넥트 센서 해제

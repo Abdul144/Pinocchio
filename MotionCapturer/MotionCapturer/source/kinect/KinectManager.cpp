@@ -56,7 +56,7 @@ int KinectManager::connectKinects(int count)
 		}
 
 		// 센서 추가
-		Kinect *newKinect = new Kinect(sensor);
+		Kinect *newKinect = new Kinect(sensor, i == 0);
 		kinects.push_back(newKinect);
 		addedCount++;
 	}
