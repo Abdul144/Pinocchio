@@ -100,7 +100,6 @@ void Engine::draw()
 	glPointSize(1.f);
 	
 	float radius = 1.f;
-	Kinect *kinect = KINECT_MANAGER.getKinect(0);
 
 	glBegin(GL_POINTS);
 	{

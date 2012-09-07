@@ -48,6 +48,9 @@ public:
 	/// 컬러 버퍼 갱신
 	int refreshColorBuffer();
 
+	/// 스켈레톤 갱싱
+	int refreshSkeleton();
+
 	/// 매핑
 	int mapColorToDepth();
 

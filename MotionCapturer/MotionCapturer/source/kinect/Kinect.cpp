@@ -12,7 +12,14 @@ int Kinect::magicX = -47;
 int Kinect::magicY = -47;
 
 
-Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) : sensor(sensor)
+Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) :
+		sensor(sensor), 
+		nextDepthFrameEvent(null),
+		depthStreamHandle(null),
+		nextColorFrameEvent(null),
+		colorStreamHandle(null),
+		nextSkeletonFrameEvent(null),
+		skeletonTrakingFlags(0)
 {
 	HRESULT hr;
 	DWORD flag;
@@ -36,10 +43,6 @@ Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) : sensor(sensor)
 	{
 		skeletonTrakingFlags = NUI_SKELETON_TRACKING_FLAG_ENABLE_IN_NEAR_RANGE;
 		hr = sensor->NuiSkeletonTrackingEnable(nextSkeletonFrameEvent, skeletonTrakingFlags);
-	}else
-	{
-		skeletonTrakingFlags = 0;
-		nextSkeletonFrameEvent = 0;
 	}
 
 	// depth event »ý¼º
@@ -109,6 +112,25 @@ void Kinect::releaseSensor()
 	if (sensor)
 	{
 		sensor->NuiShutdown();
+
+		if (nextSkeletonFrameEvent && nextSkeletonFrameEvent != INVALID_HANDLE_VALUE)
+		{
+			CloseHandle(nextSkeletonFrameEvent);
+			nextSkeletonFrameEvent = NULL;
+		}
+		
+		if (nextDepthFrameEvent && nextDepthFrameEvent != INVALID_HANDLE_VALUE)
+		{
+			CloseHandle(nextDepthFrameEvent);
+			nextDepthFrameEvent = NULL;
+		}
+		
+		if (nextColorFrameEvent && nextColorFrameEvent != INVALID_HANDLE_VALUE)
+		{
+			CloseHandle(nextColorFrameEvent);
+			nextColorFrameEvent = NULL;
+		}
+
 		sensor->Release();
 	}
 }
@@ -171,6 +193,47 @@ int Kinect::refreshColorBuffer()
 	hr = sensor->NuiImageStreamReleaseFrame(colorStreamHandle, &imageFrame);
 	if (FAILED(hr))
 		return hr;
+
+	return 0;
+}
+
+/// ½ºÄÌ·¹Åæ °»½Ì
+int Kinect::refreshSkeleton()
+{
+	if (nextSkeletonFrameEvent == null || WaitForSingleObject(nextSkeletonFrameEvent, 0) != WAIT_OBJECT_0)
+		return -1;
+
+	NUI_SKELETON_FRAME skeletonFrame = {0};
+	HRESULT hr;
+	
+	hr = sensor->NuiSkeletonGetNextFrame(0, &skeletonFrame);
+	if (FAILED(hr))
+		return hr;
+	
+    bool foundSkeleton = false;
+    for ( int i = 0 ; i < NUI_SKELETON_COUNT ; i++ )
+    {
+        NUI_SKELETON_TRACKING_STATE trackingState = skeletonFrame.SkeletonData[i].eTrackingState;
+
+        if ( trackingState == NUI_SKELETON_TRACKED || trackingState == NUI_SKELETON_POSITION_ONLY )
+        {
+            foundSkeleton = true;
+        }
+    }
+
+    // no skeletons!
+    if( !foundSkeleton )
+        return 0;
+
+    // smooth out the skeleton data
+    HRESULT hr = sensor->NuiTransformSmooth(&skeletonFrame,NULL);
+    if ( FAILED(hr) )
+        return -1;
+	
+	// ½ºÄÌ·¹Åæ Á¤º¸ ¹Þ¾Æ ³õ±â
+    for (int i = 0; i < NUI_SKELETON_POSITION_COUNT; i++)
+    {
+	}
 
 	return 0;
 }
