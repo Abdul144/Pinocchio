@@ -2,10 +2,12 @@
 #include "stdafx.h"
 #include "Kinect.h"
 
+#include <GL/glew.h>
 #include <math.h>
 #include <NuiApi.h>
 
 #include "../util/Vector3.h"
+#include "../Engine.h"
 
 const float Kinect::xyScale = tanf(deg2rad(58.5f) * 0.5f) / (640.f * 0.5f);
 int Kinect::magicX = -47;
@@ -41,6 +43,8 @@ Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) :
 	// 스켈레톤 설정
 	if (useSkeleton)
 	{
+		nextSkeletonFrameEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
+
 		skeletonTrakingFlags = NUI_SKELETON_TRACKING_FLAG_ENABLE_IN_NEAR_RANGE;
 		hr = sensor->NuiSkeletonTrackingEnable(nextSkeletonFrameEvent, skeletonTrakingFlags);
 
@@ -201,7 +205,7 @@ int Kinect::refreshColorBuffer()
 	return 0;
 }
 
-/// 스켈레톤 갱싱
+/// 스켈레톤 갱신
 int Kinect::refreshSkeleton()
 {
 	if (nextSkeletonFrameEvent == null || WaitForSingleObject(nextSkeletonFrameEvent, 0) != WAIT_OBJECT_0)
@@ -215,6 +219,7 @@ int Kinect::refreshSkeleton()
 		return hr;
 	
     bool foundSkeleton = false;
+	int trackedIndex = -1;
     for ( int i = 0 ; i < NUI_SKELETON_COUNT ; i++ )
     {
         NUI_SKELETON_TRACKING_STATE trackingState = skeletonFrame.SkeletonData[i].eTrackingState;
@@ -222,6 +227,7 @@ int Kinect::refreshSkeleton()
         if ( trackingState == NUI_SKELETON_TRACKED || trackingState == NUI_SKELETON_POSITION_ONLY )
         {
             foundSkeleton = true;
+			trackedIndex = i;
         }
     }
 
@@ -237,10 +243,22 @@ int Kinect::refreshSkeleton()
 	// 스켈레톤 정보 받아 놓기
     for (int i = 0; i < NUI_SKELETON_POSITION_COUNT; i++)
     {
-		if (skeletonFrame.SkeletonData[0].eSkeletonPositionTrackingState[i] == NUI_SKELETON_POSITION_TRACKED)
+		if (skeletonFrame.SkeletonData[trackedIndex].eSkeletonPositionTrackingState[i] == NUI_SKELETON_POSITION_TRACKED)
 		{
-			Vector4 &pos = skeletonFrame.SkeletonData[0].SkeletonPositions[i];
-			skeleton[i].set(pos.x, pos.y, pos.z);
+			Vector4 &pos = skeletonFrame.SkeletonData[trackedIndex].SkeletonPositions[i];
+			
+			long x, y;
+			float realDepth;
+			ushort depth;
+			NuiTransformSkeletonToDepthImage( pos, &x, &y, &depth );
+			realDepth = (float)(depth >> 3) / 1000.f;
+			
+			skeleton[i].set((x - 320 + magicX) * realDepth * xyScale, (480 - y - 240 + magicY) * realDepth * xyScale, -realDepth);
+
+			//skeleton[i].set(pos.x, pos.y, -pos.z);
+		}else
+		{
+			skeleton[i].set(0.f, 0.f, 0.f);
 		}
 	}
 
@@ -302,4 +320,118 @@ int Kinect::mapColorToDepth()
 	}
 
 	return 0;
+}
+
+inline void drawLine(const Vector3 &v0, const Vector3 &v1)
+{
+	glBegin(GL_LINES);
+	{
+		glVertex3f(v0.getX(), v0.getY(), v0.getZ());
+		glVertex3f(v1.getX(), v1.getY(), v1.getZ());
+	}
+	glEnd();
+}
+
+/// 스켈레톤 그리기
+void Kinect::drawSkeleton()
+{
+	glPointSize(5.f);
+	glColor4ub(0, 255, 0, 255);
+	
+	glBegin(GL_POINTS);
+	{
+		for (int i=0; i<NUI_SKELETON_POSITION_COUNT; ++i)
+		{
+			glVertex3f(skeleton[i].getX(), skeleton[i].getY(), skeleton[i].getZ());
+		}
+	}
+	glEnd();
+
+	// Render Torso
+	drawLine(skeleton[NUI_SKELETON_POSITION_HEAD], skeleton[NUI_SKELETON_POSITION_SHOULDER_CENTER]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_SHOULDER_CENTER], skeleton[NUI_SKELETON_POSITION_SHOULDER_LEFT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_SHOULDER_CENTER], skeleton[NUI_SKELETON_POSITION_SHOULDER_RIGHT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_SHOULDER_CENTER], skeleton[NUI_SKELETON_POSITION_SPINE]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_SPINE], skeleton[NUI_SKELETON_POSITION_HIP_CENTER]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_HIP_CENTER], skeleton[NUI_SKELETON_POSITION_HIP_LEFT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_HIP_CENTER], skeleton[NUI_SKELETON_POSITION_HIP_RIGHT]);
+
+	// Left Arm
+	drawLine(skeleton[NUI_SKELETON_POSITION_SHOULDER_LEFT], skeleton[NUI_SKELETON_POSITION_ELBOW_LEFT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_ELBOW_LEFT], skeleton[NUI_SKELETON_POSITION_WRIST_LEFT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_WRIST_LEFT], skeleton[NUI_SKELETON_POSITION_HAND_LEFT]);
+
+	// Right Arm
+	drawLine(skeleton[NUI_SKELETON_POSITION_SHOULDER_RIGHT], skeleton[NUI_SKELETON_POSITION_ELBOW_RIGHT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_ELBOW_RIGHT], skeleton[NUI_SKELETON_POSITION_WRIST_RIGHT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_WRIST_RIGHT], skeleton[NUI_SKELETON_POSITION_HAND_RIGHT]);
+
+	// Left Leg
+	drawLine(skeleton[NUI_SKELETON_POSITION_HIP_LEFT], skeleton[NUI_SKELETON_POSITION_KNEE_LEFT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_KNEE_LEFT], skeleton[NUI_SKELETON_POSITION_ANKLE_LEFT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_ANKLE_LEFT], skeleton[NUI_SKELETON_POSITION_FOOT_LEFT]);
+
+	// Right Leg
+	drawLine(skeleton[NUI_SKELETON_POSITION_HIP_RIGHT], skeleton[NUI_SKELETON_POSITION_KNEE_RIGHT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_KNEE_RIGHT], skeleton[NUI_SKELETON_POSITION_ANKLE_RIGHT]);
+	drawLine(skeleton[NUI_SKELETON_POSITION_ANKLE_RIGHT], skeleton[NUI_SKELETON_POSITION_FOOT_RIGHT]);
+}
+
+/// 변환행렬 구성
+bool Kinect::setTransform(MarkerRecognizer::sMarkerInfo &marker)
+{
+	// 코너를 얻어옴
+	const Vector3 &v0 = pointCloud[(int)marker.corner[0].x + (int)marker.corner[0].y * depthWidth];
+	const Vector3 &v1 = pointCloud[(int)marker.corner[1].x + (int)marker.corner[1].y * depthWidth];
+	const Vector3 &v2 = pointCloud[(int)marker.corner[2].x + (int)marker.corner[2].y * depthWidth];
+	const Vector3 &v3 = pointCloud[(int)marker.corner[3].x + (int)marker.corner[3].y * depthWidth];
+
+	if (v0.getZ() > 4000 ||
+		v1.getZ() > 4000 ||
+		v2.getZ() > 4000 ||
+		v3.getZ() > 4000)
+	{
+		return false;
+	}
+
+	// 변환행렬 구성위해 up, direction 벡터를 얻는다.
+	Vector3 right, up, direction;
+	up = v0 - v1;
+	right = v2 - v1;
+	direction.cross(up, right);
+	up.normalize();
+	direction.normalize();
+	Vector3 vc;
+	vc = (v0 + v1 + v2 + v3) / 4.f;
+	
+	// 변환행렬 구성
+	transform.setViewMatrix(vc, direction, up);
+
+	return true;
+}
+
+/// 포인트 클라우드에 변환행렬 적용
+void Kinect::transformPointCloud(CloudElement *result)
+{
+	// 마커 위치를 기준으로 pointCloud를 변환
+	for (int i=0; i<depthWidth*depthHeight; ++i)
+	{
+		CloudElement &element = result[i];
+		transform.multiply(element.position, pointCloud[i]);
+						
+		element.color[0] = colorBuffer[i*4 + 2];
+		element.color[1] = colorBuffer[i*4 + 1];
+		element.color[2] = colorBuffer[i*4 + 0];
+	}
+}
+
+/// 스켈레톤에 변환행렬 적용
+void Kinect::transformSkeleton()
+{
+	// 마커 위치를 기준으로 skeleton을 변환
+	for (int i=0; i<NUI_SKELETON_POSITION_COUNT; ++i)
+	{
+		Vector3 temp = skeleton[i];
+		transform.multiply(skeleton[i], temp);
+	}
 }

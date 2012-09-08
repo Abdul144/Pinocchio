@@ -122,6 +122,12 @@ void Engine::draw()
 	}
 	glEnd();
 
+	// skeleton 그리기
+	if (KINECT_MANAGER.getKinectCount() > 0)
+	{
+		KINECT_MANAGER.getKinect(0)->drawSkeleton();
+	}
+
 	glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -183,49 +189,4 @@ void Engine::resize(int width, int height)
 void Engine::addPointCloud(CloudElement *cloud)
 {
 	pointCloudQueue.push_back(cloud);
-}
-
-// 포인트 클라우드를 마커에 맞추어 역변환
-bool Engine::inverseTransformPointCloud(CloudElement *result, MarkerRecognizer::sMarkerInfo &marker, const Vector3 *point, const byte *colorBuffer, int width, int height)
-{
-	// 코너를 얻어옴
-	const Vector3 &v0 = point[(int)marker.corner[0].x + (int)marker.corner[0].y * width];
-	const Vector3 &v1 = point[(int)marker.corner[1].x + (int)marker.corner[1].y * width];
-	const Vector3 &v2 = point[(int)marker.corner[2].x + (int)marker.corner[2].y * width];
-	const Vector3 &v3 = point[(int)marker.corner[3].x + (int)marker.corner[3].y * width];
-
-	if (v0.getZ() > 4000 ||
-		v1.getZ() > 4000 ||
-		v2.getZ() > 4000 ||
-		v3.getZ() > 4000)
-	{
-		return false;
-	}
-
-	// 변환행렬 구성위해 up, direction 벡터를 얻는다.
-	Vector3 right, up, direction;
-	up = v0 - v1;
-	right = v2 - v1;
-	direction.cross(up, right);
-	up.normalize();
-	direction.normalize();
-	Vector3 vc;
-	vc = (v0 + v1 + v2 + v3) / 4.f;
-	
-	// 변환행렬 구성
-	Matrix transform;
-	transform.setViewMatrix(vc, direction, up);
-										
-	// 마커 위치를 기준으로 pointCloud를 변환
-	for (int i=0; i<width*height; ++i)
-	{
-		Engine::CloudElement &element = result[i];
-		transform.multiply(element.position, point[i]);
-						
-		element.color[0] = colorBuffer[i*4 + 2];
-		element.color[1] = colorBuffer[i*4 + 1];
-		element.color[2] = colorBuffer[i*4 + 0];
-	}
-
-	return true;
 }

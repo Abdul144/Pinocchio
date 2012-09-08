@@ -1,11 +1,15 @@
 #pragma once
 
 #include <vector>
+
+#include "../marker/MarkerRecognizer.h"
 #include "../util/defines.h"
+#include "../util/Matrix.h"
 
 
 using namespace std;
 
+class CloudElement;
 class INuiSensor;
 class Vector3;
 
@@ -25,6 +29,7 @@ private:
 	long depthHeight;
 	long colorWidth;
 	long colorHeight;
+	Matrix transform;	///< 변환 행렬
 	
 	ushort *depthBuffer;		///< 깊이 버퍼.. free
 	byte *colorBuffer;			///< 컬러 버퍼.. free
@@ -52,11 +57,23 @@ public:
 	/// 컬러 버퍼 갱신
 	int refreshColorBuffer();
 
-	/// 스켈레톤 갱싱
+	/// 스켈레톤 갱신
 	int refreshSkeleton();
 
 	/// 매핑
 	int mapColorToDepth();
+
+	/// 스켈레톤 그리기
+	void drawSkeleton();
+
+	/// 변환행렬 구성
+	bool setTransform(MarkerRecognizer::sMarkerInfo &marker);
+
+	/// 포인트 클라우드에 변환행렬 적용
+	void transformPointCloud(CloudElement *result);
+
+	/// 스켈레톤에 변환행렬 적용
+	void transformSkeleton();
 
 
 	// 접근
@@ -69,5 +86,6 @@ public:
 	GETTER(byte*, ColorBuffer, colorBuffer)
 	GETTER(byte*, MappedColorBuffer, mappedColorBuffer)
 	GETTER(Vector3*, PointCloud, pointCloud)
+	GETTER_CONST_REF(Matrix, Transform, transform)
 };
 

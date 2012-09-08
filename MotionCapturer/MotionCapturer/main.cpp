@@ -173,8 +173,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND &hWnd)
 
 bool initializeKinect()
 {
-	Matrix transform, temp;
-
+	ENGINE.clearPointCloudQueue();
 	KINECT_MANAGER.deconnectKinects();
 
 	/// 키넥트 센서로부터 정보를 받아와서 가공
@@ -211,14 +210,18 @@ bool initializeKinect()
 			MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
 			
 			// 마커 위치를 기준으로 pointCloud를 변환
-			Engine::CloudElement *cloud = new Engine::CloudElement[640*480];
-			bool transformed = ENGINE.inverseTransformPointCloud(cloud, marker, kinect->getPointCloud(), kinect->getMappedColorBuffer(), 640, 480);
-			
+			bool transformed = kinect->setTransform(marker);
 			if (transformed)
 			{
+				CloudElement *cloud = new CloudElement[640*480];
+
+				// 변환
+				kinect->transformPointCloud(cloud);
+
 				// 포인트 클라우드 큐에 넣어놓기
 				ENGINE.addPointCloud(cloud);
 			}
+
 		}else
 		{
 			KINECT_MANAGER.deconnectKinects();
@@ -229,6 +232,53 @@ bool initializeKinect()
 	}
 
 	return true;
+}
+
+// 포인트 클라우드 갱신
+void refreshPointCloud()
+{
+	ENGINE.clearPointCloudQueue();
+
+	/// 키넥트 센서로부터 정보를 받아와서 가공
+	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
+	{
+		Kinect *kinect = KINECT_MANAGER.getKinect(i);
+
+				
+		/// depth와 color 버퍼를 갱신하고 매핑한다.
+		bool depthIsRefreshed, colorIsRefreshed;
+		do
+			depthIsRefreshed = kinect->refreshDepthBuffer() >= 0;
+		while(depthIsRefreshed == false);
+		do
+			colorIsRefreshed = kinect->refreshColorBuffer() >= 0;
+		while (colorIsRefreshed == false);
+
+		kinect->mapColorToDepth();
+		
+
+		/// 포인트 클라우드 변환, 추가
+		CloudElement *cloud = new CloudElement[640*480];
+
+		// 변환
+		kinect->transformPointCloud(cloud);
+
+		// 포인트 클라우드 큐에 넣어놓기
+		ENGINE.addPointCloud(cloud);
+				
+	}
+
+}
+
+// 스켈레톤 갱신
+void refreshSkeleton()
+{
+	if (KINECT_MANAGER.getKinectCount() <= 0)
+		return;
+
+	Kinect *kinect = KINECT_MANAGER.getKinect(0);
+	kinect->refreshSkeleton();
+	kinect->transformSkeleton();
 }
 
 //
@@ -315,11 +365,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		initializeKinect();
 		break;
 
+	case WM_MBUTTONDOWN:
+		// 포인트 클라우드 큐 비우기
+		ENGINE.clearPointCloudQueue();
+		break;
+
 	case WM_RBUTTONDOWN:
-		{
-			// 포인트 클라우드 큐 비우기
-			ENGINE.clearPointCloudQueue();
-		}
+		// 포인트 클라우드 갱신
+		refreshPointCloud();
+
+		// 스켈레톤 갱신
+		//refreshSkeleton();
 		break;
 
 	default:

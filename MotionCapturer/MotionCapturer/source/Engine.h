@@ -16,16 +16,15 @@ class Vector3;
 using namespace std;
 
 
+struct CloudElement
+{
+	Vector3 position;
+	byte color[3];
+};
+
 class Engine : public Singleton<Engine>
 {
 	USE_SINGLETON(Engine)
-
-public:
-	struct CloudElement
-	{
-		Vector3 position;
-		byte color[3];
-	};
 
 	// 멤버 변수
 private:
@@ -62,9 +61,6 @@ public:
 	void clearPointCloudQueue();
 
 	void addPointCloud(CloudElement *cloud);
-
-	// 포인트 클라우드를 마커에 맞추어 역변환
-	bool inverseTransformPointCloud(CloudElement *result, MarkerRecognizer::sMarkerInfo &marker, const Vector3 *point, const byte *colorBuffer, int width, int height);
 
 	// 접근
 public:
