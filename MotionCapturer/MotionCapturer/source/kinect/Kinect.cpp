@@ -208,6 +208,8 @@ int Kinect::refreshColorBuffer()
 /// ½ºÄÌ·¹Åæ °»½Å
 int Kinect::refreshSkeleton()
 {
+    static const float xyScale = tanf(deg2rad(58.5f) * 0.5f) / (640.f * 0.5f);
+
 	if (nextSkeletonFrameEvent == null || WaitForSingleObject(nextSkeletonFrameEvent, 0) != WAIT_OBJECT_0)
 		return -1;
 
@@ -247,15 +249,7 @@ int Kinect::refreshSkeleton()
 		{
 			Vector4 &pos = skeletonFrame.SkeletonData[trackedIndex].SkeletonPositions[i];
 			
-			long x, y;
-			float realDepth;
-			ushort depth;
-			NuiTransformSkeletonToDepthImage( pos, &x, &y, &depth );
-			realDepth = (float)(depth >> 3) / 1000.f;
-			
-			skeleton[i].set((x - 320 + magicX) * realDepth * xyScale, (480 - y - 240 + magicY) * realDepth * xyScale, -realDepth);
-
-			//skeleton[i].set(pos.x, pos.y, -pos.z);
+			skeleton[i].set(pos.x + magicX * pos.z * xyScale, pos.y + magicY * pos.z * xyScale, -pos.z);
 		}else
 		{
 			skeleton[i].set(0.f, 0.f, 0.f);

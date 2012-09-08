@@ -375,7 +375,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		refreshPointCloud();
 
 		// ½ºÄÌ·¹Åæ °»½Å
-		//refreshSkeleton();
+		refreshSkeleton();
 		break;
 
 	default:
