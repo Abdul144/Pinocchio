@@ -85,12 +85,20 @@
   <ItemGroup>
     <ClInclude Include="main.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="source\animation\Animation.h" />
+    <ClInclude Include="source\animation\AnimationInstance.h" />
+    <ClInclude Include="source\animation\BoneData.h" />
+    <ClInclude Include="source\animation\KeyFrame.h" />
+    <ClInclude Include="source\animation\XMLExporter.h" />
+    <ClInclude Include="source\animation\XMLImporter.h" />
     <ClInclude Include="source\camera\Camera.h" />
     <ClInclude Include="source\Engine.h" />
     <ClInclude Include="source\kinect\Kinect.h" />
     <ClInclude Include="source\kinect\KinectManager.h" />
     <ClInclude Include="source\marker\CamCalib.h" />
     <ClInclude Include="source\marker\MarkerRecognizer.h" />
+    <ClInclude Include="source\model\Actor.h" />
+    <ClInclude Include="source\model\Bone.h" />
     <ClInclude Include="source\util\BmpExporter.h" />
     <ClInclude Include="source\util\defines.h" />
     <ClInclude Include="source\util\Matrix.h" />
@@ -102,12 +110,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="source\animation\Animation.cpp" />
+    <ClCompile Include="source\animation\AnimationInstance.cpp" />
+    <ClCompile Include="source\animation\KeyFrame.cpp" />
+    <ClCompile Include="source\animation\XMLExporter.cpp" />
+    <ClCompile Include="source\animation\XMLImporter.cpp" />
     <ClCompile Include="source\camera\Camera.cpp" />
     <ClCompile Include="source\Engine.cpp" />
     <ClCompile Include="source\kinect\Kinect.cpp" />
     <ClCompile Include="source\kinect\KinectManager.cpp" />
     <ClCompile Include="source\marker\CamCalib.cpp" />
     <ClCompile Include="source\marker\MarkerRecognizer.cpp" />
+    <ClCompile Include="source\model\Actor.cpp" />
+    <ClCompile Include="source\model\Bone.cpp" />
     <ClCompile Include="source\util\BmpExporter .cpp" />
     <ClCompile Include="source\util\Matrix.cpp" />
     <ClCompile Include="source\util\Quaternion.cpp" />

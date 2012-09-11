@@ -28,6 +28,12 @@
     <Filter Include="source\marker">
       <UniqueIdentifier>{c6ad0efb-daba-44d4-a787-8a89259d2a04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="source\animation">
+      <UniqueIdentifier>{a2935b8b-95cc-4e13-bd15-5b54e6cf2661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\model">
+      <UniqueIdentifier>{5168be88-4c54-495d-b53b-39cd25fd6942}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -89,6 +95,30 @@
     <ClInclude Include="source\util\Quaternion.h">
       <Filter>source\util</Filter>
     </ClInclude>
+    <ClInclude Include="source\animation\Animation.h">
+      <Filter>source\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\animation\AnimationInstance.h">
+      <Filter>source\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\animation\BoneData.h">
+      <Filter>source\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\animation\KeyFrame.h">
+      <Filter>source\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\animation\XMLExporter.h">
+      <Filter>source\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\animation\XMLImporter.h">
+      <Filter>source\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\Bone.h">
+      <Filter>source\model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\model\Actor.h">
+      <Filter>source\model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -126,6 +156,27 @@
     </ClCompile>
     <ClCompile Include="source\util\Quaternion.cpp">
       <Filter>source\util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\animation\Animation.cpp">
+      <Filter>source\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\animation\AnimationInstance.cpp">
+      <Filter>source\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\animation\KeyFrame.cpp">
+      <Filter>source\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\animation\XMLExporter.cpp">
+      <Filter>source\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\animation\XMLImporter.cpp">
+      <Filter>source\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model\Actor.cpp">
+      <Filter>source\model</Filter>
+    </ClCompile>
+    <ClCompile Include="source\model\Bone.cpp">
+      <Filter>source\model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
