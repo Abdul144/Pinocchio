@@ -7,6 +7,7 @@
 
 #include "defines.h"
 #include "Vector3.h"
+#include "Quaternion.h"
 
 
 /// 생성자
@@ -38,8 +39,15 @@ void Matrix::setScale(const float &scaleX, const float &scaleY, const float &sca
 	e[2] = 0;			e[6] = 0;			e[10] = scaleZ;		e[14] = 0;
 	e[3] = 0;			e[7] = 0;			e[11] = 0;			e[15] = 1;
 }
+void Matrix::setScale(const Vector3 &vec)
+{
+	return setScale(vec.getX(), vec.getY(), vec.getZ());
+}
 
 /// Rotate 행렬로 만들기
+void Matrix::setRotate(const Quaternion &q)
+{
+}
 void Matrix::setRotateX(const float &degree)
 {
 	float r = deg2rad(degree);
@@ -55,8 +63,6 @@ void Matrix::setRotateZ(const float &degree)
 	float r = deg2rad(degree);
 	return setRotateZByRadian(r);
 }
-
-/// Rotate 행렬로 만들기
 void Matrix::setRotateXByRadian(float radian)
 {
 	float c, s;
@@ -95,6 +101,10 @@ void Matrix::setTranslate(const float &x, const float &y, const float &z)
 	e[1] = 0;			e[5] = 1;			e[9] = 0;			e[13] = y;
 	e[2] = 0;			e[6] = 0;			e[10] = 1;			e[14] = z;
 	e[3] = 0;			e[7] = 0;			e[11] = 0;			e[15] = 1;
+}
+void Matrix::setTranslate(const Vector3 &vec)
+{
+	return setTranslate(vec.getX(), vec.getY(), vec.getZ());
 }
 
 /// View 행렬로 만들기

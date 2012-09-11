@@ -6,6 +6,7 @@
 
 
 class Vector3;
+class Quaternion;
 
 /**
  * @author 김종헌
@@ -37,19 +38,20 @@ public:
 
 	/// Scale 행렬로 만들기
 	void setScale(const float &scaleX, const float &scaleY, const float &scaleZ);
+	void setScale(const Vector3 &vec);
 
 	/// Rotate 행렬로 만들기
+	void setRotate(const Quaternion &q);
 	void setRotateX(const float &degree);
 	void setRotateY(const float &degree);
 	void setRotateZ(const float &degree);
-
-	/// Rotate 행렬로 만들기
 	void setRotateXByRadian(float radian);
 	void setRotateYByRadian(float radian);
 	void setRotateZByRadian(float radian);
 
 	/// Translate 행렬로 만들기
 	void setTranslate(const float &x, const float &y, const float &z);
+	void setTranslate(const Vector3 &vec);
 
 	/// View 행렬로 만들기
 	void setViewMatrix(const Vector3 &position, const Vector3 &direction, const Vector3 &up);
