@@ -61,3 +61,8 @@ void Bone::update(BoneData *curData, BoneData *nextData, float alpha)
 		transform.multiply(transformFromParent, objectTransform);
 	}
 }
+
+void Bone::draw()
+{
+
+}
