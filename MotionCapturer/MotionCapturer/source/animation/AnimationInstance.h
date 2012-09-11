@@ -22,7 +22,7 @@ private:
 
 	// 멤버 함수
 public:
-    AnimationInstance(Animation *animation);
+    AnimationInstance();
 
     void update(const vector<Bone*> &bones, int deltaFrame);
 
@@ -42,4 +42,5 @@ public:
 
 	// 접근
 	GETTER(int, KeyFrameCount, keyFrameCount)
-}
+	GETTER_SETTER(Animation*, Animation, animation);
+};

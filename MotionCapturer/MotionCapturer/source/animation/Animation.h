@@ -36,4 +36,4 @@ public:
     GETTER_CONST_REF(string, Name, name)
     GETTER(int, KeyFrameCount, keyFrames.size())
     GETTER(int, TotalFrameCount, totalFrameCount)
-}
+};

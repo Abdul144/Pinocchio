@@ -8,12 +8,8 @@
 #include "KeyFrame.h"
 
 
-AnimationInstance::AnimationInstance(Animation *animation)
+AnimationInstance::AnimationInstance() : animation(null)
 {
-    if (animation == null)
-        return;
-
-    this->animation = animation;
 }
 
 void AnimationInstance::update(const vector<Bone*> &bones, int deltaFrame)

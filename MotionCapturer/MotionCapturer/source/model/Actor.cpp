@@ -2,3 +2,114 @@
 #include "stdafx.h"
 #include "Actor.h"
 
+#include "Bone.h"
+
+
+Actor::Actor()
+{
+    // 본리스트 초기화
+    initializeBones();
+}
+
+void Actor::addBone(int parentType, const Vector3 &localPosition, const Quaternion &localRotation, const Vector3 &localScale,
+        string name, int type, const Vector3 &size, const Vector3 &center)
+{
+    // 본을 생성
+    Bone *parentBone = null;
+	if (boneMap.find(parentType) != boneMap.end())
+        parentBone = boneMap[parentType];
+	Bone *bone = new Bone(parentBone, name, (Bone::BoneType)type);
+
+    // 본의 부모상대 변환행렬 설정
+    Matrix localTransform = Matrix.CreateScale(localScale) * Matrix.CreateFromQuaternion(localRotation) * Matrix.CreateTranslation(localPosition);
+    bone.LocalTransform = localTransform;
+
+    // 리스트와 맵에 추가
+    boneList.Add(bone);
+    boneMap[bone.Type] = bone;
+}
+
+void Actor::initializeBones()
+{
+    // 초기화
+    const float baseSize = 10.0f;
+    boneList = new ArrayList();
+    boneMap = new Dictionary<Bone.BoneType,Bone>();
+
+    /// 본 추가
+    addBone(graphicsDevice, Bone.BoneType.None, new Vector3(0f,0f,0f), Quaternion.Identity, new Vector3(1.0f),
+        "Hip_Center", Bone.BoneType.Hip_Center, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(0f, 20f, 0f), Quaternion.Identity, new Vector3(1.0f),
+        "Spine", Bone.BoneType.Spine, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Spine, new Vector3(0f, 50f, 0f), Quaternion.Identity, new Vector3(1.0f),
+        "Shoulder_Center", Bone.BoneType.Shoulder_Center, new Vector3(baseSize), Vector3.Zero);
+
+    addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(0, 25, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Head", Bone.BoneType.Head, new Vector3(baseSize), Vector3.Zero);
+
+    addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(-30, -10, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Shoulder_Right", Bone.BoneType.Shoulder_Right, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Shoulder_Right, new Vector3(-50, 0, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Elbow_Right", Bone.BoneType.Elbow_Right, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Elbow_Right, new Vector3(-40, 0, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Wrist_Right", Bone.BoneType.Wrist_Right, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Wrist_Right, new Vector3(-20, 0, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Hand_Right", Bone.BoneType.Hand_Right, new Vector3(baseSize), Vector3.Zero);
+
+    addBone(graphicsDevice, Bone.BoneType.Shoulder_Center, new Vector3(30, -10, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Shoulder_Left", Bone.BoneType.Shoulder_Left, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Shoulder_Left, new Vector3(50, 0, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Elbow_Left", Bone.BoneType.Elbow_Left, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Elbow_Left, new Vector3(40 , 0, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Wrist_Left", Bone.BoneType.Wrist_Left, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Wrist_Left, new Vector3(20, 0, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Hand_Left", Bone.BoneType.Hand_Left, new Vector3(baseSize), Vector3.Zero);
+
+    addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(-20, -10, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Hip_Right", Bone.BoneType.Hip_Right, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Hip_Right, new Vector3(0, -90, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Knee_Right", Bone.BoneType.Knee_Right, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Knee_Right, new Vector3(0, -70, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Ankle_Right", Bone.BoneType.Ankle_Right, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Ankle_Right, new Vector3(0, -10, -20), Quaternion.Identity, new Vector3(1.0f),
+        "Foot_Right", Bone.BoneType.Foot_Right, new Vector3(baseSize), Vector3.Zero);
+
+    addBone(graphicsDevice, Bone.BoneType.Hip_Center, new Vector3(20, -10, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Hip_Left", Bone.BoneType.Hip_Left, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Hip_Left, new Vector3(0, -90, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Knee_Left", Bone.BoneType.Knee_Left, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Knee_Left, new Vector3(0, -70, 0), Quaternion.Identity, new Vector3(1.0f),
+        "Ankle_Left", Bone.BoneType.Ankle_Left, new Vector3(baseSize), Vector3.Zero);
+    addBone(graphicsDevice, Bone.BoneType.Ankle_Left, new Vector3(0, -10, -20), Quaternion.Identity, new Vector3(1.0f),
+        "Foot_Left", Bone.BoneType.Foot_Left, new Vector3(baseSize), Vector3.Zero);
+
+}
+
+    
+void Actor::update(int deltaFrame)
+{
+    // 애니메이션 업데이트
+    curAnimation.update(boneList, deltaFrame);
+}
+
+void Actor::draw(const Matrix &view, const Matrix &projection)
+{
+    Matrix transform = Matrix.CreateScale(scale) * Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z) * Matrix.CreateTranslation(position);
+
+    //*
+    // 각 본들을 그린다.
+    foreach (Bone bone in boneList)
+        bone.draw(transform, view, projection, color);
+    //*/
+    /*
+    for (int i = 0; i < 3; ++i)
+    {
+        ((Bone)boneList[i]).draw(view, projection, color);
+    }
+    //*/
+}
+
+void Actor::setCurAnimation(Animation *animation)
+{
+    curAnimation = new AnimationInstance(animation);
+}

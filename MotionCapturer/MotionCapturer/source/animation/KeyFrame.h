@@ -41,4 +41,4 @@ public:
     GETTER(int, BoneDataCount, boneDatas.size())
     GETTER(int, StartFrame, startFrame)
 
-}
+};
