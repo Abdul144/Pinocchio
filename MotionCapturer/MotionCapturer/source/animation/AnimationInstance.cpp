@@ -53,6 +53,7 @@ void AnimationInstance::refreshCurKeyFrameIndex(int curFrame)
 {
     while (true)
     {
+		int keyFrameCount = animation->getKeyFrameCount();
 		KeyFrame *keyFrame = animation->getKeyFrame(curKeyFrameIndex);
 
         if (curFrame >= keyFrame->getStartFrame() + keyFrame->getDuration())
@@ -78,6 +79,7 @@ void AnimationInstance::reset()
 // 본 리스트 업데이트
 void AnimationInstance::updateBones(const vector<Bone*> &boneList, int curFrame)
 {
+	int keyFrameCount = animation->getKeyFrameCount();
     KeyFrame *curKeyFrame = animation->getKeyFrame(curKeyFrameIndex);
     KeyFrame *nextKeyFrame = null;
     if (curKeyFrameIndex + 1 < keyFrameCount)
@@ -102,4 +104,19 @@ void AnimationInstance::updateBones(const vector<Bone*> &boneList, int curFrame)
         else
             bone->update(curBoneData, nextBoneData, 1.0f);
     }
+}
+
+// 애니메이션 설정
+void AnimationInstance::setAnimation(Animation *animation)
+{
+	this->animation = animation;
+
+	curFrame = 0;
+	curKeyFrameIndex = 0;
+}
+
+// 키 프레임 개수 얻기
+void AnimationInstance::getKeyFrameCount()
+{
+	animation->getKeyFrameCount();
 }

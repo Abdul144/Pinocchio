@@ -70,6 +70,6 @@ public:
 	GETTER(BoneType, BoneType, type)
     GETTER_CONST_REF(string, Name ,name)
     GETTER_CONST_REF(Matrix, Transform, transform)
-    GETTER_CONST_REF(Matrix, TransformFromParent, transformFromParent)
+    GETTER_SETTER_CONST_REF(Matrix, TransformFromParent, transformFromParent)
 };
 

@@ -14,7 +14,6 @@ class AnimationInstance
 	// 멤버 변수
 private:
     Animation *animation;
-	int keyFrameCount;
 
     int curFrame;
 	int curKeyFrameIndex;
@@ -39,8 +38,13 @@ public:
     // 본 리스트 업데이트
     void updateBones(const vector<Bone*> &boneList, int curFrame);
 
+	// 애니메이션 설정
+	void setAnimation(Animation *animation);
+
+	// 키 프레임 개수 얻기
+	void getKeyFrameCount();
+
 
 	// 접근
-	GETTER(int, KeyFrameCount, keyFrameCount)
-	GETTER_SETTER(Animation*, Animation, animation);
+	GETTER(Animation*, Animation, animation);
 };

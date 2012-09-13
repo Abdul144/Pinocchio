@@ -19,8 +19,8 @@ class Actor
 {
 	// ¸â¹ö º¯¼ö
 private:
-    vector<Bone*> boneList;
-    hash_map<int, Bone*> boneMap;		///< Bone::BoneType , Bone* ÇØ½Ã¸Ê
+    vector<Bone*> boneList;				///< free
+    hash_map<int, Bone*> boneMap;		///< Bone::BoneType , Bone* ÇØ½Ã¸Ê.. no free
     Vector3 position;
     Vector3 rotation;
     Vector3 scale;
@@ -30,10 +30,13 @@ private:
 	// ¸â¹ö ÇÔ¼ö
 private:
 	void addBone(int parentType, const Vector3 &localPosition, const Quaternion &localRotation, const Vector3 &localScale,
-        string name, int type, const Vector3 &size, const Vector3 &center);
+        string name, int type);
+
+	void destroy();
 
 public:
     Actor();
+	~Actor();
 
     void initializeBones();
     
