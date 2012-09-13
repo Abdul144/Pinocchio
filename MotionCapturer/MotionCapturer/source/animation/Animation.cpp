@@ -10,6 +10,14 @@ Animation::Animation() : totalFrameCount(0)
 {
 }
 
+/// 소멸자
+Animation::~Animation()
+{
+	for (uint i=0; i<keyFrames.size(); ++i)
+	{
+		DELETE(keyFrames[i])
+	}
+}
 
 /// 키프레임 추가
 KeyFrame* Animation::addKeyFrame()

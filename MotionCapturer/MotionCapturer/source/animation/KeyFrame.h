@@ -16,17 +16,17 @@ private:
     int startFrame;
     int duration;					///< 재생할 길이
 
-    vector<BoneData*> boneDatas;		///< 각 본의 Data
+    vector<BoneData*> boneDatas;	///< 각 본의 Data.. free
 
 
 
 	// 멤버 함수
 public:
     /// 생성자
-    KeyFrame()
-    {
-    }
+    KeyFrame();
 
+	/// 소멸자
+	~KeyFrame();
 
     /// 본정보 추가
     BoneData* addBoneData();

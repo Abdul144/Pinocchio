@@ -16,7 +16,7 @@ class Animation
 	// 멤버 변수
 private:
     string name;
-    vector<KeyFrame*> keyFrames;		///< 키프레임 배열
+    vector<KeyFrame*> keyFrames;		///< 키프레임 배열.. free
     int totalFrameCount;
 
 
@@ -25,6 +25,8 @@ public:
     ///  생성자
     Animation();
 
+	/// 소멸자
+	~Animation();
 
     /// 키프레임 추가
     KeyFrame* addKeyFrame();

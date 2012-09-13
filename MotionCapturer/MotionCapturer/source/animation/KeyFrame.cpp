@@ -4,6 +4,19 @@
 
 #include "BoneData.h"
 
+/// 생성자
+KeyFrame::KeyFrame() : startFrame(0), duration(0)
+{
+}
+
+/// 소멸자
+KeyFrame::~KeyFrame()
+{
+	for (uint i=0; i<boneDatas.size(); ++i)
+	{
+		DELETE(boneDatas[i])
+	}
+}
 
 /// 본정보 추가
 BoneData* KeyFrame::addBoneData()

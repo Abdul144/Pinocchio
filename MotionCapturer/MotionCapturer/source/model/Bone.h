@@ -48,11 +48,11 @@ public:
 
 	// 멤버 변수
 private:
-    Bone *parent;
+    Bone *parent;				///< no free
     string name;
     BoneType type;
     Matrix transform;
-    Matrix transformFromParent;  // 부모로 부터의 변환행렬
+    Matrix transformFromParent;	///< 부모로 부터의 변환행렬
 
 
 	// 멤버 함수

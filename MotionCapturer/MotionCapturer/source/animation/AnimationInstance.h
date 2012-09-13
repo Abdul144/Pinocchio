@@ -13,7 +13,7 @@ class AnimationInstance
 {
 	// ¸â¹ö º¯¼ö
 private:
-    Animation *animation;
+    Animation *animation;		///< no free
 
     int curFrame;
 	int curKeyFrameIndex;
