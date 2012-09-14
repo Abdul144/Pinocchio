@@ -349,6 +349,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			ENGINE.getCamera().pitch(-deg2rad(2));
 		}
+
+		if (nKey == VK_ESCAPE)
+		{
+			// 포인트 클라우드 큐 비우기
+			ENGINE.clearPointCloudQueue();
+		}
+
+		if (nKey == VK_RETURN)
+		{
+			KINECT_MANAGER.getKinect(0)->saveSkeletonInfo();
+		}
 		
 		break;
 	}
@@ -362,7 +373,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	case WM_LBUTTONDOWN:
-		initializeKinect();
+		//initializeKinect();
 		break;
 
 	case WM_MBUTTONDOWN:

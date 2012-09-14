@@ -4,6 +4,7 @@
 
 #include "../util/defines.h"
 #include "../util/Matrix.h"
+#include "../util/Vector3.h"
 
 
 using namespace std;
@@ -16,8 +17,8 @@ class Bone
 public:
     enum BoneType
     {
-        None,
-        Hip_Center,
+        None				= -1,
+        Hip_Center			= 0,
         Spine,
         Shoulder_Center,
             
@@ -51,6 +52,7 @@ private:
     Bone *parent;				///< no free
     string name;
     BoneType type;
+	Vector3 localPosition;
     Matrix transform;
     Matrix transformFromParent;	///< 부모로 부터의 변환행렬
 
@@ -68,6 +70,7 @@ public:
 
     // 접근
 	GETTER(BoneType, BoneType, type)
+	GETTER_SETTER_CONST_REF(Vector3, LocalPosition, localPosition)
     GETTER_CONST_REF(string, Name ,name)
     GETTER_CONST_REF(Matrix, Transform, transform)
     GETTER_SETTER_CONST_REF(Matrix, TransformFromParent, transformFromParent)

@@ -37,8 +37,8 @@ public:
 
         
     // Á¢±Ù
-    GETTER(int, Duration, duration)
     GETTER(int, BoneDataCount, boneDatas.size())
-    GETTER(int, StartFrame, startFrame)
+    GETTER_SETTER(int, Duration, duration)
+    GETTER_SETTER(int, StartFrame, startFrame)
 
 };

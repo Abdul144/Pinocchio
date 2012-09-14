@@ -8,6 +8,7 @@
 
 #include "../util/Vector3.h"
 #include "../Engine.h"
+#include "../model/Bone.h"
 
 const float Kinect::xyScale = tanf(deg2rad(58.5f) * 0.5f) / (640.f * 0.5f);
 int Kinect::magicX = -47;
@@ -49,6 +50,7 @@ Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) :
 		hr = sensor->NuiSkeletonTrackingEnable(nextSkeletonFrameEvent, skeletonTrakingFlags);
 
 		skeleton.resize(NUI_SKELETON_POSITION_COUNT);
+		skeletonRotationInfo.resize(NUI_SKELETON_POSITION_COUNT);
 	}
 
 	// depth event 생성
@@ -98,6 +100,10 @@ Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) :
 	colorCoordinates = new long[depthWidth * depthHeight * 2];
 	memset(colorCoordinates, 0, sizeof(long) * depthWidth * depthHeight * 2);
 	pointCloud = new Vector3[depthWidth * depthHeight];
+
+	// 변환행렬 초기화
+	transform.setIdentity();
+
 }
 
 
@@ -324,6 +330,105 @@ inline void drawLine(const Vector3 &v0, const Vector3 &v1)
 		glVertex3f(v1.getX(), v1.getY(), v1.getZ());
 	}
 	glEnd();
+}
+
+/// 스켈레톤 회전각 계산
+void Kinect::refreshSingleSkeletonRotation(int parentBoneIndex, int boneIndex)
+{
+	if (
+		(skeleton[parentBoneIndex].getX() == 0.f && skeleton[parentBoneIndex].getY() == 0.f && skeleton[parentBoneIndex].getZ() == 0.f) ||
+		(skeleton[boneIndex].getX() == 0.f && skeleton[boneIndex].getY() == 0.f && skeleton[boneIndex].getZ() == 0.f)
+		)
+	{	// 부모나 자신의 정보가 없으면 기본 각도로
+		skeletonRotationInfo[boneIndex].set(0.f, 0.f, 0.f, 1.f);
+		return;
+	}
+
+	Actor &base = ENGINE.getBaseActor();
+
+	// 기본 벡터
+	Vector3 baseVec;
+	baseVec = base.getBone(boneIndex)->getLocalPosition() - base.getBone(parentBoneIndex)->getLocalPosition();
+	baseVec.normalize();
+
+	// 현재 벡터
+	Vector3 vec;
+	vec = skeleton[boneIndex] - skeleton[parentBoneIndex];
+	vec.normalize();
+
+	// 각도 차이 구하기
+	skeletonRotationInfo[boneIndex].setFromVectors(baseVec, vec);
+}
+
+// 스켈레톤 회전 정보 갱신
+void Kinect::refreshSkeletonRotationInfo()
+{
+	/// 기본 각도와의 차이 계산
+	Actor &actor = ENGINE.getActor();
+	Actor &base = ENGINE.getBaseActor();
+
+	// Hip_Center
+	{
+		// 기본 법선
+		const Vector3 &base_center = base.getBone(Bone::Hip_Center)->getLocalPosition();
+		const Vector3 &base_left = base.getBone(Bone::Hip_Left)->getLocalPosition();
+		const Vector3 &base_right = base.getBone(Bone::Hip_Right)->getLocalPosition();
+		Vector3 base_normal;
+		base_normal.cross(base_right - base_center, base_left - base_center);
+		base_normal.normalize();
+
+		// 현재 법선
+		const Vector3 &center = skeleton[Bone::Hip_Center];
+		const Vector3 &left = skeleton[Bone::Hip_Left];
+		const Vector3 &right = skeleton[Bone::Hip_Right];
+		Vector3 normal;
+		normal.cross(right - center, left - center);
+		normal.normalize();
+
+		// 둘간의 각도 차이 구하기
+		skeletonRotationInfo[Bone::Hip_Center].setFromVectors(base_normal, normal);
+	}
+
+	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Spine);
+	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Shoulder_Center);
+	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Head);
+    
+	refreshSingleSkeletonRotation(Bone::Shoulder_Center, Bone::Shoulder_Right);
+	refreshSingleSkeletonRotation(Bone::Shoulder_Right, Bone::Elbow_Right);
+	refreshSingleSkeletonRotation(Bone::Elbow_Right, Bone::Wrist_Right);
+	refreshSingleSkeletonRotation(Bone::Wrist_Right, Bone::Hand_Right);
+	
+	refreshSingleSkeletonRotation(Bone::Shoulder_Center, Bone::Shoulder_Left);
+	refreshSingleSkeletonRotation(Bone::Shoulder_Left, Bone::Elbow_Left);
+	refreshSingleSkeletonRotation(Bone::Elbow_Left, Bone::Wrist_Left);
+	refreshSingleSkeletonRotation(Bone::Wrist_Left, Bone::Hand_Left);
+	
+	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Hip_Right);
+	refreshSingleSkeletonRotation(Bone::Hip_Right, Bone::Knee_Right);
+	refreshSingleSkeletonRotation(Bone::Knee_Right, Bone::Ankle_Right);
+	refreshSingleSkeletonRotation(Bone::Ankle_Right, Bone::Foot_Right);
+	
+	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Hip_Left);
+	refreshSingleSkeletonRotation(Bone::Hip_Left, Bone::Knee_Left);
+	refreshSingleSkeletonRotation(Bone::Knee_Left, Bone::Ankle_Left);
+	refreshSingleSkeletonRotation(Bone::Ankle_Left, Bone::Foot_Left);
+
+}
+
+/// 스켈레톤 정보 저장
+void Kinect::saveSkeletonInfo()
+{
+	refreshSkeletonRotationInfo();
+
+	FILE *fp = fopen("test.txt", "wb");
+
+	for (uint i=0; i<skeletonRotationInfo.size(); ++i)
+	{
+		fprintf(fp, "%s (%lf,%lf,%lf,%lf)\n", ENGINE.getActor().getBone(i)->getName().c_str(),
+			skeletonRotationInfo[i].getX(), skeletonRotationInfo[i].getY(), skeletonRotationInfo[i].getZ(), skeletonRotationInfo[i].getW());
+	}
+
+	fclose(fp);
 }
 
 /// 스켈레톤 그리기

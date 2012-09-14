@@ -73,6 +73,7 @@ float Engine::syncronize()
 
 void Engine::update(float deltaTime)
 {
+	actor.update((int)(deltaTime * 60.f));
 }
 
 void Engine::draw()
@@ -127,6 +128,9 @@ void Engine::draw()
 	{
 		KINECT_MANAGER.getKinect(0)->drawSkeleton();
 	}
+
+	// actor ±×¸®±â
+	actor.draw();
 
 	glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);

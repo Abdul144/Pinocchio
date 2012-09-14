@@ -70,12 +70,6 @@ void AnimationInstance::refreshCurKeyFrameIndex(int curFrame)
     }
 }
 
-void AnimationInstance::reset()
-{
-	curFrame = 0;
-    curKeyFrameIndex = 0;
-}
-
 // 본 리스트 업데이트
 void AnimationInstance::updateBones(const vector<Bone*> &boneList, int curFrame)
 {

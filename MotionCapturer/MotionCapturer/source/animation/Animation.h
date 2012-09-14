@@ -29,7 +29,7 @@ public:
 	~Animation();
 
     /// 키프레임 추가
-    KeyFrame* addKeyFrame();
+    KeyFrame* addKeyFrame(int index = -1);
 
     KeyFrame* getKeyFrame(int index);
 

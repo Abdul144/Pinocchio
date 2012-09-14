@@ -5,7 +5,7 @@
 #include "BoneData.h"
 
 /// »ý¼ºÀÚ
-KeyFrame::KeyFrame() : startFrame(0), duration(0)
+KeyFrame::KeyFrame() : startFrame(0), duration(1)
 {
 }
 

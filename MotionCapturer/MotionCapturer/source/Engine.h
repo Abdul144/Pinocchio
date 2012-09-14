@@ -5,6 +5,7 @@
 
 #include "camera/Camera.h"
 #include "marker/MarkerRecognizer.h"
+#include "model/Actor.h"
 #include "util/defines.h"
 #include "util/Singleton.h"
 
@@ -33,6 +34,9 @@ private:
 	Camera camera;
 
 	vector<CloudElement*> pointCloudQueue;		///< 포인트 클라우드를 넣어놓는 용도.. free
+
+	Actor actor;
+	Actor base;
 
 public:
 	int testX, testY;
@@ -66,5 +70,7 @@ public:
 public:
 	GETTER_SETTER(bool, RunningState, runningState)
 	GETTER_REF(Camera, Camera, camera)
+	GETTER_REF(Actor, Actor, actor)
+	GETTER_REF(Actor, BaseActor, base)
 };
 

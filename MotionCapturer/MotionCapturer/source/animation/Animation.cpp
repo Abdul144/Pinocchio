@@ -20,10 +20,27 @@ Animation::~Animation()
 }
 
 /// 키프레임 추가
-KeyFrame* Animation::addKeyFrame()
+KeyFrame* Animation::addKeyFrame(int index)
 {
     KeyFrame *keyFrame = new KeyFrame;
-    keyFrames.push_back(keyFrame);
+
+	if (index < 0 || index >= keyFrames.size() - 1)
+	{	// 맨 뒤에 추가
+		keyFrames.push_back(keyFrame);
+		return keyFrame;
+	}
+
+	// 배열 확장
+	keyFrames.push_back(null);
+
+	// 공간 확보
+	for (uint i=keyFrames.size()-1; i>index; --i)
+	{
+		keyFrames[i] = keyFrames[i-1];
+	}
+
+	// 추가
+	keyFrames[index] = keyFrame;
 
     return keyFrame;
 }

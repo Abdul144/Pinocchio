@@ -36,7 +36,9 @@ private:
 	byte *mappedColorBuffer;	///< .. free
 	long *colorCoordinates;		///< .. free
 	Vector3 *pointCloud;		///< 포인트 클라우드.. free
+
 	vector<Vector3> skeleton;
+	vector<Quaternion> skeletonRotationInfo;
 
 public:
     static const float xyScale;
@@ -44,6 +46,13 @@ public:
 
 
 	// 멤버 함수
+private:
+	/// 스켈레톤 회전 정보 갱신
+	void refreshSkeletonRotationInfo();
+
+	/// 스켈레톤 회전각 계산
+	void refreshSingleSkeletonRotation(int parentBoneIndex, int boneIndex);
+
 public:
 	Kinect(INuiSensor *sensor, bool useSkeleton);
 	~Kinect();
@@ -65,6 +74,9 @@ public:
 
 	/// 스켈레톤 그리기
 	void drawSkeleton();
+
+	/// 스켈레톤 정보 저장
+	void saveSkeletonInfo();
 
 	/// 변환행렬 구성
 	bool setTransform(MarkerRecognizer::sMarkerInfo &marker);

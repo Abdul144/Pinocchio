@@ -8,8 +8,10 @@
 #include "Bone.h"
 
 
-Actor::Actor()
+Actor::Actor() : animationInstance(null)
 {
+	animationInstance = new AnimationInstance;
+
     // 본리스트 초기화
     initializeBones();
 }
@@ -37,6 +39,9 @@ void Actor::addBone(int parentType, const Vector3 &localPosition, const Quaterni
 	if (boneMap.find(parentType) != boneMap.end())
         parentBone = boneMap[parentType];
 	Bone *bone = new Bone(parentBone, name, (Bone::BoneType)type);
+
+	// 상대 위치 설정
+	bone->setLocalPosition(localPosition);
 
     // 본의 부모상대 변환행렬 설정
 	Matrix transMat, rotMat, scaleMat, localTransform;
@@ -111,10 +116,10 @@ void Actor::initializeBones()
 void Actor::update(int deltaFrame)
 {
     // 애니메이션 업데이트
-    curAnimation->update(boneList, deltaFrame);
+    animationInstance->update(boneList, deltaFrame);
 }
 
-void Actor::draw(const Matrix &view, const Matrix &projection)
+void Actor::draw()
 {
 	glPushMatrix();
 
@@ -134,5 +139,5 @@ void Actor::draw(const Matrix &view, const Matrix &projection)
 
 void Actor::setCurAnimation(Animation *animation)
 {
-	curAnimation->setAnimation(animation);
+	animationInstance->setAnimation(animation);
 }

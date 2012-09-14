@@ -33,8 +33,6 @@ public:
     /// <param name="curFrame"></param>
     void refreshCurKeyFrameIndex(int curFrame);
 
-    void reset();
-
     // 본 리스트 업데이트
     void updateBones(const vector<Bone*> &boneList, int curFrame);
 

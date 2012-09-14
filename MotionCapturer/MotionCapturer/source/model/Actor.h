@@ -24,7 +24,8 @@ private:
     Vector3 position;
     Vector3 rotation;
     Vector3 scale;
-    AnimationInstance *curAnimation;
+
+    AnimationInstance *animationInstance;	///< 애니메이션 인스턴스.. free
 
 
 	// 멤버 함수
@@ -42,13 +43,19 @@ public:
     
     void update(int deltaFrame);
 
-    void draw(const Matrix &view, const Matrix &projection);
+    void draw();
 
     void setCurAnimation(Animation *animation);
+
+	inline Bone* getBone(int index)
+	{
+		return boneList[index];
+	}
 
 
     // 접근
     GETTER_REF(Vector3, Position, position)
     GETTER_REF(Vector3, Rotation, rotation)
     GETTER_REF(Vector3, Scale, scale)
+	GETTER(int, BoneCount, boneList.size())
 };

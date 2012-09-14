@@ -1,6 +1,8 @@
 #ifndef __QUATERNION_H__
 #define __QUATERNION_H__
 
+#include "defines.h"
+
 
 class Matrix;
 class Vector3;
@@ -43,6 +45,13 @@ public:
     
     void setFromVectors(const Vector3 &v0, const Vector3 &v1);
     void setFromAxisAngle(const Vector3 &axis, float radians);
+
+
+	// 접근
+	GETTER_SETTER(float, X, x)
+	GETTER_SETTER(float, Y, y)
+	GETTER_SETTER(float, Z, z)
+	GETTER_SETTER(float, W, w)
 };
 
 
