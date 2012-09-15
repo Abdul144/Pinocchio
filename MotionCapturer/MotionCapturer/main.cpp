@@ -7,6 +7,9 @@
 #include <GL/glew.h>
 #include <GL/wglew.h>
 
+#include "source/animation/Animation.h"
+#include "source/animation/KeyFrame.h"
+#include "source/animation/BoneData.h"
 #include "source/kinect/Kinect.h"
 #include "source/kinect/KinectManager.h"
 #include "source/marker/MarkerRecognizer.h"
@@ -387,6 +390,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		// 스켈레톤 갱신
 		refreshSkeleton();
+
+		// 키프레임 추가
+		if (KINECT_MANAGER.getKinectCount() > 0)
+		{
+			KeyFrame *key = ENGINE.getAnimation()->addKeyFrame();
+			key->setDuration(100);
+			for (int i=0; i<key->getBoneDataCount(); ++i)
+			{
+				BoneData *data = key->getBoneData(i);
+				data->rotation = KINECT_MANAGER.getKinect(0)->getSkeletonRotationInfo()[i];
+			}
+
+			ENGINE.getAnimation()->refresh();
+		}
 		break;
 
 	default:

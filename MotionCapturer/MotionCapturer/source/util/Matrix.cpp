@@ -47,6 +47,7 @@ void Matrix::setScale(const Vector3 &vec)
 /// Rotate 행렬로 만들기
 void Matrix::setRotate(const Quaternion &q)
 {
+	q.getMatrix(*this);
 }
 void Matrix::setRotateX(const float &degree)
 {

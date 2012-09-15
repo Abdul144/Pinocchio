@@ -262,6 +262,9 @@ int Kinect::refreshSkeleton()
 		}
 	}
 
+	// 각도 정보 갱신
+	refreshSkeletonRotationInfo();
+
 	return 0;
 }
 

@@ -12,6 +12,8 @@ Actor::Actor() : animationInstance(null)
 {
 	animationInstance = new AnimationInstance;
 
+	scale.set(0.01f, 0.01f, 0.01f);
+
     // 본리스트 초기화
     initializeBones();
 }
@@ -129,10 +131,22 @@ void Actor::draw()
 	glRotatef(rotation.getX(), 1.f, 0.f, 0.f);
 	glRotatef(rotation.getZ(), 0.f, 0.f, 1.f);
 	glScalef(scale.getX(), scale.getY(), scale.getZ());
-
-    // 각 본들을 그린다.
+	
+	glPointSize(10.f);
+	glColor4ub(255, 255, 0, 255);
+	
 	for (uint i=0; i<boneList.size(); ++i)
-        boneList[i]->draw();
+	{
+		glPushMatrix();
+
+		glMultMatrixf(boneList[i]->getTransform().getPointer());
+			
+		glBegin(GL_POINTS);
+			glVertex3f(0,0,0);
+		glEnd();
+			
+		glPopMatrix();
+	}
 
 	glPopMatrix();
 }

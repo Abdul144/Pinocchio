@@ -34,7 +34,7 @@ public:
     void rotated(const Quaternion &a, const Quaternion &b);
     void scaled(float scale, const Quaternion &q);
     float dot(const Quaternion& q) const;
-    void getMatrix(Matrix &matrix);
+    void getMatrix(Matrix &matrix) const;
     Quaternion operator-(const Quaternion& q) const;
     Quaternion operator+(const Quaternion& q) const;
     Quaternion operator*(const Quaternion& q) const;

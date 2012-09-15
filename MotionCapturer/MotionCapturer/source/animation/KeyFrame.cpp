@@ -7,6 +7,10 @@
 /// 持失切
 KeyFrame::KeyFrame() : startFrame(0), duration(1)
 {
+	for (int i=0; i<20; ++i)
+	{
+		addBoneData();
+	}
 }
 
 /// 社瑚切

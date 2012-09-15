@@ -49,3 +49,14 @@ KeyFrame* Animation::getKeyFrame(int index)
 {
     return keyFrames[index];
 }
+
+/// 갱신.. totalFrameCount나, 각 keyFrame의 startFrame을 갱신
+void Animation::refresh()
+{
+	totalFrameCount = 0;
+	for (uint i=0; i<keyFrames.size(); ++i)
+	{
+		keyFrames[i]->setStartFrame(totalFrameCount);
+		totalFrameCount += keyFrames[i]->getDuration();
+	}
+}

@@ -69,7 +69,7 @@ float Quaternion::dot(const Quaternion& q) const
 }
 
 
-void Quaternion::getMatrix(Matrix &matrix)
+void Quaternion::getMatrix(Matrix &matrix) const
 {
     const float s = 2;
     float xs, ys, zs;

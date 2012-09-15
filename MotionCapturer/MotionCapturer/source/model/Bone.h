@@ -52,6 +52,7 @@ private:
     Bone *parent;				///< no free
     string name;
     BoneType type;
+
 	Vector3 localPosition;
     Matrix transform;
     Matrix transformFromParent;	///< 부모로 부터의 변환행렬
@@ -65,8 +66,6 @@ public:
     /// 두 키프레임의 본 데이터를 alpha[0,1]의 비율로 블렌딩하여 변환행렬 업데이트
     void update(BoneData *curData, BoneData *nextData, float alpha);
 
-    void draw();
-	
 
     // 접근
 	GETTER(BoneType, BoneType, type)

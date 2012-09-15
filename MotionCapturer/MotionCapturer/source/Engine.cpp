@@ -4,19 +4,24 @@
 
 #include <GL/glew.h>
 
+#include "animation/Animation.h"
 #include "kinect/Kinect.h"
 #include "kinect/KinectManager.h"
 #include "util/Matrix.h"
 #include "util/Vector3.h"
 
 
-Engine::Engine() : runningState(true), testX(0), testY(0)
+Engine::Engine() : runningState(true), testX(0), testY(0), animation(null)
 {
 	camera.setPosition(Vector3(0, 0, 2));
+
+	animation = new Animation;
+	actor.setCurAnimation(animation);
 }
 
 Engine::~Engine()
 {
+	DELETE(animation);
 }
 
 void Engine::clearPointCloudQueue()

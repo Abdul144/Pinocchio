@@ -99,5 +99,6 @@ public:
 	GETTER(byte*, MappedColorBuffer, mappedColorBuffer)
 	GETTER(Vector3*, PointCloud, pointCloud)
 	GETTER_CONST_REF(Matrix, Transform, transform)
+	GETTER_CONST_REF(vector<Quaternion>, SkeletonRotationInfo, skeletonRotationInfo)
 };
 

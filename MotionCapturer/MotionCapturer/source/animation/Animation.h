@@ -33,6 +33,9 @@ public:
 
     KeyFrame* getKeyFrame(int index);
 
+	/// 갱신.. totalFrameCount나, 각 keyFrame의 startFrame을 갱신
+	void refresh();
+
 
     // 접근
     GETTER_CONST_REF(string, Name, name)

@@ -12,6 +12,7 @@
 
 #define ENGINE		Engine::getInstance()
 
+class Animation;
 class Vector3;
 
 using namespace std;
@@ -37,6 +38,7 @@ private:
 
 	Actor actor;
 	Actor base;
+	Animation *animation;		///< free
 
 public:
 	int testX, testY;
@@ -72,5 +74,6 @@ public:
 	GETTER_REF(Camera, Camera, camera)
 	GETTER_REF(Actor, Actor, actor)
 	GETTER_REF(Actor, BaseActor, base)
+	GETTER(Animation*, Animation, animation);
 };
 

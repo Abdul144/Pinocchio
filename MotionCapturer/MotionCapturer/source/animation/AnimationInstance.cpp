@@ -14,7 +14,7 @@ AnimationInstance::AnimationInstance() : animation(null)
 
 void AnimationInstance::update(const vector<Bone*> &bones, int deltaFrame)
 {
-    if (animation == null)
+	if (animation == null || animation->getKeyFrameCount() <= 0)
         return;
 
     curFrame += deltaFrame;
@@ -84,9 +84,9 @@ void AnimationInstance::updateBones(const vector<Bone*> &boneList, int curFrame)
     // 본을 순행하며
     for (int i = 0; i < curKeyFrame->getBoneDataCount(); ++i)
     {
-        Bone *bone = boneList[i];                                  // 본
-        BoneData *curBoneData = curKeyFrame->getBoneData(i);    // 현재 키프레임 본 데이터
-        BoneData *nextBoneData = null;                                   // 다음 키프레임 본 데이터
+        Bone *bone = boneList[i];									// 본
+        BoneData *curBoneData = curKeyFrame->getBoneData(i);			// 현재 키프레임 본 데이터
+        BoneData *nextBoneData = null;                              // 다음 키프레임 본 데이터
         if (nextKeyFrame != null)
         {   // 다음 키프레임이 있다
             nextBoneData = nextKeyFrame->getBoneData(i);
