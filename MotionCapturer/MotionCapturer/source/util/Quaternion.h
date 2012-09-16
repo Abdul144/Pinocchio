@@ -40,11 +40,14 @@ public:
     void scaled(float scale, const Quaternion &q);
     float dot(const Quaternion& q) const;
     void getMatrix(Matrix &matrix) const;
+
     Quaternion operator-(const Quaternion& q) const;
     Quaternion operator+(const Quaternion& q) const;
     Quaternion operator*(const Quaternion& q) const;
     bool operator==(const Quaternion& q) const;
     bool operator!=(const Quaternion& q) const;
+
+    Quaternion operator*(const float& value) const;
     
     void normalize();
     

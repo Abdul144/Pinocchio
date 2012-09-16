@@ -14,36 +14,21 @@ Quaternion::Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w
 
 void Quaternion::slerp(float t, const Quaternion& q0, const Quaternion& q1)
 {
-    const float epsilon = 0.0005f;
-    float dotValue = dot(q1);
+	float fcos = q0.dot(q1);	// = cos(еш) 
+	float fAngle = acos(fcos); 
 
-    if (dotValue > 1 - epsilon)
-    {
-    	Quaternion temp;
-    	temp.scaled(t, (*this - q1));
-        *this = (q1 + temp);
-        normalize();
-        return;
-    }
+	if ( fabs(fAngle) < 0.0001 ) 
+	{
+		*this = q0;
+		return;
+	}
 
-    if (dotValue < 0)
-    	dotValue = 0;
+	float fsin = sin(fAngle); 
+	float fInvsin = 1.0f/fsin; 
+	float fCoeff0 = sin( (1.0f-t)*fAngle ) * fInvsin; 
+	float fCoeff1 = sin( t*fAngle ) * fInvsin; 
 
-    if (dotValue > 1)
-    	dotValue = 1;
-
-    float theta0 = acos(dotValue);
-    float theta = theta0 * t;
-
-    Quaternion temp, temp2;
-    temp.scaled(dotValue, *this);
-    Quaternion v2 = q1 - temp;
-    v2.normalize();
-
-    temp.scaled(cos(theta), *this);
-    temp2.scaled(sin(theta), v2);
-    *this = temp + temp2;
-    normalize();
+	*this = q0*fCoeff0 + q1*fCoeff1;
 }
 
 
@@ -110,6 +95,14 @@ bool Quaternion::operator==(const Quaternion& q) const
 bool Quaternion::operator!=(const Quaternion& q) const
 {
     return !(*this == q);
+}
+
+Quaternion Quaternion ::operator*(const float& value) const
+{
+	Quaternion q;
+
+	q.set(x*value, y*value, z*value, w*value);
+	return q;
 }
 
 // Compute the quaternion that rotates from a to b, avoiding numerical instability.
