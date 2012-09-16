@@ -53,7 +53,7 @@ private:
 	void refreshSkeletonRotationInfo();
 
 	/// ½ºÄÌ·¹Åæ È¸Àü°¢ °è»ê
-	void refreshSingleSkeletonRotation(int parentBoneIndex, int boneIndex, const Matrix &localizeTransform, Matrix &resultLocalizeTransform, bool applyRotationInfo = true);
+	void refreshSingleSkeletonRotation(int parentBoneIndex, int boneIndex, const Matrix &localizeTransform, Matrix &resultLocalizeTransform);
 
 public:
 	Kinect(INuiSensor *sensor, bool useSkeleton);

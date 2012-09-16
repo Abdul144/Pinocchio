@@ -30,6 +30,11 @@ public:
     	this->w = w;
     }
 
+	inline void setIdentity()
+	{
+		set(0, 0, 0, 1);
+	}
+
     void slerp(float mu, const Quaternion &a, const Quaternion &b);
     void rotated(const Quaternion &a, const Quaternion &b);
     void scaled(float scale, const Quaternion &q);

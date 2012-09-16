@@ -43,7 +43,7 @@ void Actor::addBone(int parentType, const Vector3 &localPosition, const Quaterni
 	Bone *bone = new Bone(parentBone, name, (Bone::BoneType)type);
 
 	// 상대 위치 설정
-	bone->setLocalPosition(localPosition);
+	bone->setLocalEndPosition(localPosition);
 
     // 본의 부모상대 변환행렬 설정
 	Matrix transMat, rotMat, scaleMat, localTransform;

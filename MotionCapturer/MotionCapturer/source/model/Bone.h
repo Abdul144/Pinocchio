@@ -53,7 +53,7 @@ private:
     string name;
     BoneType type;
 
-	Vector3 localPosition;
+	Vector3 localEndPosition;	///< 현재 본의 끝 부분
     Matrix transform;
     Matrix transformFromParent;	///< 부모로 부터의 변환행렬
 
@@ -69,7 +69,7 @@ public:
 
     // 접근
 	GETTER(BoneType, BoneType, type)
-	GETTER_SETTER_CONST_REF(Vector3, LocalPosition, localPosition)
+	GETTER_SETTER_CONST_REF(Vector3, LocalEndPosition, localEndPosition)
     GETTER_CONST_REF(string, Name ,name)
     GETTER_CONST_REF(Matrix, Transform, transform)
     GETTER_SETTER_CONST_REF(Matrix, TransformFromParent, transformFromParent)
