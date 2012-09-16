@@ -104,6 +104,31 @@ Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) :
 	// 변환행렬 초기화
 	transform.setIdentity();
 
+	kinectBoneIndexMap.resize(NUI_SKELETON_POSITION_COUNT);
+	kinectBoneIndexMap[Bone::Hip_Center] = NUI_SKELETON_POSITION_HIP_CENTER;
+	kinectBoneIndexMap[Bone::Spine] = NUI_SKELETON_POSITION_SPINE;
+	kinectBoneIndexMap[Bone::Shoulder_Center] = NUI_SKELETON_POSITION_SHOULDER_CENTER;
+	kinectBoneIndexMap[Bone::Head] = NUI_SKELETON_POSITION_HEAD;
+	
+	kinectBoneIndexMap[Bone::Shoulder_Right] = NUI_SKELETON_POSITION_SHOULDER_RIGHT;
+	kinectBoneIndexMap[Bone::Elbow_Right] = NUI_SKELETON_POSITION_ELBOW_RIGHT;
+	kinectBoneIndexMap[Bone::Wrist_Right] = NUI_SKELETON_POSITION_WRIST_RIGHT;
+	kinectBoneIndexMap[Bone::Hand_Right] = NUI_SKELETON_POSITION_HAND_RIGHT;
+	
+	kinectBoneIndexMap[Bone::Shoulder_Left] = NUI_SKELETON_POSITION_SHOULDER_LEFT;
+	kinectBoneIndexMap[Bone::Elbow_Left] = NUI_SKELETON_POSITION_ELBOW_LEFT;
+	kinectBoneIndexMap[Bone::Wrist_Left] = NUI_SKELETON_POSITION_WRIST_LEFT;
+	kinectBoneIndexMap[Bone::Hand_Left] = NUI_SKELETON_POSITION_HAND_LEFT;
+
+	kinectBoneIndexMap[Bone::Hip_Right] = NUI_SKELETON_POSITION_HIP_RIGHT;
+	kinectBoneIndexMap[Bone::Knee_Right] = NUI_SKELETON_POSITION_KNEE_RIGHT;
+	kinectBoneIndexMap[Bone::Ankle_Right] = NUI_SKELETON_POSITION_ANKLE_RIGHT;
+	kinectBoneIndexMap[Bone::Foot_Right] = NUI_SKELETON_POSITION_FOOT_RIGHT;
+
+	kinectBoneIndexMap[Bone::Hip_Left] = NUI_SKELETON_POSITION_HIP_LEFT;
+	kinectBoneIndexMap[Bone::Knee_Left] = NUI_SKELETON_POSITION_KNEE_LEFT;
+	kinectBoneIndexMap[Bone::Ankle_Left] = NUI_SKELETON_POSITION_ANKLE_LEFT;
+	kinectBoneIndexMap[Bone::Foot_Left] = NUI_SKELETON_POSITION_FOOT_LEFT;
 }
 
 
@@ -336,85 +361,130 @@ inline void drawLine(const Vector3 &v0, const Vector3 &v1)
 }
 
 /// 스켈레톤 회전각 계산
-void Kinect::refreshSingleSkeletonRotation(int parentBoneIndex, int boneIndex)
+void Kinect::refreshSingleSkeletonRotation(int parentBoneIndex, int boneIndex, const Matrix &localizeTransform, Matrix &resultLocalizeTransform)
 {
+	Vector3 &parentBone = skeleton[getKinectBoneIndex(parentBoneIndex)];
+	Vector3 &bone = skeleton[getKinectBoneIndex(boneIndex)];
 	if (
-		(skeleton[parentBoneIndex].getX() == 0.f && skeleton[parentBoneIndex].getY() == 0.f && skeleton[parentBoneIndex].getZ() == 0.f) ||
-		(skeleton[boneIndex].getX() == 0.f && skeleton[boneIndex].getY() == 0.f && skeleton[boneIndex].getZ() == 0.f)
+		(parentBone.getX() == 0.f && parentBone.getY() == 0.f && parentBone.getZ() == 0.f) ||
+		(bone.getX() == 0.f && bone.getY() == 0.f && bone.getZ() == 0.f)
 		)
 	{	// 부모나 자신의 정보가 없으면 기본 각도로
-		skeletonRotationInfo[boneIndex].set(0.f, 0.f, 0.f, 1.f);
+		skeletonRotationInfo[getKinectBoneIndex(boneIndex)].set(0.f, 0.f, 0.f, 1.f);
 		return;
 	}
 
 	Actor &base = ENGINE.getBaseActor();
 
 	// 기본 벡터
-	Vector3 baseVec;
-	baseVec = base.getBone(boneIndex)->getLocalPosition() - base.getBone(parentBoneIndex)->getLocalPosition();
+	Vector3 baseVec, baseTemp;
+	baseTemp = base.getBone(boneIndex)->getLocalPosition();
+	localizeTransform.multiplyWithoutTranslate(baseVec, baseTemp);
 	baseVec.normalize();
 
 	// 현재 벡터
-	Vector3 vec;
-	vec = skeleton[boneIndex] - skeleton[parentBoneIndex];
+	Vector3 vec, temp;
+	temp = skeleton[getKinectBoneIndex(boneIndex)] - skeleton[getKinectBoneIndex(parentBoneIndex)];
+	//localizeTransform.multiplyWithoutTranslate(vec, temp);
+	vec = temp;
 	vec.normalize();
 
 	// 각도 차이 구하기
-	skeletonRotationInfo[boneIndex].setFromVectors(baseVec, vec);
+	skeletonRotationInfo[getKinectBoneIndex(boneIndex)].setFromVectors(baseVec, vec);
+	skeletonRotationInfo[getKinectBoneIndex(boneIndex)].normalize();
+
+	/*
+	// 결과 지역화 변환행렬 구성
+	Matrix rotMat, invRotMat, invTransMat;
+	skeletonRotationInfo[getKinectBoneIndex(boneIndex)].getMatrix(rotMat);
+	rotMat.getTranspose(invRotMat);
+	invTransMat.setTranslate(base.getBone(parentBoneIndex)->getLocalPosition() - base.getBone(boneIndex)->getLocalPosition());
+	resultLocalizeTransform.multiply(invRotMat, invTransMat);
+	resultLocalizeTransform.multiply(localizeTransform);
+	*/
+
+	Matrix objectTransform, positionMat, rotationMat;
+	positionMat.setTranslate(base.getBone(parentBoneIndex)->getLocalPosition());
+	skeletonRotationInfo[getKinectBoneIndex(boneIndex)].getMatrix(rotationMat);
+	objectTransform.multiply(positionMat, rotationMat);
+    
+	// 변환행렬 설정
+	resultLocalizeTransform.multiply(objectTransform, localizeTransform);
 }
 
 // 스켈레톤 회전 정보 갱신
 void Kinect::refreshSkeletonRotationInfo()
 {
-	/// 기본 각도와의 차이 계산
 	Actor &actor = ENGINE.getActor();
 	Actor &base = ENGINE.getBaseActor();
 
+	Matrix hipCenterTrans;
 	// Hip_Center
 	{
 		// 기본 법선
-		const Vector3 &base_center = base.getBone(Bone::Hip_Center)->getLocalPosition();
 		const Vector3 &base_left = base.getBone(Bone::Hip_Left)->getLocalPosition();
 		const Vector3 &base_right = base.getBone(Bone::Hip_Right)->getLocalPosition();
 		Vector3 base_normal;
-		base_normal.cross(base_right - base_center, base_left - base_center);
+		base_normal.cross(base_right, base_left);
 		base_normal.normalize();
 
 		// 현재 법선
-		const Vector3 &center = skeleton[Bone::Hip_Center];
-		const Vector3 &left = skeleton[Bone::Hip_Left];
-		const Vector3 &right = skeleton[Bone::Hip_Right];
+		const Vector3 &center = skeleton[getKinectBoneIndex(Bone::Hip_Center)];
+		const Vector3 &left = skeleton[getKinectBoneIndex(Bone::Hip_Left)];
+		const Vector3 &right = skeleton[getKinectBoneIndex(Bone::Hip_Right)];
 		Vector3 normal;
 		normal.cross(right - center, left - center);
 		normal.normalize();
 
 		// 둘간의 각도 차이 구하기
-		skeletonRotationInfo[Bone::Hip_Center].setFromVectors(base_normal, normal);
+		skeletonRotationInfo[getKinectBoneIndex(Bone::Hip_Center)].setFromVectors(base_normal, normal);
+		skeletonRotationInfo[getKinectBoneIndex(Bone::Hip_Center)].normalize();
+		
+		// 결과 지역화 변환행렬 구성
+		Matrix rotMat;
+		skeletonRotationInfo[getKinectBoneIndex(Bone::Hip_Center)].getMatrix(rotMat);
+		rotMat.getTranspose(hipCenterTrans);
+
+		hipCenterTrans = rotMat;
 	}
 
-	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Spine);
-	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Shoulder_Center);
-	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Head);
+	Matrix spineTrans, shoulderCenterTrans, headTrans;
+
+	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Spine, hipCenterTrans, spineTrans);
+	refreshSingleSkeletonRotation(Bone::Spine, Bone::Shoulder_Center, spineTrans, shoulderCenterTrans);
+	refreshSingleSkeletonRotation(Bone::Shoulder_Center, Bone::Head, shoulderCenterTrans, headTrans);
     
-	refreshSingleSkeletonRotation(Bone::Shoulder_Center, Bone::Shoulder_Right);
-	refreshSingleSkeletonRotation(Bone::Shoulder_Right, Bone::Elbow_Right);
-	refreshSingleSkeletonRotation(Bone::Elbow_Right, Bone::Wrist_Right);
-	refreshSingleSkeletonRotation(Bone::Wrist_Right, Bone::Hand_Right);
+	{
+		Matrix shoulderTrans, elbowTrans, wristTrans, handTrans;
+		refreshSingleSkeletonRotation(Bone::Shoulder_Center, Bone::Shoulder_Right, shoulderCenterTrans, shoulderTrans);
+		refreshSingleSkeletonRotation(Bone::Shoulder_Right, Bone::Elbow_Right, shoulderTrans, elbowTrans);
+		refreshSingleSkeletonRotation(Bone::Elbow_Right, Bone::Wrist_Right, elbowTrans, wristTrans);
+		refreshSingleSkeletonRotation(Bone::Wrist_Right, Bone::Hand_Right, wristTrans, handTrans);
+	}
 	
-	refreshSingleSkeletonRotation(Bone::Shoulder_Center, Bone::Shoulder_Left);
-	refreshSingleSkeletonRotation(Bone::Shoulder_Left, Bone::Elbow_Left);
-	refreshSingleSkeletonRotation(Bone::Elbow_Left, Bone::Wrist_Left);
-	refreshSingleSkeletonRotation(Bone::Wrist_Left, Bone::Hand_Left);
+	{
+		Matrix shoulderTrans, elbowTrans, wristTrans, handTrans;
+		refreshSingleSkeletonRotation(Bone::Shoulder_Center, Bone::Shoulder_Left, shoulderCenterTrans, shoulderTrans);
+		refreshSingleSkeletonRotation(Bone::Shoulder_Left, Bone::Elbow_Left, shoulderTrans, elbowTrans);
+		refreshSingleSkeletonRotation(Bone::Elbow_Left, Bone::Wrist_Left, elbowTrans, wristTrans);
+		refreshSingleSkeletonRotation(Bone::Wrist_Left, Bone::Hand_Left, wristTrans, handTrans);
+	}
 	
-	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Hip_Right);
-	refreshSingleSkeletonRotation(Bone::Hip_Right, Bone::Knee_Right);
-	refreshSingleSkeletonRotation(Bone::Knee_Right, Bone::Ankle_Right);
-	refreshSingleSkeletonRotation(Bone::Ankle_Right, Bone::Foot_Right);
+	{
+		Matrix hipTrans, kneeTrans, ankleTrans, footTrans;
+		refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Hip_Right, hipCenterTrans, hipTrans);
+		refreshSingleSkeletonRotation(Bone::Hip_Right, Bone::Knee_Right, hipTrans, kneeTrans);
+		refreshSingleSkeletonRotation(Bone::Knee_Right, Bone::Ankle_Right, kneeTrans, ankleTrans);
+		refreshSingleSkeletonRotation(Bone::Ankle_Right, Bone::Foot_Right, ankleTrans, footTrans);
+	}
 	
-	refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Hip_Left);
-	refreshSingleSkeletonRotation(Bone::Hip_Left, Bone::Knee_Left);
-	refreshSingleSkeletonRotation(Bone::Knee_Left, Bone::Ankle_Left);
-	refreshSingleSkeletonRotation(Bone::Ankle_Left, Bone::Foot_Left);
+	{
+		Matrix hipTrans, kneeTrans, ankleTrans, footTrans;
+		refreshSingleSkeletonRotation(Bone::Hip_Center, Bone::Hip_Left, hipCenterTrans, hipTrans);
+		refreshSingleSkeletonRotation(Bone::Hip_Left, Bone::Knee_Left, hipTrans, kneeTrans);
+		refreshSingleSkeletonRotation(Bone::Knee_Left, Bone::Ankle_Left, kneeTrans, ankleTrans);
+		refreshSingleSkeletonRotation(Bone::Ankle_Left, Bone::Foot_Left, ankleTrans, footTrans);
+	}
 
 }
 

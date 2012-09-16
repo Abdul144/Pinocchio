@@ -2,6 +2,10 @@
 #include "stdafx.h"
 #include "KeyFrame.h"
 
+#include <NuiApi.h>
+
+#include "../kinect/Kinect.h"
+#include "../model/Bone.h"
 #include "BoneData.h"
 
 /// »ý¼ºÀÚ
@@ -39,4 +43,13 @@ BoneData* KeyFrame::getBoneData(int index)
 void KeyFrame::setBoneData(int index, BoneData *data)
 {
     boneDatas[index] = data;
+}
+
+void KeyFrame::setBoneDataFromKinect(Kinect *kinect)
+{
+	for (uint i=0; i<boneDatas.size(); ++i)
+	{
+		boneDatas[i]->rotation = kinect->getSkeletonRotationInfo()[kinect->getKinectBoneIndex(i)];
+	}
+
 }

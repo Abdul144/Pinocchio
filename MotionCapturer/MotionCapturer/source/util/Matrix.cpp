@@ -173,7 +173,6 @@ void Matrix::set(int column, const Vector3 &vector, float w)
 	e[3 + column*4] = w;
 }
 
-#include <stdio.h>
 /// 역행렬 얻기
 bool Matrix::getInverse(Matrix &result)
 {
@@ -193,7 +192,6 @@ bool Matrix::getInverse(Matrix &result)
 		return false;
 	}
 
-
 	result.e[0] = (e[5]*e[10]*e[15] + e[9]*e[14]*e[7] + e[13]*e[6]*e[11] - e[5]*e[14]*e[11] - e[9]*e[6]*e[15] - e[13]*e[10]*e[7])/det;
 	result.e[4] = (e[4]*e[14]*e[11] + e[8]*e[6]*e[15] + e[12]*e[10]*e[7] - e[4]*e[10]*e[15] - e[8]*e[14]*e[7] - e[12]*e[6]*e[11])/det;
 	result.e[8] = (e[4]*e[9]*e[15] + e[8]*e[13]*e[7] + e[12]*e[5]*e[11] - e[4]*e[13]*e[11] - e[8]*e[5]*e[15] - e[12]*e[9]*e[7])/det;
@@ -210,39 +208,20 @@ bool Matrix::getInverse(Matrix &result)
 	result.e[7] = (e[0]*e[6]*e[11] + e[4]*e[10]*e[3] + e[8]*e[2]*e[7] - e[0]*e[10]*e[7] - e[4]*e[2]*e[11] - e[8]*e[6]*e[3])/det;
 	result.e[11] = (e[0]*e[9]*e[7] + e[4]*e[1]*e[11] + e[8]*e[5]*e[3] - e[0]*e[5]*e[11] - e[4]*e[9]*e[3] - e[8]*e[1]*e[7])/det;
 	result.e[15] = (e[0]*e[5]*e[10] + e[4]*e[9]*e[2] + e[8]*e[1]*e[6] - e[0]*e[9]*e[6] - e[4]*e[1]*e[10] - e[8]*e[5]*e[2])/det;
-	
-	
-
-	FILE *fp = fopen("test.txt", "wb");
-	for (int i=0; i<4; ++i)
-	{
-		for (int j=0; j<4; ++j)
-			fprintf(fp, "%f, ", e[i + j*4]);
-		fprintf(fp, "\r\n");
-	}
-	fprintf(fp, "\r\n");
-	fprintf(fp, "%f\r\n", det);
-	fprintf(fp, "\r\n");
-	
-	for (int i=0; i<4; ++i)
-	{
-		for (int j=0; j<4; ++j)
-			fprintf(fp, "%f, ", result.e[i + j*4] * det);
-		fprintf(fp, "\r\n");
-	}
-
-	fprintf(fp, "\r\n");
-	
-	for (int i=0; i<4; ++i)
-	{
-		for (int j=0; j<4; ++j)
-			fprintf(fp, "%f, ", result.e[i + j*4]);
-		fprintf(fp, "\r\n");
-	}
-
-	fclose(fp);
 
 	return true;
+}
+
+/// 전치행렬 얻기
+void Matrix::getTranspose(Matrix &result)
+{
+	for (int i=0; i<4; ++i)
+	{
+		for (int j=0; j<4; ++j)
+		{
+			result.e[i*4 + j] = e[j*4 + i];
+		}
+	}
 }
 
 

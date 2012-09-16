@@ -71,6 +71,9 @@ public:
 	/// 역행렬 얻기
 	bool getInverse(Matrix &result);
 
+	/// 전치행렬 얻기
+	void getTranspose(Matrix &result);
+
 	/// 원소 접근
 	inline const float get(int i, int j) const
 	{

@@ -40,6 +40,8 @@ private:
 	vector<Vector3> skeleton;
 	vector<Quaternion> skeletonRotationInfo;
 
+	vector<int> kinectBoneIndexMap;	///< [º» ÀÎµ¦½º] => Å°³ØÆ® º» ÀÎµ¦½º
+
 public:
     static const float xyScale;
 	static int magicX, magicY;
@@ -51,7 +53,7 @@ private:
 	void refreshSkeletonRotationInfo();
 
 	/// ½ºÄÌ·¹Åæ È¸Àü°¢ °è»ê
-	void refreshSingleSkeletonRotation(int parentBoneIndex, int boneIndex);
+	void refreshSingleSkeletonRotation(int parentBoneIndex, int boneIndex, const Matrix &localizeTransform, Matrix &resultLocalizeTransform);
 
 public:
 	Kinect(INuiSensor *sensor, bool useSkeleton);
@@ -86,6 +88,11 @@ public:
 
 	/// ½ºÄÌ·¹Åæ¿¡ º¯È¯Çà·Ä Àû¿ë
 	void transformSkeleton();
+
+	inline int getKinectBoneIndex(int index)
+	{
+		return kinectBoneIndexMap[index];
+	}
 
 
 	// Á¢±Ù

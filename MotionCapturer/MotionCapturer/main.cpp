@@ -13,6 +13,7 @@
 #include "source/kinect/Kinect.h"
 #include "source/kinect/KinectManager.h"
 #include "source/marker/MarkerRecognizer.h"
+#include "source/model/Bone.h"
 #include "source/util/BmpExporter.h"
 #include "source/util/Matrix.h"
 #include "source/Engine.h"
@@ -38,6 +39,7 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 bool EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
 void DisableOpenGL(HWND, HDC, HGLRC);
+
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -396,11 +398,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			KeyFrame *key = ENGINE.getAnimation()->addKeyFrame();
 			key->setDuration(100);
-			for (int i=0; i<key->getBoneDataCount(); ++i)
-			{
-				BoneData *data = key->getBoneData(i);
-				data->rotation = KINECT_MANAGER.getKinect(0)->getSkeletonRotationInfo()[i];
-			}
+			key->setBoneDataFromKinect(KINECT_MANAGER.getKinect(0));
 
 			ENGINE.getAnimation()->refresh();
 		}

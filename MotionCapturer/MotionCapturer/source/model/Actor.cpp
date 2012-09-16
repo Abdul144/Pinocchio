@@ -135,7 +135,7 @@ void Actor::draw()
 	glPointSize(10.f);
 	glColor4ub(255, 255, 0, 255);
 	
-	for (uint i=0; i<boneList.size(); ++i)
+	for (uint i=0; i<4; ++i)//boneList.size(); ++i)
 	{
 		glPushMatrix();
 
@@ -144,7 +144,7 @@ void Actor::draw()
 		glBegin(GL_POINTS);
 			glVertex3f(0,0,0);
 		glEnd();
-			
+		
 		glPopMatrix();
 	}
 

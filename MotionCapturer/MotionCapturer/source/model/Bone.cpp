@@ -53,11 +53,11 @@ void Bone::update(BoneData *curData, BoneData *nextData, float alpha)
     // 변환행렬 설정
     if (parent != null)
 	{
-		transform.multiply(parent->transform, transformFromParent);
-		transform.multiply(objectTransform);
+		transform.multiply(parent->transform, objectTransform);
+		transform.multiply(transformFromParent);
 
 	}else
 	{
-		transform.multiply(transformFromParent, objectTransform);
+		transform.multiply(objectTransform, transformFromParent);
 	}
 }

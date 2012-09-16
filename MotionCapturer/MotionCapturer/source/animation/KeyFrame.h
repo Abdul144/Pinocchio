@@ -8,6 +8,7 @@ using namespace std;
 
 
 class BoneData;
+class Kinect;
 
 class KeyFrame
 {
@@ -34,6 +35,8 @@ public:
     BoneData* getBoneData(int index);
 
     void setBoneData(int index, BoneData *data);
+
+	void setBoneDataFromKinect(Kinect *kinect);
 
         
     // Á¢±Ù

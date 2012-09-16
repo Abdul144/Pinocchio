@@ -119,7 +119,8 @@ void Quaternion::setFromVectors(const Vector3 &v0, const Vector3 &v1)
 {
     if (v0 == -v1)
     {
-    	Vector3 v(1, 0, 0);
+    	Vector3 v;
+		v.cross(v0, v1);
     	return setFromAxisAngle(v, 3.141592f);
     }
 

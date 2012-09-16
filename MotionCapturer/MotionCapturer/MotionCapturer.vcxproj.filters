@@ -80,9 +80,6 @@
     <ClInclude Include="source\marker\CamCalib.h">
       <Filter>source\marker</Filter>
     </ClInclude>
-    <ClInclude Include="source\marker\MarkerRecognizer.h">
-      <Filter>source\marker</Filter>
-    </ClInclude>
     <ClInclude Include="source\util\BmpExporter.h">
       <Filter>source\util</Filter>
     </ClInclude>
@@ -117,6 +114,9 @@
       <Filter>source\model</Filter>
     </ClInclude>
     <ClInclude Include="source\model\Actor.h">
+      <Filter>source\model</Filter>
+    </ClInclude>
+    <ClInclude Include="source\marker\MarkerRecognizer.h">
       <Filter>source\model</Filter>
     </ClInclude>
   </ItemGroup>
