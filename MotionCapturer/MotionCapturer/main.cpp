@@ -365,6 +365,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			KINECT_MANAGER.getKinect(0)->saveSkeletonInfo();
 		}
+
+		if (nKey == VK_SPACE)
+		{
+		}
 		
 		break;
 	}

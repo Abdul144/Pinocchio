@@ -135,7 +135,8 @@ void Actor::draw()
 	glPointSize(10.f);
 	glColor4ub(255, 255, 0, 255);
 	
-	for (uint i=0; i<4; ++i)//boneList.size(); ++i)
+	for (uint i=0; //i<12; ++i)
+					i<boneList.size(); ++i)
 	{
 		glPushMatrix();
 

@@ -8,7 +8,7 @@
 #include "KeyFrame.h"
 
 
-AnimationInstance::AnimationInstance() : animation(null)
+AnimationInstance::AnimationInstance() : animation(null), curFrame(0), curKeyFrameIndex(0)
 {
 }
 
