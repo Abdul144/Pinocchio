@@ -199,3 +199,46 @@ void Engine::addPointCloud(CloudElement *cloud)
 {
 	pointCloudQueue.push_back(cloud);
 }
+
+/// 포인트 클라우드 저장
+void Engine::savePointCloud()
+{
+	FILE *fp = fopen("pointCloud.txt", "wb");
+
+	// OFF 출력
+	fprintf(fp, "OFF\n");
+
+	// 총 개수 얻기
+	int pointCount = 0;
+	for (uint i=0; i<pointCloudQueue.size(); ++i)
+	{
+		CloudElement *cloud = pointCloudQueue[i];
+		for(int pointIndex=0; pointIndex<640*480; ++pointIndex)
+		{
+			if (cloud[pointIndex].position.getZ() < 10000.f)
+			{	// 출력대상
+				++pointCount;
+			}
+		}
+	}
+
+	// 총 개수 출력
+	fprintf(fp, "%d 0 0\n", pointCount);
+
+	// 출력
+	for (uint i=0; i<pointCloudQueue.size(); ++i)
+	{
+		CloudElement *cloud = pointCloudQueue[i];
+		for(int pointIndex=0; pointIndex<640*480; ++pointIndex)
+		{
+			if (cloud[pointIndex].position.getZ() < 10000.f)
+			{	// 출력대상
+				Vector3 &position = cloud[pointIndex].position;
+				fprintf(fp, "%lf %lf %lf\n", position.getX(), position.getY(), position.getZ());
+			}
+			
+		}
+	}
+
+	fclose(fp);
+}

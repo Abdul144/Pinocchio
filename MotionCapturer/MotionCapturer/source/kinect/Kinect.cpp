@@ -588,7 +588,7 @@ void Kinect::transformPointCloud(CloudElement *result)
 	{
 		CloudElement &element = result[i];
 		transform.multiply(element.position, pointCloud[i]);
-						
+		
 		element.color[0] = mappedColorBuffer[i*4 + 2];
 		element.color[1] = mappedColorBuffer[i*4 + 1];
 		element.color[2] = mappedColorBuffer[i*4 + 0];

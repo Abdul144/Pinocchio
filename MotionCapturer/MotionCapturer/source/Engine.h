@@ -68,6 +68,9 @@ public:
 
 	void addPointCloud(CloudElement *cloud);
 
+	/// 포인트 클라우드 저장
+	void savePointCloud();
+
 	// 접근
 public:
 	GETTER_SETTER(bool, RunningState, runningState)
