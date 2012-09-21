@@ -368,6 +368,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (nKey == VK_SPACE)
 		{
+			ENGINE.savePointCloud();
 		}
 		
 		break;
