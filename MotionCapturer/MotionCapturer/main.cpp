@@ -383,7 +383,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	case WM_LBUTTONDOWN:
-		//initializeKinect();
+		// initializeKinect();
 		break;
 
 	case WM_MBUTTONDOWN:
