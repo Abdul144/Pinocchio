@@ -128,7 +128,6 @@ void Engine::draw()
 	}
 	glEnd();
 
-	/*
 	// skeleton 그리기
 	if (KINECT_MANAGER.getKinectCount() > 0)
 	{
@@ -137,7 +136,6 @@ void Engine::draw()
 
 	// actor 그리기
 	actor.draw();
-	*/
 
 	glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);

@@ -225,10 +225,6 @@ bool initializeKinect()
 
 				// 포인트 클라우드 큐에 넣어놓기
 				ENGINE.addPointCloud(cloud);
-			}else
-			{
-				KINECT_MANAGER.deconnectKinects();
-				return false;
 			}
 
 		}else
@@ -387,11 +383,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	case WM_LBUTTONDOWN:
-		if (initializeKinect() == false)
-		{
-			MessageBox(hWnd, L"실패", L"dd", MB_OK);
-		}else
-			MessageBox(hWnd, L"성공", L"dd", MB_OK);
+		// initializeKinect();
 		break;
 
 	case WM_MBUTTONDOWN:
@@ -402,7 +394,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_RBUTTONDOWN:
 		// 포인트 클라우드 갱신
 		refreshPointCloud();
-		break;
+
 		// 스켈레톤 갱신
 		refreshSkeleton();
 

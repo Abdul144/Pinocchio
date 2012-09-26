@@ -336,7 +336,7 @@ int Kinect::mapColorToDepth()
 			int index = depthBuffer[depthIndex] & 7;
 			ushort depth = depthBuffer[depthIndex] >> 3;
 			float realDepth = (float)depth / 1000.f;
-			if (depth >= 300 && depth <= 4000)
+			if (depth >= 300 && depth <= 4000 && index != 0)
 			{
 				pointCloud[depthIndex].set((x - 320 + magicX) * realDepth * xyScale, (480 - y - 240 + magicY) * realDepth * xyScale, -realDepth);
 			}else
