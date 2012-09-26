@@ -383,7 +383,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 
 	case WM_LBUTTONDOWN:
-		// initializeKinect();
+		 initializeKinect();
 		break;
 
 	case WM_MBUTTONDOWN:
@@ -394,7 +394,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_RBUTTONDOWN:
 		// 포인트 클라우드 갱신
 		refreshPointCloud();
-
+		break;
 		// 스켈레톤 갱신
 		refreshSkeleton();
 
