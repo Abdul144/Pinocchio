@@ -13,8 +13,8 @@ extension='.off';
 
 %% Step 0: read file (point cloud & local feature size if possible), and
 % normalize the modle.
-%filename = '../data/simplejoint_v4770';% which file we should run on
-filename = '../data/pointCloud';
+sfilename = '../data/simplejoint_v4770';% which file we should run on
+%filename = '../data/pointCloud';
 options.USING_POINT_RING = true;
 
 tic
