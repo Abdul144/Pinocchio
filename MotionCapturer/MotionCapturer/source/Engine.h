@@ -42,6 +42,8 @@ private:
 
 public:
 	int testX, testY;
+	bool rotationFlag;
+	float angle;
 	
 
 	// ¸â¹ö ÇÔ¼ö

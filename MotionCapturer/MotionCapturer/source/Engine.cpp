@@ -11,7 +11,7 @@
 #include "util/Vector3.h"
 
 
-Engine::Engine() : runningState(true), testX(0), testY(0), animation(null)
+Engine::Engine() : runningState(true), testX(0), testY(0), animation(null), rotationFlag(false), angle(0.f)
 {
 	camera.setPosition(Vector3(0, 0, 2));
 
@@ -102,6 +102,11 @@ void Engine::draw()
 	glRotatef(r, 0, 1, 0);
 	r += 2.f;
 	//*/
+	if (rotationFlag)
+	{
+		glRotatef(angle, 0, 1, 0);
+		angle += 2.f;
+	}
 	
 	glPointSize(1.f);
 	

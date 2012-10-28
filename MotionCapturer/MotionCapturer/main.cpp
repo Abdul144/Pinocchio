@@ -27,7 +27,7 @@ TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 
 
 /// TODO test
-float delta = 0.05f;
+float angle = 0.f;
 bool flag = true;
 /// end test
 
@@ -176,6 +176,62 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND &hWnd)
    return TRUE;
 }
 
+static bool refreshDepthAndColorBuffer(Kinect *kinect)
+{
+	/// depth와 color 버퍼를 갱신하고 매핑한다.
+	bool depthIsRefreshed, colorIsRefreshed;
+	do
+		depthIsRefreshed = kinect->refreshDepthBuffer() >= 0;
+	while(depthIsRefreshed == false);
+	do
+		colorIsRefreshed = kinect->refreshColorBuffer() >= 0;
+	while (colorIsRefreshed == false);
+
+	if (depthIsRefreshed && colorIsRefreshed)
+	{
+		kinect->mapColorToDepth();
+		return true;
+
+	}else
+	{
+		KINECT_MANAGER.connectKinects(1);
+		return false;
+	}
+}
+
+static bool recognizeMarker(Kinect *kinect)
+{
+	MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getMappedColorBuffer());
+
+	// 마커가 없으면 실패
+	int count = MARKER_RECOGNIZER.getMarkerCount();
+	if (count <= 0)
+	{
+		KINECT_MANAGER.deconnectKinects();
+		return false;
+	}
+
+	MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
+			
+	// 마커 위치를 기준으로 pointCloud를 변환
+	bool transformed = kinect->setTransform(marker);
+	if (transformed == false)
+	{	// 변환 실패
+		KINECT_MANAGER.deconnectKinects();
+		return false;
+	}
+
+	// 변환
+	CloudElement *cloud = new CloudElement[640*480];
+	kinect->transformPointCloud(cloud);
+
+	// 포인트 클라우드 큐에 넣어놓기
+	ENGINE.addPointCloud(cloud);
+
+
+	return true;
+}
+
 bool initializeKinect()
 {
 	ENGINE.clearPointCloudQueue();
@@ -187,55 +243,13 @@ bool initializeKinect()
 	{
 		Kinect *kinect = KINECT_MANAGER.getKinect(i);
 
-				
-		/// depth와 color 버퍼를 갱신하고 매핑한다.
-		bool depthIsRefreshed, colorIsRefreshed;
-		do
-			depthIsRefreshed = kinect->refreshDepthBuffer() >= 0;
-		while(depthIsRefreshed == false);
-		do
-			colorIsRefreshed = kinect->refreshColorBuffer() >= 0;
-		while (colorIsRefreshed == false);
-
-		if (depthIsRefreshed && colorIsRefreshed)
-			kinect->mapColorToDepth();
-		else
-		{
-			KINECT_MANAGER.connectKinects(1);
+		// depth와 color 버퍼를 갱신하고 매핑한다.
+		if (refreshDepthAndColorBuffer(kinect) == false)
 			continue;
-		}
-				
 
 		/// 마커 인식
-		MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getMappedColorBuffer());
-
-		int count = MARKER_RECOGNIZER.getMarkerCount();
-		if (count > 0)
-		{	// 마커가 있다
-			MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
-			
-			// 마커 위치를 기준으로 pointCloud를 변환
-			bool transformed = kinect->setTransform(marker);
-			if (transformed)
-			{
-				CloudElement *cloud = new CloudElement[640*480];
-
-				// 변환
-				kinect->transformPointCloud(cloud);
-
-				// 포인트 클라우드 큐에 넣어놓기
-				ENGINE.addPointCloud(cloud);
-			}else
-			{
-				KINECT_MANAGER.deconnectKinects();
-				return false;
-			}
-
-		}else
-		{
-			KINECT_MANAGER.deconnectKinects();
+		if (recognizeMarker(kinect) == false)
 			return false;
-		}
 		
 		KINECT_MANAGER.connectKinects(1);
 	}
@@ -367,12 +381,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (nKey == VK_RETURN)
 		{
-			KINECT_MANAGER.getKinect(0)->saveSkeletonInfo();
+			ENGINE.rotationFlag = false;
+			ENGINE.angle = 0.f;
 		}
 
 		if (nKey == VK_SPACE)
 		{
-			ENGINE.savePointCloud();
+			ENGINE.rotationFlag = true;
 		}
 		
 		break;
