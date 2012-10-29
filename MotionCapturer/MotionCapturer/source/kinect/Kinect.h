@@ -5,6 +5,7 @@
 #include "../marker/MarkerRecognizer.h"
 #include "../util/defines.h"
 #include "../util/Matrix.h"
+#include "../util/Vector3.h"
 
 
 using namespace std;
@@ -15,6 +16,15 @@ class Vector3;
 
 class Kinect
 {
+public:
+	struct MarkerInfo
+	{
+		Vector3 v0;
+		Vector3 v1;
+		Vector3 v2;
+		Vector3 v3;
+	};
+
 	// 멤버 변수
 private:
 	INuiSensor *sensor;
@@ -81,13 +91,21 @@ public:
 	void saveSkeletonInfo();
 
 	/// 변환행렬 구성
-	bool setTransform(MarkerRecognizer::sMarkerInfo &marker);
+	bool setTransformFromMarkerInfo(const MarkerInfo &markerInfo);
 
 	/// 포인트 클라우드에 변환행렬 적용
 	void transformPointCloud(CloudElement *result);
 
 	/// 스켈레톤에 변환행렬 적용
 	void transformSkeleton();
+
+	// 여러번 반복하여 정확하게 마커 인식
+	bool recognizeMakerAccurately(int repeatCount, int limitDeadCount);
+	
+	bool refreshDepthAndColorBuffer();
+	bool recognizeMarker(MarkerRecognizer::sMarkerInfo &marker);
+	bool isValidMarker(const MarkerRecognizer::sMarkerInfo &marker);
+	bool convertMarkerInfo(const MarkerRecognizer::sMarkerInfo &from, MarkerInfo &to);
 
 	inline int getKinectBoneIndex(int index)
 	{

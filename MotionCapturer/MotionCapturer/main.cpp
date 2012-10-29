@@ -6,6 +6,7 @@
 
 #include <GL/glew.h>
 #include <GL/wglew.h>
+#include <string>
 
 #include "source/animation/Animation.h"
 #include "source/animation/KeyFrame.h"
@@ -24,6 +25,7 @@
 HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+HWND hWnd;
 
 
 /// TODO test
@@ -40,6 +42,8 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 bool EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
 void DisableOpenGL(HWND, HDC, HGLRC);
 
+using namespace std;
+
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -51,7 +55,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
  	// TODO: Place code here.
 	HACCEL hAccelTable;
-    HWND hwnd;
     HDC hDC;
     HGLRC hRC;
 
@@ -61,7 +64,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	MyRegisterClass(hInstance);
 
 	// Perform application initialization:
-	if (!InitInstance (hInstance, nCmdShow, hwnd))
+	if (!InitInstance (hInstance, nCmdShow, hWnd))
 	{
 		return FALSE;
 	}
@@ -71,7 +74,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	/// 초기화
 	// Open GL 초기화
-    if (EnableOpenGL(hwnd, &hDC, &hRC) == false)
+    if (EnableOpenGL(hWnd, &hDC, &hRC) == false)
     	goto END;
 
 	// 엔진 초기화
@@ -104,10 +107,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	/// 종료
 END:
 	// shutdown OpenGL
-	DisableOpenGL(hwnd, hDC, hRC);
+	DisableOpenGL(hWnd, hDC, hRC);
 
     /* destroy the window explicitly */
-    DestroyWindow(hwnd);
+    DestroyWindow(hWnd);
 
 	return (int) msg.wParam;
 }
@@ -176,62 +179,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND &hWnd)
    return TRUE;
 }
 
-static bool refreshDepthAndColorBuffer(Kinect *kinect)
-{
-	/// depth와 color 버퍼를 갱신하고 매핑한다.
-	bool depthIsRefreshed, colorIsRefreshed;
-	do
-		depthIsRefreshed = kinect->refreshDepthBuffer() >= 0;
-	while(depthIsRefreshed == false);
-	do
-		colorIsRefreshed = kinect->refreshColorBuffer() >= 0;
-	while (colorIsRefreshed == false);
-
-	if (depthIsRefreshed && colorIsRefreshed)
-	{
-		kinect->mapColorToDepth();
-		return true;
-
-	}else
-	{
-		KINECT_MANAGER.connectKinects(1);
-		return false;
-	}
-}
-
-static bool recognizeMarker(Kinect *kinect)
-{
-	MARKER_RECOGNIZER.recognizeMarker(kinect->getColorWidth(), kinect->getColorHeight(), kinect->getMappedColorBuffer());
-
-	// 마커가 없으면 실패
-	int count = MARKER_RECOGNIZER.getMarkerCount();
-	if (count <= 0)
-	{
-		KINECT_MANAGER.deconnectKinects();
-		return false;
-	}
-
-	MarkerRecognizer::sMarkerInfo &marker = MARKER_RECOGNIZER.getMarker(0);
-			
-	// 마커 위치를 기준으로 pointCloud를 변환
-	bool transformed = kinect->setTransform(marker);
-	if (transformed == false)
-	{	// 변환 실패
-		KINECT_MANAGER.deconnectKinects();
-		return false;
-	}
-
-	// 변환
-	CloudElement *cloud = new CloudElement[640*480];
-	kinect->transformPointCloud(cloud);
-
-	// 포인트 클라우드 큐에 넣어놓기
-	ENGINE.addPointCloud(cloud);
-
-
-	return true;
-}
-
 bool initializeKinect()
 {
 	ENGINE.clearPointCloudQueue();
@@ -243,13 +190,15 @@ bool initializeKinect()
 	{
 		Kinect *kinect = KINECT_MANAGER.getKinect(i);
 
-		// depth와 color 버퍼를 갱신하고 매핑한다.
-		if (refreshDepthAndColorBuffer(kinect) == false)
-			continue;
-
 		/// 마커 인식
-		if (recognizeMarker(kinect) == false)
+		if (kinect->recognizeMakerAccurately(10, 3) == false)
+		{
+			wstringstream wstream;
+			wstream << i << L"%d번 키넥트의 마커를 인식할 수 없습니다.";
+			MessageBox(hWnd, wstream.str().c_str(), L"에러", MB_OK);
+			KINECT_MANAGER.deconnectKinects();
 			return false;
+		}
 		
 		KINECT_MANAGER.connectKinects(1);
 	}

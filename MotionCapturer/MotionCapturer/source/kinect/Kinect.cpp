@@ -549,31 +549,17 @@ void Kinect::drawSkeleton()
 }
 
 /// 변환행렬 구성
-bool Kinect::setTransform(MarkerRecognizer::sMarkerInfo &marker)
+bool Kinect::setTransformFromMarkerInfo(const MarkerInfo &markerInfo)
 {
-	// 코너를 얻어옴
-	const Vector3 &v0 = pointCloud[(int)marker.corner[0].x + (int)marker.corner[0].y * depthWidth];
-	const Vector3 &v1 = pointCloud[(int)marker.corner[1].x + (int)marker.corner[1].y * depthWidth];
-	const Vector3 &v2 = pointCloud[(int)marker.corner[2].x + (int)marker.corner[2].y * depthWidth];
-	const Vector3 &v3 = pointCloud[(int)marker.corner[3].x + (int)marker.corner[3].y * depthWidth];
-
-	if (v0.getZ() > 4000 ||
-		v1.getZ() > 4000 ||
-		v2.getZ() > 4000 ||
-		v3.getZ() > 4000)
-	{
-		return false;
-	}
-
 	// 변환행렬 구성위해 up, direction 벡터를 얻는다.
 	Vector3 right, up, direction;
-	up = v0 - v1;
-	right = v2 - v1;
+	up = markerInfo.v0 - markerInfo.v1;
+	right = markerInfo.v2 - markerInfo.v1;
 	direction.cross(up, right);
 	up.normalize();
 	direction.normalize();
 	Vector3 vc;
-	vc = (v0 + v1 + v2 + v3) / 4.f;
+	vc = (markerInfo.v0 + markerInfo.v1 + markerInfo.v2 + markerInfo.v3) / 4.f;
 	
 	// 변환행렬 구성
 	transform.setViewMatrix(vc, direction, up);
@@ -605,4 +591,149 @@ void Kinect::transformSkeleton()
 		Vector3 temp = skeleton[i];
 		transform.multiply(skeleton[i], temp);
 	}
+}
+
+static void computeAverageMarkerInfo(const vector<Kinect::MarkerInfo> &markers, Kinect::MarkerInfo &result)
+{
+	result.v0.set(0, 0, 0);
+	result.v1.set(0, 0, 0);
+	result.v2.set(0, 0, 0);
+	result.v3.set(0, 0, 0);
+
+	// 일단 값을 모두 더한다
+	for (uint i=0; i<markers.size(); ++i)
+	{
+		const Kinect::MarkerInfo &marker = markers[i];
+		result.v0 += marker.v0;
+		result.v1 += marker.v1;
+		result.v2 += marker.v2;
+		result.v3 += marker.v3;
+	}
+
+	// 개수로 나눈다
+	result.v0 /= markers.size();
+	result.v1 /= markers.size();
+	result.v2 /= markers.size();
+	result.v3 /= markers.size();
+}
+
+// 여러번 반복하여 정확하게 마커 인식
+bool Kinect::recognizeMakerAccurately(int repeatCount, int limitDeadCount)
+{
+	vector<MarkerInfo> markers;
+
+	// 회수만큼 반복
+	int deadCount = 0;
+	for (int i=0; i<repeatCount;)
+	{
+		if (deadCount >= limitDeadCount)
+			return false;
+
+		// depth와 color 버퍼를 갱신하고 매핑한다.
+		if (refreshDepthAndColorBuffer() == false)
+		{
+			++deadCount;
+			continue;
+		}
+
+		// 마커 인식
+		MarkerRecognizer::sMarkerInfo marker;
+		if (recognizeMarker(marker) == false)
+		{
+			++deadCount;
+			continue;
+		}
+
+		// 마커 정보 변환
+		markers.push_back(MarkerInfo());
+		if (convertMarkerInfo(marker, markers.back()) == false)
+		{
+			++deadCount;
+			markers.pop_back();
+			continue;
+		}
+
+		++i;
+	}
+
+	// 마커들의 값을 평균낸다
+	MarkerInfo averageMarker;
+	computeAverageMarkerInfo(markers, averageMarker);
+
+	// 마커 위치를 기준으로 변환행렬 구성
+	bool transformed = setTransformFromMarkerInfo(averageMarker);
+	if (transformed == false)
+	{	// 변환 실패
+		return false;
+	}
+
+	return true;
+}
+
+bool Kinect::refreshDepthAndColorBuffer()
+{
+	/// depth와 color 버퍼를 갱신하고 매핑한다.
+	bool depthIsRefreshed, colorIsRefreshed;
+	do
+		depthIsRefreshed = refreshDepthBuffer() >= 0;
+	while(depthIsRefreshed == false);
+	do
+		colorIsRefreshed = refreshColorBuffer() >= 0;
+	while (colorIsRefreshed == false);
+
+	if (depthIsRefreshed && colorIsRefreshed)
+	{
+		mapColorToDepth();
+		return true;
+
+	}else
+	{
+		return false;
+	}
+}
+
+bool Kinect::recognizeMarker(MarkerRecognizer::sMarkerInfo &marker)
+{
+	MARKER_RECOGNIZER.recognizeMarker(getColorWidth(), getColorHeight(), getMappedColorBuffer());
+
+	// 마커가 없으면 실패
+	int count = MARKER_RECOGNIZER.getMarkerCount();
+	if (count <= 0)
+		return false;
+
+	marker = MARKER_RECOGNIZER.getMarker(0);
+
+	return true;
+}
+bool Kinect::isValidMarker(const MarkerRecognizer::sMarkerInfo &marker)
+{
+	// 코너를 얻어옴
+	const Vector3 &v0 = pointCloud[(int)marker.corner[0].x + (int)marker.corner[0].y * depthWidth];
+	const Vector3 &v1 = pointCloud[(int)marker.corner[1].x + (int)marker.corner[1].y * depthWidth];
+	const Vector3 &v2 = pointCloud[(int)marker.corner[2].x + (int)marker.corner[2].y * depthWidth];
+	const Vector3 &v3 = pointCloud[(int)marker.corner[3].x + (int)marker.corner[3].y * depthWidth];
+
+	if (v0.getZ() > 4000 ||
+		v1.getZ() > 4000 ||
+		v2.getZ() > 4000 ||
+		v3.getZ() > 4000)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Kinect::convertMarkerInfo(const MarkerRecognizer::sMarkerInfo &from, MarkerInfo &to)
+{
+	if (isValidMarker(from) == false)
+		return false;
+
+	// 코너를 얻어옴
+	to.v0 = pointCloud[(int)from.corner[0].x + (int)from.corner[0].y * depthWidth];
+	to.v1 = pointCloud[(int)from.corner[1].x + (int)from.corner[1].y * depthWidth];
+	to.v2 = pointCloud[(int)from.corner[2].x + (int)from.corner[2].y * depthWidth];
+	to.v3 = pointCloud[(int)from.corner[3].x + (int)from.corner[3].y * depthWidth];
+
+	return true;
 }
