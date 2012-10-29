@@ -35,11 +35,14 @@ public:
 
 	const Vector3 operator + (const Vector3 &v) const;
 	const Vector3 operator - (const Vector3 &v) const;
-	const Vector3 operator * (const float &value) const;
-	const Vector3 operator / (const float &value) const;
+	const Vector3 operator * (float value) const;
+	const Vector3 operator / (float value) const;
 
 	const Vector3 operator += (const Vector3 &v);
 	const Vector3 operator -= (const Vector3 &v);
+	
+	const Vector3 operator *= (float value);
+	const Vector3 operator /= (float value);
 
     bool operator==(const Vector3& v) const;
 

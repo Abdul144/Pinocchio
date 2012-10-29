@@ -66,7 +66,7 @@ const Vector3 Vector3::operator - (const Vector3 &v) const
 	return result;
 }
 
-const Vector3 Vector3::operator * (const float &value) const
+const Vector3 Vector3::operator * (float value) const
 {
 	Vector3 result;
 	
@@ -77,7 +77,7 @@ const Vector3 Vector3::operator * (const float &value) const
 	return result;
 }
 
-const Vector3 Vector3::operator / (const float &value) const
+const Vector3 Vector3::operator / (float value) const
 {
 	Vector3 result;
 	
@@ -102,6 +102,24 @@ const Vector3 Vector3::operator -= (const Vector3 &v)
 	x -= v.x;
 	y -= v.y;
 	z -= v.z;
+
+	return *this;
+}
+	
+const Vector3 Vector3::operator *= (float value)
+{
+	x *= value;
+	y *= value;
+	z *= value;
+
+	return *this;
+}
+
+const Vector3 Vector3::operator /= (float value)
+{
+	x /= value;
+	y /= value;
+	z /= value;
 
 	return *this;
 }
