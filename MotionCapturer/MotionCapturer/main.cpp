@@ -26,6 +26,7 @@ HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 HWND hWnd;
+HDC hDC;
 
 
 /// TODO test
@@ -55,7 +56,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
  	// TODO: Place code here.
 	HACCEL hAccelTable;
-    HDC hDC;
     HGLRC hRC;
 
 	// Initialize global strings
@@ -194,7 +194,7 @@ bool initializeKinect()
 		if (kinect->recognizeMakerAccurately(10, 3) == false)
 		{
 			wstringstream wstream;
-			wstream << i << L"%d번 키넥트의 마커를 인식할 수 없습니다.";
+			wstream << i << L"번 키넥트의 마커를 인식할 수 없습니다.";
 			MessageBox(hWnd, wstream.str().c_str(), L"에러", MB_OK);
 			KINECT_MANAGER.deconnectKinects();
 			return false;
@@ -237,7 +237,7 @@ void refreshPointCloud()
 
 		// 포인트 클라우드 큐에 넣어놓기
 		ENGINE.addPointCloud(cloud);
-				
+		
 	}
 
 }

@@ -54,13 +54,13 @@ private:
 	/// 동기화
 	float syncronize();
 
-	void update(float deltaTime);
-
-	void draw();
-
 public:
 	/// 메인 루프
 	void run();
+
+	void update(float deltaTime);
+
+	void draw();
 
 	/// 리사이즈
 	void resize(int width, int height);

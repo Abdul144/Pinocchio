@@ -14,6 +14,8 @@ const float Kinect::xyScale = tanf(deg2rad(58.5f) * 0.5f) / (640.f * 0.5f);
 int Kinect::magicX = -47;
 int Kinect::magicY = -47;
 
+// TODO test
+extern HDC hDC;
 
 Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) :
 		sensor(sensor), 
@@ -593,6 +595,27 @@ void Kinect::transformSkeleton()
 	}
 }
 
+static void drawTestMarkerRecognitionResult(Kinect *kinect, Kinect::MarkerInfo &marker)
+{
+//*
+	ENGINE.clearPointCloudQueue();
+
+	/// 포인트 클라우드 변환, 추가
+	CloudElement *cloud = new CloudElement[640*480];
+
+	// 변환
+	kinect->setTransformFromMarkerInfo(marker);
+	kinect->transformPointCloud(cloud);
+
+	// 포인트 클라우드 큐에 넣어놓기
+	ENGINE.addPointCloud(cloud);
+	
+	// 그리기
+	ENGINE.draw();
+    SwapBuffers(hDC);
+//*/
+}
+
 static void computeAverageMarkerInfo(const vector<Kinect::MarkerInfo> &markers, Kinect::MarkerInfo &result)
 {
 	result.v0.set(0, 0, 0);
@@ -653,6 +676,9 @@ bool Kinect::recognizeMakerAccurately(int repeatCount, int limitDeadCount)
 			continue;
 		}
 
+		// for test
+		drawTestMarkerRecognitionResult(this, markers.back());
+
 		++i;
 	}
 
@@ -666,6 +692,9 @@ bool Kinect::recognizeMakerAccurately(int repeatCount, int limitDeadCount)
 	{	// 변환 실패
 		return false;
 	}
+	
+	// for test
+	drawTestMarkerRecognitionResult(this, averageMarker);
 
 	return true;
 }
