@@ -11,7 +11,8 @@
 #include "util/Vector3.h"
 
 
-Engine::Engine() : runningState(true), testX(0), testY(0), animation(null), rotationFlag(false), angle(0.f)
+Engine::Engine()
+	: runningState(true), pointCloudUnit(0.01f), testX(0), testY(0), animation(null), rotationFlag(false), angle(0.f)
 {
 	camera.setPosition(Vector3(0, 0, 2));
 

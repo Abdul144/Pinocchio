@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_set>
 #include <vector>
 #include <Windows.h>
 
@@ -17,6 +18,19 @@ class Vector3;
 
 using namespace std;
 
+struct NormalizedPoint
+{
+	int x, y, z;
+}
+
+class hash<NormalizedPoint>
+{
+public:
+	size_t operator() (const NormalizedPoint &value)
+	{
+		return uint64(value.z) | (uint64(value.y) << 20) | (uint64(value.x) << 40);
+	}
+};
 
 struct CloudElement
 {
@@ -33,8 +47,10 @@ private:
 	bool runningState;
 	int width, height;
 	Camera camera;
-
-	vector<CloudElement*> pointCloudQueue;		///< 포인트 클라우드를 넣어놓는 용도.. free
+	
+	float pointCloudUnit;
+	unordered_set<NormalizedPoint> backgroundPointCloud;	///< 배경
+	vector<CloudElement*> pointCloudQueue;					///< 포인트 클라우드를 넣어놓는 용도.. free
 
 	Actor actor;
 	Actor base;
@@ -73,12 +89,23 @@ public:
 	/// 포인트 클라우드 저장
 	void savePointCloud();
 
+	inline void addBackground(NormalizedPoint &np)
+	{
+		backgroundPointCloud.insert(np);
+	}
+
+	inline void clearBackground()
+	{
+		backgroundPointCloud.clear();
+	}
+
 	// 접근
 public:
 	GETTER_SETTER(bool, RunningState, runningState)
 	GETTER_REF(Camera, Camera, camera)
 	GETTER_REF(Actor, Actor, actor)
 	GETTER_REF(Actor, BaseActor, base)
-	GETTER(Animation*, Animation, animation);
+	GETTER(Animation*, Animation, animation)
+	GETTER(float, PointCloudUnit, pointCloudUnit)
 };
 

@@ -28,7 +28,6 @@ TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 HWND hWnd;
 HDC hDC;
 
-
 /// TODO test
 float angle = 0.f;
 bool flag = true;
@@ -206,6 +205,36 @@ bool initializeKinect()
 	return true;
 }
 
+// 배경에 포인트 클라우드 추가
+void addPointCloudToBackground(CloudElement cloud[], int size)
+{
+	const float pointCloudUnit = ENGINE.getPointCloudUnit();
+	NormalizedPoint np;
+	for (int i=0; i<size; ++i)
+	{
+		Vector3 &pos = cloud[i].position;
+
+		np.x = floor(pos.getX() / pointCloudUnit);
+		np.y = floor(pos.getY() / pointCloudUnit);
+		np.z = floor(pos.getZ() / pointCloudUnit);
+		ENGINE.addBackground(np);
+	}
+}
+
+// 포인트 클라우드 정규화
+void normalizePointCloud(CloudElement cloud[], int size)
+{
+	const float pointCloudUnit = ENGINE.getPointCloudUnit();
+	for (int i=0; i<size; ++i)
+	{
+		Vector3 &pos = cloud[i].position;
+		
+		pos.setX(floor(pos.getX() / pointCloudUnit) * pointCloudUnit);
+		pos.setY(floor(pos.getY() / pointCloudUnit) * pointCloudUnit);
+		pos.setZ(floor(pos.getZ() / pointCloudUnit) * pointCloudUnit);
+	}
+}
+
 // 포인트 클라우드 갱신
 void refreshPointCloud()
 {
@@ -230,10 +259,14 @@ void refreshPointCloud()
 		
 
 		/// 포인트 클라우드 변환, 추가
-		CloudElement *cloud = new CloudElement[640*480];
+		int cloudSize = 640*480;
+		CloudElement *cloud = new CloudElement[cloudSize];
 
 		// 변환
 		kinect->transformPointCloud(cloud);
+
+		// 정규화
+		normalizePointCloud(cloud, cloudSize);
 
 		// 포인트 클라우드 큐에 넣어놓기
 		ENGINE.addPointCloud(cloud);
@@ -359,8 +392,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_MBUTTONDOWN:
-		// 포인트 클라우드 큐 비우기
-		ENGINE.clearPointCloudQueue();
+		// 배경 촬영
+
 		break;
 
 	case WM_RBUTTONDOWN:
