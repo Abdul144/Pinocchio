@@ -21,12 +21,18 @@ using namespace std;
 struct NormalizedPoint
 {
 	int x, y, z;
-}
 
+	inline bool operator == (const NormalizedPoint &np) const
+	{
+		return (x == np.x && y == np.y && z == np.z);
+	}
+};
+
+template <>
 class hash<NormalizedPoint>
 {
 public:
-	size_t operator() (const NormalizedPoint &value)
+	size_t operator() (const NormalizedPoint &value) const
 	{
 		return uint64(value.z) | (uint64(value.y) << 20) | (uint64(value.x) << 40);
 	}
@@ -50,7 +56,8 @@ private:
 	
 	float pointCloudUnit;
 	unordered_set<NormalizedPoint> backgroundPointCloud;	///< 배경
-	vector<CloudElement*> pointCloudQueue;					///< 포인트 클라우드를 넣어놓는 용도.. free
+	unordered_set<NormalizedPoint> foregroundSet;			///< 중복된 등록을 막기위한 set
+	vector<CloudElement> pointCloud;						///< 포인트 클라우드
 
 	Actor actor;
 	Actor base;
@@ -82,9 +89,13 @@ public:
 	void resize(int width, int height);
 
 	/// 포인트 클라우드 초기화
-	void clearPointCloudQueue();
+	inline void clearPointCloud()
+	{
+		pointCloud.clear();
+		foregroundSet.clear();
+	}
 
-	void addPointCloud(CloudElement *cloud);
+	void addPointCloud(CloudElement *cloud, int size);
 
 	/// 포인트 클라우드 저장
 	void savePointCloud();
@@ -97,6 +108,20 @@ public:
 	inline void clearBackground()
 	{
 		backgroundPointCloud.clear();
+	}
+
+	inline void normalizePoint(const Vector3 &from, NormalizedPoint &to)
+	{
+		to.x = floor(from.getX() / pointCloudUnit);
+		to.y = floor(from.getY() / pointCloudUnit);
+		to.z = floor(from.getZ() / pointCloudUnit);
+	}
+
+	inline void normalizeVector(const NormalizedPoint &from, Vector3 &to)
+	{
+		to.setX(from.x * pointCloudUnit);
+		to.setY(from.y * pointCloudUnit);
+		to.setZ(from.z * pointCloudUnit);
 	}
 
 	// 접근

@@ -25,15 +25,6 @@ Engine::~Engine()
 	DELETE(animation);
 }
 
-void Engine::clearPointCloudQueue()
-{
-	for (int i=0; i<pointCloudQueue.size(); ++i)
-	{
-		DELETE_ARRAY(pointCloudQueue[i]);
-	}
-	pointCloudQueue.clear();
-}
-
 /// 메인 루프
 void Engine::run()
 {
@@ -115,20 +106,12 @@ void Engine::draw()
 
 	glBegin(GL_POINTS);
 	{
-		for (int i=0; i<pointCloudQueue.size(); ++i)
+		for (int i=0; i<pointCloud.size(); ++i)
 		{
-			CloudElement *cloud = pointCloudQueue[i];
+			CloudElement &element = pointCloud[i];
 
-			for (int y=0; y<480; ++y)
-			{
-				for (int x=0; x<640; ++x)
-				{
-					CloudElement &element = cloud[x + y*640];
-
-					glColor4ub(element.color[0], element.color[1], element.color[2], 255);
-					glVertex3f(element.position.getX(), element.position.getY(), element.position.getZ());
-				}
-			}
+			glColor4ub(element.color[0], element.color[1], element.color[2], 255);
+			glVertex3f(element.position.getX(), element.position.getY(), element.position.getZ());
 
 		}
 	}
@@ -203,9 +186,30 @@ void Engine::resize(int width, int height)
 }
 
 /// 스틸 샷 추가.
-void Engine::addPointCloud(CloudElement *cloud)
+void Engine::addPointCloud(CloudElement *cloud, int size)
 {
-	pointCloudQueue.push_back(cloud);
+	for (int i=0; i<size; ++i)
+	{
+		CloudElement &element = cloud[i];
+
+		if (element.position.getZ() < 0)
+			continue;
+		
+		NormalizedPoint np;
+		normalizePoint(element.position, np);
+
+		// 배경에 걸리면 다음으로
+		if (backgroundPointCloud.find(np) != backgroundPointCloud.end())
+			continue;
+
+		// 이미 있으면 다음으로
+		if (foregroundSet.find(np) == foregroundSet.end())
+			continue;
+
+		// 추가
+		normalizeVector(np, element.position);
+		pointCloud.push_back(element);
+	}
 }
 
 /// 포인트 클라우드 저장
@@ -216,36 +220,14 @@ void Engine::savePointCloud()
 	// OFF 출력
 	fprintf(fp, "OFF\n");
 
-	// 총 개수 얻기
-	int pointCount = 0;
-	for (uint i=0; i<pointCloudQueue.size(); ++i)
-	{
-		CloudElement *cloud = pointCloudQueue[i];
-		for(int pointIndex=0; pointIndex<640*480; ++pointIndex)
-		{
-			if (cloud[pointIndex].position.getZ() < 10000.f)
-			{	// 출력대상
-				++pointCount;
-			}
-		}
-	}
-
 	// 총 개수 출력
-	fprintf(fp, "%d 0 0\n", pointCount);
+	fprintf(fp, "%d 0 0\n", pointCloud.size());
 
 	// 출력
-	for (uint i=0; i<pointCloudQueue.size(); ++i)
+	for (uint i=0; i<pointCloud.size(); ++i)
 	{
-		CloudElement *cloud = pointCloudQueue[i];
-		for(int pointIndex=0; pointIndex<640*480; ++pointIndex)
-		{
-			if (cloud[pointIndex].position.getZ() < 10000.f)
-			{	// 출력대상
-				Vector3 &position = cloud[pointIndex].position;
-				fprintf(fp, "%lf %lf %lf\n", position.getX(), position.getY(), position.getZ());
-			}
-			
-		}
+		Vector3 &position = pointCloud[i].position;
+		fprintf(fp, "%lf %lf %lf\n", position.getX(), position.getY(), position.getZ());
 	}
 
 	fclose(fp);

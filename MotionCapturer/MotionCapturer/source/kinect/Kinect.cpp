@@ -598,17 +598,18 @@ void Kinect::transformSkeleton()
 static void drawTestMarkerRecognitionResult(Kinect *kinect, Kinect::MarkerInfo &marker)
 {
 //*
-	ENGINE.clearPointCloudQueue();
+	ENGINE.clearPointCloud();
 
 	/// 포인트 클라우드 변환, 추가
-	CloudElement *cloud = new CloudElement[640*480];
+	int cloudSize = 640*480;
+	CloudElement *cloud = new CloudElement[cloudSize];
 
 	// 변환
 	kinect->setTransformFromMarkerInfo(marker);
 	kinect->transformPointCloud(cloud);
 
 	// 포인트 클라우드 큐에 넣어놓기
-	ENGINE.addPointCloud(cloud);
+	ENGINE.addPointCloud(cloud, cloudSize);
 	
 	// 그리기
 	ENGINE.draw();

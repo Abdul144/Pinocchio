@@ -180,7 +180,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND &hWnd)
 
 bool initializeKinect()
 {
-	ENGINE.clearPointCloudQueue();
+	ENGINE.clearPointCloud();
 	KINECT_MANAGER.deconnectKinects();
 
 	/// 키넥트 센서로부터 정보를 받아와서 가공
@@ -212,33 +212,15 @@ void addPointCloudToBackground(CloudElement cloud[], int size)
 	NormalizedPoint np;
 	for (int i=0; i<size; ++i)
 	{
-		Vector3 &pos = cloud[i].position;
-
-		np.x = floor(pos.getX() / pointCloudUnit);
-		np.y = floor(pos.getY() / pointCloudUnit);
-		np.z = floor(pos.getZ() / pointCloudUnit);
+		ENGINE.normalizePoint(cloud[i].position, np);
 		ENGINE.addBackground(np);
-	}
-}
-
-// 포인트 클라우드 정규화
-void normalizePointCloud(CloudElement cloud[], int size)
-{
-	const float pointCloudUnit = ENGINE.getPointCloudUnit();
-	for (int i=0; i<size; ++i)
-	{
-		Vector3 &pos = cloud[i].position;
-		
-		pos.setX(floor(pos.getX() / pointCloudUnit) * pointCloudUnit);
-		pos.setY(floor(pos.getY() / pointCloudUnit) * pointCloudUnit);
-		pos.setZ(floor(pos.getZ() / pointCloudUnit) * pointCloudUnit);
 	}
 }
 
 // 포인트 클라우드 갱신
 void refreshPointCloud()
 {
-	ENGINE.clearPointCloudQueue();
+	ENGINE.clearPointCloud();
 
 	/// 키넥트 센서로부터 정보를 받아와서 가공
 	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
@@ -265,11 +247,8 @@ void refreshPointCloud()
 		// 변환
 		kinect->transformPointCloud(cloud);
 
-		// 정규화
-		normalizePointCloud(cloud, cloudSize);
-
 		// 포인트 클라우드 큐에 넣어놓기
-		ENGINE.addPointCloud(cloud);
+		ENGINE.addPointCloud(cloud, cloudSize);
 		
 	}
 
@@ -358,7 +337,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (nKey == VK_ESCAPE)
 		{
 			// 포인트 클라우드 큐 비우기
-			ENGINE.clearPointCloudQueue();
+			ENGINE.clearPointCloud();
 		}
 
 		if (nKey == VK_RETURN)
