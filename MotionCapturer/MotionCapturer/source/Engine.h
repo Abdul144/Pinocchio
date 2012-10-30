@@ -34,7 +34,7 @@ class hash<NormalizedPoint>
 public:
 	size_t operator() (const NormalizedPoint &value) const
 	{
-		return uint64(value.z) | (uint64(value.y) << 20) | (uint64(value.x) << 40);
+		return uint64(value.x) | (uint64(value.y) << 20) | (uint64(value.z) << 40);
 	}
 };
 
@@ -92,7 +92,7 @@ public:
 	inline void clearPointCloud()
 	{
 		pointCloud.clear();
-		foregroundSet.clear();
+		//foregroundSet.clear();
 	}
 
 	void addPointCloud(CloudElement *cloud, int size);
