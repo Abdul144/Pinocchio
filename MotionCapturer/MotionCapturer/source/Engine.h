@@ -55,8 +55,6 @@ private:
 	Camera camera;
 	
 	float pointCloudUnit;
-	unordered_set<NormalizedPoint> backgroundPointCloud;	///< 배경
-	unordered_set<NormalizedPoint> foregroundSet;			///< 중복된 등록을 막기위한 set
 	vector<CloudElement> pointCloud;						///< 포인트 클라우드
 
 	Actor actor;
@@ -99,16 +97,6 @@ public:
 
 	/// 포인트 클라우드 저장
 	void savePointCloud();
-
-	inline void addBackground(NormalizedPoint &np)
-	{
-		backgroundPointCloud.insert(np);
-	}
-
-	inline void clearBackground()
-	{
-		backgroundPointCloud.clear();
-	}
 
 	inline void normalizePoint(const Vector3 &from, NormalizedPoint &to)
 	{

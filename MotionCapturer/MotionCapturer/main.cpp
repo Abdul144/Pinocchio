@@ -205,25 +205,8 @@ bool initializeKinect()
 	return true;
 }
 
-// 배경에 포인트 클라우드 추가
-void addPointCloudToBackground(CloudElement cloud[], int size)
-{
-	NormalizedPoint np;
-	for (int i=0; i<size; ++i)
-	{
-		Vector3 &pos = cloud[i].position;
-		if (pos.getZ() > 4000.f)
-			continue;
-
-		ENGINE.normalizePoint(cloud[i].position, np);
-		ENGINE.addBackground(np);
-	}
-}
-
 void refreshBackGround()
 {
-//	ENGINE.clearBackground();
-
 	/// 키넥트 센서로부터 정보를 받아와서 가공
 	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
 	{
@@ -240,14 +223,14 @@ void refreshBackGround()
 
 		kinect->mapColorToDepth();
 		
+		kinect->setBackground(null);
 
 		// 포인트 클라우드 변환
 		int cloudSize = 640*480;
 		CloudElement *cloud = new CloudElement[cloudSize];
 		kinect->transformPointCloud(cloud);
 
-		// 배경 추가
-		addPointCloudToBackground(cloud, cloudSize);
+		kinect->setBackground(cloud);
 		
 	}
 }

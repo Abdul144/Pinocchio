@@ -46,6 +46,7 @@ private:
 	byte *mappedColorBuffer;	///< .. free
 	long *colorCoordinates;		///< .. free
 	Vector3 *pointCloud;		///< 포인트 클라우드.. free
+	CloudElement *background;	///< 배경.. free
 
 	vector<Vector3> skeleton;
 	vector<Quaternion> skeletonRotationInfo;
@@ -93,8 +94,8 @@ public:
 	/// 변환행렬 구성
 	bool setTransformFromMarkerInfo(const MarkerInfo &markerInfo);
 
-	/// 포인트 클라우드에 변환행렬 적용
-	void transformPointCloud(CloudElement *result);
+	/// 포인트 클라우드에 변환행렬 적용,
+	void transformPointCloud(CloudElement *result, bool bgRemovalOption = true);
 
 	/// 스켈레톤에 변환행렬 적용
 	void transformSkeleton();
@@ -106,6 +107,8 @@ public:
 	bool recognizeMarker(MarkerRecognizer::sMarkerInfo &marker);
 	bool isValidMarker(const MarkerRecognizer::sMarkerInfo &marker);
 	bool convertMarkerInfo(const MarkerRecognizer::sMarkerInfo &from, MarkerInfo &to);
+
+	void setBackground(CloudElement *bg);
 
 	inline int getKinectBoneIndex(int index)
 	{

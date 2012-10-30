@@ -12,7 +12,7 @@
 
 
 Engine::Engine()
-	: runningState(true), pointCloudUnit(0.01f), backgroundPointCloud(102400), foregroundSet(102400), testX(0), testY(0), animation(null), rotationFlag(false), angle(0.f)
+	: runningState(true), pointCloudUnit(0.01f), testX(0), testY(0), animation(null), rotationFlag(false), angle(0.f)
 {
 	camera.setPosition(Vector3(0, 0, 2));
 
@@ -188,6 +188,8 @@ void Engine::resize(int width, int height)
 /// 스틸 샷 추가.
 void Engine::addPointCloud(CloudElement *cloud, int size)
 {
+	NormalizedPoint np;
+
 	for (int i=0; i<size; ++i)
 	{
 		CloudElement &element = cloud[i];
@@ -195,19 +197,8 @@ void Engine::addPointCloud(CloudElement *cloud, int size)
 		if (element.position.getZ() > 4000.f)
 			continue;
 		
-		NormalizedPoint np;
-		normalizePoint(element.position, np);
-
-		// 배경에 걸리면 다음으로
-		if (backgroundPointCloud.find(np) != backgroundPointCloud.end())
-			continue;
-
-		// 이미 있으면 다음으로
-//		if (foregroundSet.find(np) != foregroundSet.end())
-//			continue;
-
 		// 추가
-//		foregroundSet.insert(np);
+		normalizePoint(element.position, np);
 		normalizeVector(np, element.position);
 		pointCloud.push_back(element);
 	}

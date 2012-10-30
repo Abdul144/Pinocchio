@@ -24,7 +24,8 @@ Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) :
 		nextColorFrameEvent(null),
 		colorStreamHandle(null),
 		nextSkeletonFrameEvent(null),
-		skeletonTrakingFlags(0)
+		skeletonTrakingFlags(0),
+		background(null)
 {
 	HRESULT hr;
 	DWORD flag;
@@ -102,6 +103,7 @@ Kinect::Kinect(INuiSensor *sensor, bool useSkeleton) :
 	colorCoordinates = new long[depthWidth * depthHeight * 2];
 	memset(colorCoordinates, 0, sizeof(long) * depthWidth * depthHeight * 2);
 	pointCloud = new Vector3[depthWidth * depthHeight];
+	background = null;
 
 	// 변환행렬 초기화
 	transform.setIdentity();
@@ -143,6 +145,7 @@ Kinect::~Kinect()
 	DELETE_ARRAY(mappedColorBuffer)
 	DELETE_ARRAY(colorCoordinates)
 	DELETE_ARRAY(pointCloud)
+	DELETE_ARRAY(background)
 }
 
 /// 키넥트 센서 해제
@@ -343,7 +346,7 @@ int Kinect::mapColorToDepth()
 				pointCloud[depthIndex].set((x - 320 + magicX) * realDepth * xyScale, (480 - y - 240 + magicY) * realDepth * xyScale, -realDepth);
 			}else
 			{
-				pointCloud[depthIndex].set((x - 320) * realDepth * xyScale, (480 - y - 240) * realDepth * xyScale, 10000);
+				pointCloud[depthIndex].set((x - 320) * realDepth * xyScale, (480 - y - 240) * realDepth * xyScale, 5000.f);
 			}
 
 			dest++;
@@ -570,17 +573,38 @@ bool Kinect::setTransformFromMarkerInfo(const MarkerInfo &markerInfo)
 }
 
 /// 포인트 클라우드에 변환행렬 적용
-void Kinect::transformPointCloud(CloudElement *result)
+void Kinect::transformPointCloud(CloudElement *result, bool bgRemovalOption)
 {
-	// 마커 위치를 기준으로 pointCloud를 변환
-	for (int i=0; i<depthWidth*depthHeight; ++i)
+	if (bgRemovalOption && background)
 	{
-		CloudElement &element = result[i];
-		transform.multiply(element.position, pointCloud[i]);
+		// 마커 위치를 기준으로 pointCloud를 변환
+		for (int i=0; i<depthWidth*depthHeight; ++i)
+		{
+			CloudElement &element = result[i];
+			transform.multiply(element.position, pointCloud[i]);
+			
+			if (element.position.getZ() <= background[i].position.getZ() + 0.3f)
+			{
+				element.position.setZ(5000.f);
+				continue;
+			}
 		
-		element.color[0] = mappedColorBuffer[i*4 + 2];
-		element.color[1] = mappedColorBuffer[i*4 + 1];
-		element.color[2] = mappedColorBuffer[i*4 + 0];
+			element.color[0] = mappedColorBuffer[i*4 + 2];
+			element.color[1] = mappedColorBuffer[i*4 + 1];
+			element.color[2] = mappedColorBuffer[i*4 + 0];
+		}
+	}else
+	{
+		// 마커 위치를 기준으로 pointCloud를 변환
+		for (int i=0; i<depthWidth*depthHeight; ++i)
+		{
+			CloudElement &element = result[i];
+			transform.multiply(element.position, pointCloud[i]);
+		
+			element.color[0] = mappedColorBuffer[i*4 + 2];
+			element.color[1] = mappedColorBuffer[i*4 + 1];
+			element.color[2] = mappedColorBuffer[i*4 + 0];
+		}
 	}
 }
 
@@ -766,4 +790,10 @@ bool Kinect::convertMarkerInfo(const MarkerRecognizer::sMarkerInfo &from, Marker
 	to.v3 = pointCloud[(int)from.corner[3].x + (int)from.corner[3].y * depthWidth];
 
 	return true;
+}
+
+void Kinect::setBackground(CloudElement *bg)
+{
+	DELETE_ARRAY(background);
+	background = bg;
 }
