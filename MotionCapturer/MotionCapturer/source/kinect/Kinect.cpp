@@ -792,8 +792,25 @@ bool Kinect::convertMarkerInfo(const MarkerRecognizer::sMarkerInfo &from, Marker
 	return true;
 }
 
-void Kinect::setBackground(CloudElement *bg)
+void Kinect::addBackground(CloudElement *bg)
 {
-	DELETE_ARRAY(background);
-	background = bg;
+	// 기존 값이 null 이면
+	if (background == null)
+	{
+		background = bg;
+		return;
+	}
+
+	// 기존 값과 비교하여 더 적합한 값이 있다면 수정
+	int size = 640*480;
+	for (int i=0; i<size; ++i)
+	{
+
+		if (background[i].position.getZ() < bg[i].position.getZ() + 0.3f)
+		{
+			background[i].position = bg[i].position;
+		}
+	}
+
+	DELETE_ARRAY(bg);
 }

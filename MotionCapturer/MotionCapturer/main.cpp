@@ -178,6 +178,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND &hWnd)
    return TRUE;
 }
 
+static inline void showNotice(const wchar_t *str)
+{
+	MessageBox(hWnd, str, L"알림", MB_OK);
+}
+
+static inline void showError(const wchar_t *str)
+{
+	MessageBox(hWnd, str, L"에러", MB_OK);
+}
+
 bool initializeKinect()
 {
 	ENGINE.clearPointCloud();
@@ -194,7 +204,7 @@ bool initializeKinect()
 		{
 			wstringstream wstream;
 			wstream << i << L"번 키넥트의 마커를 인식할 수 없습니다.";
-			MessageBox(hWnd, wstream.str().c_str(), L"에러", MB_OK);
+			showError(wstream.str().c_str());
 			KINECT_MANAGER.deconnectKinects();
 			return false;
 		}
@@ -207,32 +217,43 @@ bool initializeKinect()
 
 void refreshBackGround()
 {
-	/// 키넥트 센서로부터 정보를 받아와서 가공
+	// 배경 정보 초기화
 	for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
 	{
 		Kinect *kinect = KINECT_MANAGER.getKinect(i);
-				
-		// depth와 color 버퍼를 갱신하고 매핑한다.
-		bool depthIsRefreshed, colorIsRefreshed;
-		do
-			depthIsRefreshed = kinect->refreshDepthBuffer() >= 0;
-		while(depthIsRefreshed == false);
-		do
-			colorIsRefreshed = kinect->refreshColorBuffer() >= 0;
-		while (colorIsRefreshed == false);
-
-		kinect->mapColorToDepth();
-		
-		kinect->setBackground(null);
-
-		// 포인트 클라우드 변환
-		int cloudSize = 640*480;
-		CloudElement *cloud = new CloudElement[cloudSize];
-		kinect->transformPointCloud(cloud);
-
-		kinect->setBackground(cloud);
-		
+		kinect->clearBackground();
 	}
+
+	// 배경 정보 갱신
+	int repeatCount = 20;
+	for (int repeat=0; repeat<repeatCount; ++repeat)
+	{
+		for (int i=0; i<KINECT_MANAGER.getKinectCount(); ++i)
+		{
+			Kinect *kinect = KINECT_MANAGER.getKinect(i);
+		
+			// depth와 color 버퍼를 갱신하고 매핑한다.
+			bool depthIsRefreshed, colorIsRefreshed;
+			do
+				depthIsRefreshed = kinect->refreshDepthBuffer() >= 0;
+			while(depthIsRefreshed == false);
+			do
+				colorIsRefreshed = kinect->refreshColorBuffer() >= 0;
+			while (colorIsRefreshed == false);
+
+			kinect->mapColorToDepth();
+		
+			// 포인트 클라우드 변환
+			int cloudSize = 640*480;
+			CloudElement *cloud = new CloudElement[cloudSize];
+			kinect->transformPointCloud(cloud, false);
+
+			kinect->addBackground(cloud);
+		
+		}
+	}
+
+	showNotice(L"배경 설정 완료");
 }
 
 // 포인트 클라우드 갱신

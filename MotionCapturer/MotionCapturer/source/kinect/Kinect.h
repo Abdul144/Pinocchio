@@ -108,7 +108,11 @@ public:
 	bool isValidMarker(const MarkerRecognizer::sMarkerInfo &marker);
 	bool convertMarkerInfo(const MarkerRecognizer::sMarkerInfo &from, MarkerInfo &to);
 
-	void setBackground(CloudElement *bg);
+	void addBackground(CloudElement *bg);
+	inline void clearBackground()
+	{
+		DELETE_ARRAY(background);
+	}
 
 	inline int getKinectBoneIndex(int index)
 	{
